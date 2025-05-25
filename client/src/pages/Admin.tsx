@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Settings, Package, Save, Plus, Trash2, Edit } from "lucide-react";
+import { Settings, Package, Save, Plus, Trash2, Edit, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
 import AdminLogin from "@/components/AdminLogin";
+import FileUpload from "@/components/FileUpload";
 import type { StoreSettings, ProductCategory, InsertStoreSettings, InsertProductCategory } from "@shared/schema";
 
 export default function Admin() {
@@ -35,6 +36,8 @@ export default function Admin() {
     aboutDescription: settings?.aboutDescription || "",
     aboutStory: settings?.aboutStory || "",
     foundedYear: settings?.foundedYear || "",
+    logoUrl: settings?.logoUrl || "",
+    faviconUrl: settings?.faviconUrl || "",
   });
 
   const storeSettingsMutation = useMutation({
@@ -227,7 +230,7 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="store" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="store" className="flex items-center space-x-2">
               <Settings className="h-4 w-4" />
               <span>Store Settings</span>
@@ -235,6 +238,10 @@ export default function Admin() {
             <TabsTrigger value="products" className="flex items-center space-x-2">
               <Package className="h-4 w-4" />
               <span>Product Categories</span>
+            </TabsTrigger>
+            <TabsTrigger value="pages" className="flex items-center space-x-2">
+              <FileText className="h-4 w-4" />
+              <span>Custom Pages</span>
             </TabsTrigger>
           </TabsList>
 
@@ -356,6 +363,23 @@ export default function Admin() {
                       onChange={(e) => setStoreForm({ ...storeForm, aboutStory: e.target.value })}
                       rows={5}
                       required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FileUpload
+                      label="Business Logo"
+                      accept=".jpg,.jpeg,.png,.svg"
+                      currentUrl={storeForm.logoUrl}
+                      onUpload={(url) => setStoreForm({ ...storeForm, logoUrl: url })}
+                      maxSize={5}
+                    />
+                    <FileUpload
+                      label="Favicon"
+                      accept=".ico,.png,.svg"
+                      currentUrl={storeForm.faviconUrl}
+                      onUpload={(url) => setStoreForm({ ...storeForm, faviconUrl: url })}
+                      maxSize={2}
                     />
                   </div>
 
@@ -531,8 +555,77 @@ export default function Admin() {
                 </div>
               </CardContent>
             </Card>
-          </div>
-        )}
+          </TabsContent>
+
+        {/* Custom Pages Tab */}
+        <TabsContent value="pages">
+          <Card>
+            <CardHeader>
+              <CardTitle>Custom Pages</CardTitle>
+              <p className="text-gray-600">Create additional pages like FAQ, Services, Policies, etc.</p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold">Manage Pages</h3>
+                  <Button 
+                    className="bg-green-600 hover:bg-green-700"
+                    onClick={() => {
+                      // Add page creation logic here
+                    }}
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add New Page
+                  </Button>
+                </div>
+
+                {/* Page creation form */}
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h4 className="font-medium mb-4">Create New Page</h4>
+                  <div className="grid gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Page Title</label>
+                      <Input placeholder="e.g. FAQ, Privacy Policy, Services" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">URL Slug</label>
+                      <Input placeholder="e.g. faq, privacy-policy, services" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Page Content</label>
+                      <Textarea 
+                        placeholder="Write your page content here..." 
+                        rows={8}
+                      />
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <label className="flex items-center space-x-2">
+                        <input type="checkbox" className="rounded" />
+                        <span className="text-sm">Show in navigation menu</span>
+                      </label>
+                      <label className="flex items-center space-x-2">
+                        <input type="checkbox" className="rounded" defaultChecked />
+                        <span className="text-sm">Published</span>
+                      </label>
+                    </div>
+                    <Button className="bg-blue-600 hover:bg-blue-700 w-fit">
+                      Create Page
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Placeholder for existing pages list */}
+                <div>
+                  <h4 className="font-medium mb-3">Existing Pages</h4>
+                  <div className="text-gray-500 text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                    No custom pages created yet. Create your first page above!
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
