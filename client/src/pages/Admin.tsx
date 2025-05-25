@@ -110,10 +110,11 @@ export default function Admin() {
         displayOrder: categories.length + 2,
       });
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error("Category creation error:", error);
       toast({
         title: "Error",
-        description: "Failed to create product category.",
+        description: error?.message || "Failed to create product category.",
         variant: "destructive",
       });
     },
@@ -151,7 +152,23 @@ export default function Admin() {
   };
 
   const handleCategoryCreate = () => {
-    createCategoryMutation.mutate(newCategory);
+    // Validate required fields before submitting
+    if (!newCategory.title.trim() || !newCategory.description.trim() || !newCategory.imageUrl.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in title, description, and image URL.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Ensure items array is not empty
+    const categoryData = {
+      ...newCategory,
+      items: newCategory.items.length > 0 ? newCategory.items : ["Coming Soon"]
+    };
+    
+    createCategoryMutation.mutate(categoryData);
   };
 
   const handleCategoryDelete = (id: number) => {
@@ -421,7 +438,7 @@ export default function Admin() {
                   </div>
                   <Button
                     onClick={handleCategoryCreate}
-                    disabled={createCategoryMutation.isPending || !newCategory.title}
+                    disabled={createCategoryMutation.isPending || !newCategory.title.trim() || !newCategory.description.trim()}
                     className="bg-chocolate-orange hover:bg-orange-600"
                   >
                     <Plus className="mr-2 h-4 w-4" />
