@@ -1,12 +1,25 @@
 import { Award, Handshake, Heart, Star } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import type { StoreSettings } from "@shared/schema";
 
 export default function About() {
+  const { data: settings } = useQuery<StoreSettings>({
+    queryKey: ["/api/store-settings"],
+  });
+
+  if (!settings) {
+    return <div className="py-16 bg-white"><div className="max-w-6xl mx-auto px-4 h-96 bg-gray-200 animate-pulse rounded-lg"></div></div>;
+  }
+
+  const currentYear = new Date().getFullYear();
+  const yearsInBusiness = currentYear - parseInt(settings.foundedYear);
+
   return (
     <section id="about" className="py-16 bg-white">
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-serif font-bold text-saddle-brown mb-4">About Brown Feed Store</h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">A family-owned business proudly serving Lampasas County and surrounding areas for nearly four decades</p>
+          <h2 className="text-3xl lg:text-4xl font-serif font-bold text-saddle-brown mb-4">{settings.aboutTitle}</h2>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">{settings.aboutDescription}</p>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -21,16 +34,13 @@ export default function About() {
           <div>
             <h3 className="text-2xl font-serif font-bold text-saddle-brown mb-6">Our Story & Mission</h3>
             <p className="text-gray-700 mb-6 leading-relaxed">
-              Founded in 1985 by the Brown family, our feed store has been the cornerstone of agricultural supply in Lampasas County. What started as a small family operation has grown into a trusted resource for farmers, ranchers, and pet owners throughout Central Texas.
-            </p>
-            <p className="text-gray-700 mb-6 leading-relaxed">
-              We believe in supporting our local community with quality products, fair prices, and the kind of personal service that only comes from knowing our customers and their unique needs. Whether you're raising cattle, caring for horses, or feeding backyard chickens, we're here to help you succeed.
+              {settings.aboutStory}
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
               <div className="flex items-center space-x-3">
                 <Award className="text-chocolate-orange h-6 w-6" />
-                <span className="font-semibold">38+ Years Experience</span>
+                <span className="font-semibold">{yearsInBusiness}+ Years Experience</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Handshake className="text-chocolate-orange h-6 w-6" />

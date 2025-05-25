@@ -1,50 +1,44 @@
 import { ServerCog, Dog, Wrench, Egg, Sprout, Stethoscope, Truck, ClipboardList, GraduationCap } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import type { ProductCategory } from "@shared/schema";
+
+const iconMap: { [key: string]: any } = {
+  "Livestock Feed": ServerCog,
+  "Pet Supplies": Dog,
+  "Farm Equipment": Wrench,
+  "Poultry Supplies": Egg,
+  "Seeds & Garden": Sprout,
+  "Animal Health": Stethoscope,
+};
 
 export default function Products() {
-  const productCategories = [
-    {
-      icon: ServerCog,
-      title: "Livestock Feed",
-      description: "Premium quality feed for cattle, horses, pigs, goats, and sheep. Custom mixes available.",
-      image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-      items: ["Range Cubes & Pellets", "Sweet Feed & Grain", "Mineral Supplements", "Custom Blends"]
-    },
-    {
-      icon: Dog,
-      title: "Pet Supplies",
-      description: "Complete line of pet food, treats, toys, and care products for dogs, cats, and small animals.",
-      image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-      items: ["Premium Dog & Cat Food", "Treats & Supplements", "Toys & Accessories", "Grooming Supplies"]
-    },
-    {
-      icon: Wrench,
-      title: "Farm Equipment",
-      description: "Essential tools and equipment for farming, ranching, and property maintenance.",
-      image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-      items: ["Hand Tools & Hardware", "Fencing Materials", "Water Systems", "Safety Equipment"]
-    },
-    {
-      icon: Egg,
-      title: "Poultry Supplies",
-      description: "Complete poultry care including feed, supplements, and housing solutions.",
-      image: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-      items: ["Layer & Broiler Feed", "Poultry Vitamins", "Feeders & Waterers", "Coop Supplies"]
-    },
-    {
-      icon: Sprout,
-      title: "Seeds & Garden",
-      description: "Quality seeds, fertilizers, and gardening supplies for your growing needs.",
-      image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-      items: ["Vegetable & Flower Seeds", "Grass & Pasture Seed", "Fertilizers & Soil", "Garden Tools"]
-    },
-    {
-      icon: Stethoscope,
-      title: "Animal Health",
-      description: "Veterinary supplies, medications, and health products for livestock and pets.",
-      image: "https://images.unsplash.com/photo-1559190394-df5a28aab5c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-      items: ["Vaccines & Medications", "Dewormers & Treatments", "First Aid Supplies", "Grooming Products"]
-    }
-  ];
+  const { data: productCategories = [] } = useQuery<ProductCategory[]>({
+    queryKey: ["/api/product-categories"],
+  });
+
+  if (productCategories.length === 0) {
+    return (
+      <section id="products" className="py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(6)].map((_, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden animate-pulse">
+                <div className="w-full h-48 bg-gray-200"></div>
+                <div className="p-6">
+                  <div className="h-6 bg-gray-200 rounded mb-3"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                  <div className="space-y-2">
+                    <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   const services = [
     {
@@ -74,11 +68,11 @@ export default function Products() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {productCategories.map((category, index) => {
-            const IconComponent = category.icon;
+            const IconComponent = iconMap[category.title] || ServerCog;
             return (
               <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                 <img 
-                  src={category.image} 
+                  src={category.imageUrl} 
                   alt={category.title} 
                   className="w-full h-48 object-cover"
                 />
