@@ -1,4 +1,4 @@
-import { users, storeSettings, productCategories, type User, type InsertUser, type StoreSettings, type InsertStoreSettings, type ProductCategory, type InsertProductCategory } from "@shared/schema";
+import { type User, type InsertUser, type StoreSettings, type InsertStoreSettings, type ProductCategory, type InsertProductCategory } from "@shared/schema";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -10,12 +10,9 @@ export interface IStorage {
   updateProductCategory(id: number, category: InsertProductCategory): Promise<ProductCategory>;
   createProductCategory(category: InsertProductCategory): Promise<ProductCategory>;
   deleteProductCategory(id: number): Promise<boolean>;
-  // Custom pages
-  getCustomPages(): Promise<CustomPage[]>;
-  getCustomPageBySlug(slug: string): Promise<CustomPage | undefined>;
-  createCustomPage(page: InsertCustomPage): Promise<CustomPage>;
-  updateCustomPage(id: number, page: InsertCustomPage): Promise<CustomPage>;
-  deleteCustomPage(id: number): Promise<boolean>;
+  // Custom pages (for future expansion)
+  // getCustomPages(): Promise<CustomPage[]>;
+  // getCustomPageBySlug(slug: string): Promise<CustomPage | undefined>;
 }
 
 export class MemStorage implements IStorage {
