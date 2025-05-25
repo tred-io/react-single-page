@@ -565,7 +565,8 @@ export default function Admin() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+          </div>
+        )}
 
           <TabsContent value="pages">
             <Card>
