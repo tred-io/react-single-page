@@ -166,7 +166,7 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="store" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="store" className="flex items-center space-x-2">
               <Settings className="h-4 w-4" />
               <span>Store Settings</span>
@@ -174,6 +174,10 @@ export default function Admin() {
             <TabsTrigger value="products" className="flex items-center space-x-2">
               <Package className="h-4 w-4" />
               <span>Product Categories</span>
+            </TabsTrigger>
+            <TabsTrigger value="pages" className="flex items-center space-x-2">
+              <Plus className="h-4 w-4" />
+              <span>Page Management</span>
             </TabsTrigger>
           </TabsList>
 
@@ -236,6 +240,103 @@ export default function Admin() {
                     </div>
                   </div>
 
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Address</label>
+                      <Input
+                        value={storeForm.address}
+                        onChange={(e) => setStoreForm({ ...storeForm, address: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Phone</label>
+                      <Input
+                        value={storeForm.phone}
+                        onChange={(e) => setStoreForm({ ...storeForm, phone: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Email (Optional)</label>
+                      <Input
+                        type="email"
+                        value={storeForm.email || ""}
+                        onChange={(e) => setStoreForm({ ...storeForm, email: e.target.value })}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Founded Year</label>
+                      <Input
+                        value={storeForm.foundedYear}
+                        onChange={(e) => setStoreForm({ ...storeForm, foundedYear: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Monday-Friday Hours</label>
+                      <Input
+                        value={storeForm.mondayFridayHours}
+                        onChange={(e) => setStoreForm({ ...storeForm, mondayFridayHours: e.target.value })}
+                        placeholder="7:00 AM - 6:00 PM"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Saturday Hours</label>
+                      <Input
+                        value={storeForm.saturdayHours}
+                        onChange={(e) => setStoreForm({ ...storeForm, saturdayHours: e.target.value })}
+                        placeholder="7:00 AM - 6:00 PM"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Sunday Hours</label>
+                      <Input
+                        value={storeForm.sundayHours}
+                        onChange={(e) => setStoreForm({ ...storeForm, sundayHours: e.target.value })}
+                        placeholder="9:00 AM - 4:00 PM"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">About Section Title</label>
+                    <Input
+                      value={storeForm.aboutTitle}
+                      onChange={(e) => setStoreForm({ ...storeForm, aboutTitle: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">About Description</label>
+                    <Textarea
+                      value={storeForm.aboutDescription}
+                      onChange={(e) => setStoreForm({ ...storeForm, aboutDescription: e.target.value })}
+                      rows={3}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">About Story</label>
+                    <Textarea
+                      value={storeForm.aboutStory}
+                      onChange={(e) => setStoreForm({ ...storeForm, aboutStory: e.target.value })}
+                      rows={5}
+                      required
+                    />
+                  </div>
+
                   <Button
                     onClick={() => updateSettingsMutation.mutate(storeForm)}
                     disabled={updateSettingsMutation.isPending}
@@ -264,6 +365,15 @@ export default function Admin() {
                         <p className="text-gray-600">{category.description}</p>
                       </CardHeader>
                       <CardContent>
+                        {category.imageUrl && (
+                          <div className="mb-4">
+                            <img 
+                              src={category.imageUrl} 
+                              alt={category.title} 
+                              className="w-full h-32 object-cover rounded-lg border"
+                            />
+                          </div>
+                        )}
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">Items:</h4>
                           <ul className="text-sm text-gray-600 space-y-1">
@@ -283,7 +393,7 @@ export default function Admin() {
                             onClick={() => setEditingCategory(category)}
                           >
                             <Edit className="w-3 h-3 mr-1" />
-                            Edit
+                            Edit & Manage Image
                           </Button>
                         </div>
                       </CardContent>
@@ -293,7 +403,113 @@ export default function Admin() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          <TabsContent value="pages">
+            <Card>
+              <CardHeader>
+                <CardTitle>Page Management</CardTitle>
+                <p className="text-gray-600">Create additional pages like FAQ, Services, Policies, etc.</p>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h4 className="font-medium mb-4">Create New Page</h4>
+                  <div className="grid gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Page Title</label>
+                      <Input placeholder="Page Title (e.g., FAQ, Services)" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Page URL Slug</label>
+                      <Input placeholder="Page URL slug (e.g., faq, services)" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Page Content</label>
+                      <Textarea 
+                        placeholder="Write your page content here..." 
+                        rows={8}
+                      />
+                    </div>
+                    <Button className="bg-blue-600 hover:bg-blue-700 w-fit">
+                      Create Page (Coming Soon)
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
+
+        {/* Edit Category Modal with Image Management */}
+        {editingCategory && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <CardHeader>
+                <CardTitle>Edit Category: {editingCategory.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Category Title</label>
+                    <Input
+                      value={editingCategory.title}
+                      onChange={(e) => setEditingCategory({ ...editingCategory, title: e.target.value })}
+                    />
+                  </div>
+                  <div className="p-4 bg-green-50 rounded-lg border-2 border-green-200">
+                    <label className="block text-sm font-medium mb-2 text-green-800">🖼️ Category Image URL</label>
+                    <Input
+                      type="url"
+                      value={editingCategory.imageUrl}
+                      onChange={(e) => setEditingCategory({ ...editingCategory, imageUrl: e.target.value })}
+                      placeholder="https://example.com/category-image.jpg"
+                      className="border-green-300"
+                    />
+                    {editingCategory.imageUrl && (
+                      <img 
+                        src={editingCategory.imageUrl} 
+                        alt="Category preview" 
+                        className="mt-2 w-full h-32 object-cover border rounded bg-white"
+                      />
+                    )}
+                    <p className="text-xs text-green-600 mt-1">Displays as category header image</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Description</label>
+                    <Textarea
+                      value={editingCategory.description}
+                      onChange={(e) => setEditingCategory({ ...editingCategory, description: e.target.value })}
+                      rows={3}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Items (comma-separated)</label>
+                    <Textarea
+                      value={editingCategory.items.join(", ")}
+                      onChange={(e) => setEditingCategory({ ...editingCategory, items: e.target.value.split(", ").filter(item => item.trim()) })}
+                      rows={3}
+                    />
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button
+                      onClick={() => handleCategoryUpdate(editingCategory)}
+                      disabled={updateCategoryMutation.isPending}
+                      className="bg-chocolate-orange hover:bg-orange-600"
+                    >
+                      <Save className="mr-2 h-4 w-4" />
+                      {updateCategoryMutation.isPending ? "Saving..." : "Save Changes"}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => setEditingCategory(null)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );
