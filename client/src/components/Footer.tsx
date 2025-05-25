@@ -67,11 +67,6 @@ export default function Footer() {
                   Contact
                 </button>
               </li>
-              <li>
-                <a href="#" className="text-gray-300 hover:text-chocolate-orange transition-colors">
-                  Delivery Information
-                </a>
-              </li>
             </ul>
           </div>
           
