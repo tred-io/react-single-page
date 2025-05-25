@@ -17,15 +17,6 @@ export default function Admin() {
   const queryClient = useQueryClient();
   const { isAuthenticated, isLoading } = useAuth();
 
-  // Show login screen if not authenticated
-  if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
-
-  if (!isAuthenticated) {
-    return <AdminLogin onLogin={() => window.location.reload()} />;
-  }
-
   // Store Settings
   const { data: settings } = useQuery<StoreSettings>({
     queryKey: ["/api/store-settings"],
@@ -216,6 +207,15 @@ export default function Admin() {
       aboutStory: settings.aboutStory,
       foundedYear: settings.foundedYear,
     });
+  }
+
+  // Show login screen if not authenticated
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <AdminLogin onLogin={() => window.location.reload()} />;
   }
 
   return (
