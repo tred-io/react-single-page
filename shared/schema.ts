@@ -14,7 +14,7 @@ export const storeSettings = pgTable("store_settings", {
   tagline: text("tagline").notNull(),
   address: text("address").notNull(),
   phone: text("phone").notNull(),
-  email: text("email").notNull(),
+  email: text("email"),
   mondayFridayHours: text("monday_friday_hours").notNull(),
   saturdayHours: text("saturday_hours").notNull(),
   sundayHours: text("sunday_hours").notNull(),
@@ -51,6 +51,8 @@ export const insertStoreSettingsSchema = createInsertSchema(storeSettings).pick(
   aboutDescription: true,
   aboutStory: true,
   foundedYear: true,
+}).extend({
+  email: z.string().optional(),
 });
 
 export const insertProductCategorySchema = createInsertSchema(productCategories).pick({
