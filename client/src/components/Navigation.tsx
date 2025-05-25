@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Tractor, Settings } from "lucide-react";
+import { Menu, X, Tractor, Settings, LogOut } from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [location] = useLocation();
+  const { isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -121,14 +123,28 @@ export default function Navigation() {
                   </button>
                 </Link>
               )}
-              <Link href="/admin">
+              {isAuthenticated && (
+                <Link href="/admin">
+                  <button 
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block w-full text-left px-4 py-2 text-warm-beige hover:bg-chocolate-orange transition-colors"
+                  >
+                    {isAdmin ? "Admin Dashboard" : "Manage Store"}
+                  </button>
+                </Link>
+              )}
+              {isAuthenticated && (
                 <button 
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => {
+                    logout();
+                    setIsMenuOpen(false);
+                  }}
                   className="block w-full text-left px-4 py-2 text-warm-beige hover:bg-chocolate-orange transition-colors"
                 >
-                  {isAdmin ? "Admin Dashboard" : "Manage Content"}
+                  <LogOut className="inline w-4 h-4 mr-2" />
+                  Logout
                 </button>
-              </Link>
+              )}
             </div>
           </div>
         )}

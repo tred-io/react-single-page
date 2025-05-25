@@ -63,9 +63,15 @@ export const insertProductCategorySchema = createInsertSchema(productCategories)
   displayOrder: true,
 });
 
+// Admin authentication schema
+export const adminLoginSchema = z.object({
+  password: z.string().min(1, "Password is required"),
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertStoreSettings = z.infer<typeof insertStoreSettingsSchema>;
 export type StoreSettings = typeof storeSettings.$inferSelect;
 export type InsertProductCategory = z.infer<typeof insertProductCategorySchema>;
 export type ProductCategory = typeof productCategories.$inferSelect;
+export type AdminLogin = z.infer<typeof adminLoginSchema>;
