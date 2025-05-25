@@ -72,21 +72,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/product-categories", async (req, res) => {
     try {
+      console.log("Received category data:", req.body);
       const validatedData = insertProductCategorySchema.parse(req.body);
+      console.log("Validated data:", validatedData);
       const newCategory = await storage.createProductCategory(validatedData);
+      console.log("Created category:", newCategory);
       res.json({ success: true, data: newCategory });
     } catch (error) {
+      console.error("Product category creation error:", error);
       if (error instanceof z.ZodError) {
+        console.error("Validation errors:", error.errors);
         return res.status(400).json({ 
           success: false, 
           message: "Please fill in all required fields correctly.",
           errors: error.errors 
         });
       }
-      console.error("Product category creation error:", error);
       res.status(500).json({ 
         success: false, 
-        message: "Error creating product category" 
+        message: "Error creating product category",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
