@@ -5,6 +5,7 @@ import { insertStoreSettingsSchema, insertProductCategorySchema } from "@shared/
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Ensure API routes are registered before any other middleware
   // Store settings endpoints
   app.get("/api/store-settings", async (req, res) => {
     try {
