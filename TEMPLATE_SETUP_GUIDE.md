@@ -58,11 +58,12 @@ Edit `client/src/index.css` to change the color palette:
 }
 ```
 
-### Logo Upload (Optional Enhancement)
-To add logo functionality:
-1. Add logo field to store settings schema
-2. Create file upload component
-3. Update navigation to display uploaded logo
+### Logo & Favicon Upload
+✅ **Already Built-In!**
+1. Go to admin panel → Store Settings tab
+2. Upload your business logo (displays in navigation)
+3. Upload favicon (appears in browser tab)
+4. Supports JPG, PNG, SVG formats up to 5MB
 
 ## 📱 Business Type Templates
 
@@ -163,31 +164,54 @@ Before setup, gather this information:
 - [ ] Set up hosting and domain
 - [ ] SSL certificate configured
 
+## 📄 Custom Pages Feature
+
+### Built-In Page Management
+✅ **Create unlimited custom pages:**
+- **Service Pages**: "Our Services", "Pricing", "Consultation"
+- **Info Pages**: "FAQ", "Privacy Policy", "Terms of Service"
+- **Marketing Pages**: "Special Offers", "Testimonials", "Gallery"
+
+### How to Add Custom Pages:
+1. **Admin Panel** → "Custom Pages" tab
+2. **Create Page**: Title, URL slug, content
+3. **Navigation**: Choose if page appears in menu
+4. **Content**: Full rich text editing
+5. **Publishing**: Draft or published status
+
+### Example Use Cases:
+
+**Restaurant Template:**
+- Menu page with full descriptions
+- Catering services page
+- Private events page
+- Wine list page
+
+**Service Business Template:**
+- Individual service detail pages
+- Pricing and packages page
+- FAQ page
+- Client testimonials page
+
+**Retail Store Template:**
+- Brand story page
+- Shipping and returns page
+- Size guide page
+- Care instructions page
+
 ## 💡 Advanced Features (Optional)
 
-### Contact Form
-Add contact functionality:
-1. Create contact form component
-2. Add email service integration
-3. Update navigation to include contact
+### Contact Form Integration
+Add contact functionality with email service
 
 ### Blog/News Section
-Add content marketing:
-1. Create blog post schema
-2. Add blog management to admin
-3. Generate blog pages
+Add content marketing capabilities
 
-### Online Ordering/Booking
-Add e-commerce or scheduling:
-1. Product catalog with pricing
-2. Shopping cart functionality
-3. Payment integration
+### E-commerce Integration
+Add online ordering and payment processing
 
 ### Analytics Integration
-Track website performance:
-1. Add Google Analytics
-2. Set up conversion tracking
-3. Monitor SEO performance
+Track website performance and conversions
 
 ## 🆘 Common Issues
 
