@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Settings, Package, Save, Plus, Trash2, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,21 +22,73 @@ export default function Admin() {
     queryKey: ["/api/store-settings"],
   });
 
+  // Product Categories
+  const { data: categories = [] } = useQuery<ProductCategory[]>({
+    queryKey: ["/api/product-categories"],
+  });
+
   const [storeForm, setStoreForm] = useState<InsertStoreSettings>({
-    storeName: settings?.storeName || "",
-    tagline: settings?.tagline || "",
-    address: settings?.address || "",
-    phone: settings?.phone || "",
-    email: settings?.email || "",
-    mondayFridayHours: settings?.mondayFridayHours || "",
-    saturdayHours: settings?.saturdayHours || "",
-    sundayHours: settings?.sundayHours || "",
-    aboutTitle: settings?.aboutTitle || "",
-    aboutDescription: settings?.aboutDescription || "",
-    aboutStory: settings?.aboutStory || "",
-    foundedYear: settings?.foundedYear || "",
-    logoUrl: settings?.logoUrl || "",
-    faviconUrl: settings?.faviconUrl || "",
+    storeName: "",
+    tagline: "",
+    address: "",
+    phone: "",
+    email: "",
+    mondayFridayHours: "",
+    saturdayHours: "",
+    sundayHours: "",
+    aboutTitle: "",
+    aboutDescription: "",
+    aboutStory: "",
+    foundedYear: "",
+    logoUrl: "",
+    faviconUrl: "",
+  });
+
+  // Update form when settings load
+  useEffect(() => {
+    if (settings) {
+      setStoreForm({
+        storeName: settings.storeName || "",
+        tagline: settings.tagline || "",
+        address: settings.address || "",
+        phone: settings.phone || "",
+        email: settings.email || "",
+        mondayFridayHours: settings.mondayFridayHours || "",
+        saturdayHours: settings.saturdayHours || "",
+        sundayHours: settings.sundayHours || "",
+        aboutTitle: settings.aboutTitle || "",
+        aboutDescription: settings.aboutDescription || "",
+        aboutStory: settings.aboutStory || "",
+        foundedYear: settings.foundedYear || "",
+        logoUrl: settings.logoUrl || "",
+        faviconUrl: settings.faviconUrl || "",
+      });
+    }
+  }, [settings]);
+
+  const updateSettingsMutation = useMutation({
+    mutationFn: async (data: InsertStoreSettings) => {
+      const response = await apiRequest("/api/store-settings", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+      });
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/store-settings"] });
+      toast({
+        title: "Settings Updated",
+        description: "Store settings including logo have been saved successfully!",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to save settings. Please try again.",
+        variant: "destructive",
+      });
+    },
   });
 
   // Show login screen if not authenticated
@@ -125,11 +177,99 @@ export default function Admin() {
                     </div>
                   </div>
 
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Address</label>
+                      <Input
+                        value={storeForm.address}
+                        onChange={(e) => setStoreForm({ ...storeForm, address: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Phone</label>
+                      <Input
+                        value={storeForm.phone}
+                        onChange={(e) => setStoreForm({ ...storeForm, phone: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Email (Optional)</label>
+                      <Input
+                        type="email"
+                        value={storeForm.email || ""}
+                        onChange={(e) => setStoreForm({ ...storeForm, email: e.target.value })}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Founded Year</label>
+                      <Input
+                        value={storeForm.foundedYear}
+                        onChange={(e) => setStoreForm({ ...storeForm, foundedYear: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Monday-Friday Hours</label>
+                      <Input
+                        value={storeForm.mondayFridayHours}
+                        onChange={(e) => setStoreForm({ ...storeForm, mondayFridayHours: e.target.value })}
+                        placeholder="7:00 AM - 6:00 PM"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Saturday Hours</label>
+                      <Input
+                        value={storeForm.saturdayHours}
+                        onChange={(e) => setStoreForm({ ...storeForm, saturdayHours: e.target.value })}
+                        placeholder="7:00 AM - 6:00 PM"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Sunday Hours</label>
+                      <Input
+                        value={storeForm.sundayHours}
+                        onChange={(e) => setStoreForm({ ...storeForm, sundayHours: e.target.value })}
+                        placeholder="9:00 AM - 4:00 PM"
+                        required
+                      />
+                    </div>
+                  </div>
+
                   <div>
-                    <label className="block text-sm font-medium mb-2">Address</label>
+                    <label className="block text-sm font-medium mb-2">About Section Title</label>
                     <Input
-                      value={storeForm.address}
-                      onChange={(e) => setStoreForm({ ...storeForm, address: e.target.value })}
+                      value={storeForm.aboutTitle}
+                      onChange={(e) => setStoreForm({ ...storeForm, aboutTitle: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">About Description</label>
+                    <Textarea
+                      value={storeForm.aboutDescription}
+                      onChange={(e) => setStoreForm({ ...storeForm, aboutDescription: e.target.value })}
+                      rows={3}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">About Story</label>
+                    <Textarea
+                      value={storeForm.aboutStory}
+                      onChange={(e) => setStoreForm({ ...storeForm, aboutStory: e.target.value })}
+                      rows={5}
                       required
                     />
                   </div>
@@ -156,12 +296,48 @@ export default function Admin() {
             <Card>
               <CardHeader>
                 <CardTitle>Product Categories</CardTitle>
-                <p className="text-gray-600">Manage your product categories and services</p>
+                <p className="text-gray-600">Your current product categories and services</p>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-8">
-                  <p className="text-gray-500">Product category management available in your existing admin panel</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {categories.map((category) => (
+                    <Card key={category.id} className="border-l-4 border-l-chocolate-orange">
+                      <CardHeader>
+                        <CardTitle className="text-lg">{category.title}</CardTitle>
+                        <p className="text-gray-600">{category.description}</p>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm">Items:</h4>
+                          <ul className="text-sm text-gray-600 space-y-1">
+                            {category.items.map((item, index) => (
+                              <li key={index} className="flex items-center">
+                                <span className="w-2 h-2 bg-chocolate-orange rounded-full mr-2"></span>
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="mt-4 pt-4 border-t">
+                          <Button variant="outline" size="sm" className="mr-2">
+                            <Edit className="w-3 h-3 mr-1" />
+                            Edit
+                          </Button>
+                          <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                            <Trash2 className="w-3 h-3 mr-1" />
+                            Delete
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
+                
+                {categories.length === 0 && (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No product categories found. Create some in your store settings!</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
