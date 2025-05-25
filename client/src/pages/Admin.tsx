@@ -94,6 +94,13 @@ export default function Admin() {
   const createCategoryMutation = useMutation({
     mutationFn: async (data: InsertProductCategory) => {
       const response = await apiRequest("POST", "/api/product-categories", data);
+      const contentType = response.headers.get("content-type");
+      
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await response.text();
+        throw new Error("Server returned non-JSON response. Please check server logs.");
+      }
+      
       const result = await response.json();
       if (!result.success) {
         throw new Error(result.message || "Failed to create category");
