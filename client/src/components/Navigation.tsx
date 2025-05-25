@@ -71,12 +71,23 @@ export default function Navigation() {
                 </button>
               </Link>
             )}
-            <Link href="/admin">
-              <button className="flex items-center space-x-2 text-warm-beige hover:text-chocolate-orange transition-colors duration-300">
-                <Settings className="h-4 w-4" />
-                <span>{isAdmin ? "Admin" : "Manage"}</span>
+            {isAuthenticated && (
+              <Link href="/admin">
+                <button className="flex items-center space-x-2 text-warm-beige hover:text-chocolate-orange transition-colors duration-300">
+                  <Settings className="h-4 w-4" />
+                  <span>{isAdmin ? "Admin" : "Manage"}</span>
+                </button>
+              </Link>
+            )}
+            {isAuthenticated && (
+              <button 
+                onClick={logout}
+                className="flex items-center space-x-2 text-warm-beige hover:text-chocolate-orange transition-colors duration-300"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Logout</span>
               </button>
-            </Link>
+            )}
           </div>
           
           {/* Mobile Menu Button */}

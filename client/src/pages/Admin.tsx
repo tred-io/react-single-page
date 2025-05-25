@@ -8,11 +8,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/useAuth";
+import AdminLogin from "@/components/AdminLogin";
 import type { StoreSettings, ProductCategory, InsertStoreSettings, InsertProductCategory } from "@shared/schema";
 
 export default function Admin() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Show login screen if not authenticated
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <AdminLogin onLogin={() => window.location.reload()} />;
+  }
 
   // Store Settings
   const { data: settings } = useQuery<StoreSettings>({
