@@ -243,12 +243,11 @@ export default function Admin() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">Email</label>
+                      <label className="block text-sm font-medium mb-2">Email (Optional)</label>
                       <Input
                         type="email"
-                        value={storeForm.email}
+                        value={storeForm.email || ""}
                         onChange={(e) => setStoreForm({ ...storeForm, email: e.target.value })}
-                        required
                       />
                     </div>
                     <div>
