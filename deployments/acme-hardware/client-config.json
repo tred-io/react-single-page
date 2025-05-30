@@ -1,0 +1,21 @@
+{
+  "clientName": "acme-hardware",
+  "domain": "acmehardware.com",
+  "deployedAt": "2025-05-30T06:18:12Z",
+  "templateVersion": "1.0.0",
+  "templatePath": "../../..",
+  "database": {
+    "provider": "neon",
+    "connectionString": "TO_BE_SET"
+  },
+  "deployment": {
+    "platform": "vercel",
+    "customDomain": "acmehardware.com"
+  },
+  "branding": {
+    "primaryColor": "#8B4513",
+    "secondaryColor": "#2F4F4F", 
+    "accentColor": "#CD853F",
+    "fontFamily": "Inter"
+  }
+}

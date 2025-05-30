@@ -5,8 +5,8 @@
  * Provides canary deployments and gradual rollouts for client sites
  */
 
-const https = require('https');
-const fs = require('fs');
+import https from 'https';
+import fs from 'fs';
 
 class DeploymentSafety {
   constructor() {
@@ -204,8 +204,8 @@ async function main() {
   }
 }
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
 
-module.exports = { DeploymentSafety };
+export { DeploymentSafety };
