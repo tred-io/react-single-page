@@ -12,10 +12,19 @@
     "platform": "vercel",
     "customDomain": "spupholstery.com"
   },
+  "businessInfo": {
+    "storeName": "SP Upholstery",
+    "tagline": "Custom upholstery for your everyday needs",
+    "address": "2121 Rebild Dr, Solvang, CA 93463",
+    "phone": "(805) 688-0089",
+    "email": "info@spupholstery.com",
+    "businessType": "upholstery shop",
+    "description": "Custom upholstery shop in California's Central Coast offering furniture reupholstery and handcrafted fabric pieces with expert craftsmanship and personalized service."
+  },
   "branding": {
-    "primaryColor": "#8B4513",
-    "secondaryColor": "#2F4F4F", 
-    "accentColor": "#CD853F",
-    "fontFamily": "Inter"
+    "primaryColor": "208 15% 25%",
+    "secondaryColor": "47 25% 85%",
+    "accentColor": "25 85% 55%",
+    "fontFamily": "Merriweather"
   }
 }
