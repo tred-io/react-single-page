@@ -210,6 +210,50 @@ export class MemStorage implements IStorage {
   async deleteProductCategory(id: number): Promise<boolean> {
     return this.productCategories.delete(id);
   }
+
+  // Special Services methods
+  async getSpecialServices(): Promise<SpecialService[]> {
+    return Array.from(this.specialServices.values()).sort((a, b) => a.displayOrder - b.displayOrder);
+  }
+
+  async updateSpecialService(id: number, service: InsertSpecialService): Promise<SpecialService> {
+    const updated: SpecialService = { ...service, id };
+    this.specialServices.set(id, updated);
+    return updated;
+  }
+
+  async createSpecialService(service: InsertSpecialService): Promise<SpecialService> {
+    const id = this.currentServiceId++;
+    const newService: SpecialService = { ...service, id };
+    this.specialServices.set(id, newService);
+    return newService;
+  }
+
+  async deleteSpecialService(id: number): Promise<boolean> {
+    return this.specialServices.delete(id);
+  }
+
+  // Featured Brands methods
+  async getFeaturedBrands(): Promise<FeaturedBrand[]> {
+    return Array.from(this.featuredBrands.values()).sort((a, b) => a.displayOrder - b.displayOrder);
+  }
+
+  async updateFeaturedBrand(id: number, brand: InsertFeaturedBrand): Promise<FeaturedBrand> {
+    const updated: FeaturedBrand = { ...brand, id };
+    this.featuredBrands.set(id, updated);
+    return updated;
+  }
+
+  async createFeaturedBrand(brand: InsertFeaturedBrand): Promise<FeaturedBrand> {
+    const id = this.currentBrandId++;
+    const newBrand: FeaturedBrand = { ...brand, id };
+    this.featuredBrands.set(id, newBrand);
+    return newBrand;
+  }
+
+  async deleteFeaturedBrand(id: number): Promise<boolean> {
+    return this.featuredBrands.delete(id);
+  }
 }
 
 export const storage = new MemStorage();
