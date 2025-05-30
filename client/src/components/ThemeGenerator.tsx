@@ -39,6 +39,19 @@ export default function ThemeGenerator() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  const updateCSSVariables = (theme: ThemeOption) => {
+    const root = document.documentElement;
+    
+    // Convert HSL to CSS custom property format
+    root.style.setProperty('--primary', theme.primaryColor);
+    root.style.setProperty('--secondary', theme.secondaryColor);
+    root.style.setProperty('--accent', theme.accentColor);
+    
+    // Update font family
+    root.style.setProperty('--font-family', theme.fontFamily);
+    document.body.style.fontFamily = theme.fontFamily;
+  };
+
   const form = useForm<z.infer<typeof businessDescriptionSchema>>({
     resolver: zodResolver(businessDescriptionSchema),
     defaultValues: {
@@ -96,11 +109,11 @@ export default function ThemeGenerator() {
       
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (updatedSettings) => {
       queryClient.invalidateQueries({ queryKey: ['/api/store-settings'] });
       toast({
         title: "Theme Applied",
-        description: "Your website theme has been updated!"
+        description: "Your website theme has been updated! Check the home page to see the changes."
       });
       setGeneratedThemes(null);
       setSelectedTheme(null);
@@ -120,8 +133,11 @@ export default function ThemeGenerator() {
   };
 
   const handleApplyTheme = () => {
-    if (selectedTheme) {
-      applyThemeMutation.mutate(selectedTheme);
+    if (selectedTheme && generatedThemes) {
+      const theme = generatedThemes.themes.find(t => t.id === selectedTheme);
+      if (theme) {
+        applyThemeMutation.mutate(theme);
+      }
     }
   };
 
