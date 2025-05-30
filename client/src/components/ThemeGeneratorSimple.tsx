@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +9,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Palette, Sparkles } from "lucide-react";
+import ThemePreviewSimulator from "./ThemePreviewSimulator";
+import type { StoreSettings } from "@shared/schema";
 
 const businessDescriptionSchema = z.object({
   description: z.string().min(10, "Please provide at least 10 characters describing your business")
@@ -35,8 +37,13 @@ interface ThemeGenerationResult {
 export default function ThemeGenerator() {
   const [generatedThemes, setGeneratedThemes] = useState<ThemeGenerationResult | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
+  const [previewTheme, setPreviewTheme] = useState<ThemeOption | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const { data: storeSettings } = useQuery<StoreSettings>({
+    queryKey: ["/api/store-settings"],
+  });
 
   const form = useForm<z.infer<typeof businessDescriptionSchema>>({
     resolver: zodResolver(businessDescriptionSchema),
@@ -242,8 +249,19 @@ export default function ThemeGenerator() {
                     <p className="text-xs text-muted-foreground">{theme.reasoning}</p>
                   </div>
 
-                  <div className="pt-4 border-t">
-                    <p className="text-sm font-medium mb-2">Preview</p>
+                  <div className="pt-4 border-t space-y-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPreviewTheme(theme);
+                      }}
+                    >
+                      Interactive Preview
+                    </Button>
+                    
                     <div 
                       className="border rounded p-3 text-xs"
                       style={{
@@ -253,22 +271,10 @@ export default function ThemeGenerator() {
                       }}
                     >
                       <div className="font-bold text-base mb-1" style={{ color: getColorPreview(theme.primaryColor) }}>
-                        Your Store Name
+                        Quick Preview
                       </div>
                       <div className="text-xs mb-2" style={{ color: getColorPreview(theme.accentColor) }}>
-                        Quality products since 1985
-                      </div>
-                      <div className="text-xs">
-                        Welcome to our store! We provide excellent service...
-                      </div>
-                      <div 
-                        className="inline-block mt-2 px-2 py-1 rounded text-xs"
-                        style={{
-                          backgroundColor: getColorPreview(theme.accentColor),
-                          color: 'white'
-                        }}
-                      >
-                        Shop Now
+                        {theme.style} • {theme.mood}
                       </div>
                     </div>
                   </div>
@@ -301,6 +307,25 @@ export default function ThemeGenerator() {
               <p className="text-xs text-center text-muted-foreground max-w-md">
                 This will update your website's colors, fonts, and styling. You can always generate new themes or manually adjust colors in the admin panel.
               </p>
+            </div>
+          )}
+
+          {previewTheme && storeSettings && (
+            <div className="mt-8">
+              <ThemePreviewSimulator
+                theme={previewTheme}
+                storeName={storeSettings.storeName}
+                tagline={storeSettings.tagline}
+                phone={storeSettings.phone}
+              />
+              <div className="mt-4 text-center">
+                <Button
+                  variant="outline"
+                  onClick={() => setPreviewTheme(null)}
+                >
+                  Close Preview
+                </Button>
+              </div>
             </div>
           )}
         </div>
