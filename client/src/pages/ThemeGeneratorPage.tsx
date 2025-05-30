@@ -1,4 +1,4 @@
-import ThemeGenerator from "@/components/ThemeGenerator";
+import ThemeGenerator from "@/components/ThemeGeneratorSimple";
 
 export default function ThemeGeneratorPage() {
   return (

@@ -46,7 +46,7 @@ export default function ThemeGenerator() {
   });
 
   const generateThemesMutation = useMutation({
-    mutationFn: async (data: { description: string }): Promise<ThemeGenerationResult> => {
+    mutationFn: async (data: { description: string }) => {
       const response = await fetch('/api/generate-themes', {
         method: 'POST',
         body: JSON.stringify({ businessDescription: data.description }),
@@ -59,14 +59,14 @@ export default function ThemeGenerator() {
       
       return response.json();
     },
-    onSuccess: (data: ThemeGenerationResult) => {
+    onSuccess: (data) => {
       setGeneratedThemes(data);
       toast({
         title: "Themes Generated!",
         description: `Created ${data.themes.length} custom theme options for your business.`
       });
     },
-    onError: (error: Error) => {
+    onError: (error) => {
       toast({
         title: "Generation Failed",
         description: error.message,
@@ -76,17 +76,10 @@ export default function ThemeGenerator() {
   });
 
   const applyThemeMutation = useMutation({
-    mutationFn: async (themeId: string) => {
-      if (!generatedThemes) {
-        throw new Error('No themes available');
-      }
-      
+    mutationFn: async (data: { themeId: string; themes: ThemeOption[] }) => {
       const response = await fetch("/api/apply-theme", {
         method: "POST",
-        body: JSON.stringify({ 
-          themeId: themeId,
-          themes: generatedThemes.themes 
-        }),
+        body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json' }
       });
       
@@ -106,7 +99,7 @@ export default function ThemeGenerator() {
       setSelectedTheme(null);
       form.reset();
     },
-    onError: (error: Error) => {
+    onError: (error) => {
       toast({
         title: "Failed to Apply Theme",
         description: error.message,
@@ -120,8 +113,11 @@ export default function ThemeGenerator() {
   };
 
   const handleApplyTheme = () => {
-    if (selectedTheme) {
-      applyThemeMutation.mutate(selectedTheme);
+    if (selectedTheme && generatedThemes) {
+      applyThemeMutation.mutate({
+        themeId: selectedTheme,
+        themes: generatedThemes.themes
+      });
     }
   };
 
