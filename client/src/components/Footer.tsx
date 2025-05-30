@@ -1,13 +1,21 @@
 import { Tractor, MapPin, Phone, Mail } from "lucide-react";
 import { FaFacebook, FaGoogle, FaYelp } from "react-icons/fa";
+import { useQuery } from "@tanstack/react-query";
+import { type StoreSettings } from "@shared/schema";
 
 export default function Footer() {
+  const { data: settings } = useQuery<StoreSettings>({
+    queryKey: ["/api/store-settings"],
+  });
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  if (!settings) return null;
 
   return (
     <footer className="bg-slate-gray text-warm-beige py-12">
@@ -75,31 +83,89 @@ export default function Footer() {
             <div className="space-y-2 text-gray-300">
               <p className="flex items-center">
                 <MapPin className="text-chocolate-orange h-4 w-4 mr-2" />
-                1234 Highway 281, Lampasas, TX 76550
+                <a 
+                  href={`https://maps.google.com/?q=${encodeURIComponent(settings.address)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-chocolate-orange transition-colors"
+                >
+                  {settings.address}
+                </a>
               </p>
               <p className="flex items-center">
                 <Phone className="text-chocolate-orange h-4 w-4 mr-2" />
-                <a href="tel:+15125551234" className="hover:text-chocolate-orange transition-colors">
-                  (512) 555-1234
+                <a href={`tel:${settings.phone.replace(/\D/g, '')}`} className="hover:text-chocolate-orange transition-colors">
+                  {settings.phone}
                 </a>
               </p>
-              <p className="flex items-center">
-                <Mail className="text-chocolate-orange h-4 w-4 mr-2" />
-                <a href="mailto:info@brownfeedstore.com" className="hover:text-chocolate-orange transition-colors">
-                  info@brownfeedstore.com
-                </a>
-              </p>
+              {settings.email && (
+                <p className="flex items-center">
+                  <Mail className="text-chocolate-orange h-4 w-4 mr-2" />
+                  <a href={`mailto:${settings.email}`} className="hover:text-chocolate-orange transition-colors">
+                    {settings.email}
+                  </a>
+                </p>
+              )}
               <div className="mt-4">
                 <p className="font-semibold">Store Hours:</p>
-                <p className="text-sm">Mon-Sat: 7AM-6PM</p>
-                <p className="text-sm">Sunday: 9AM-4PM</p>
+                <div className="text-sm space-y-1">
+                  <p>Mon: {settings.mondayHours}</p>
+                  <p>Tue: {settings.tuesdayHours}</p>
+                  <p>Wed: {settings.wednesdayHours}</p>
+                  <p>Thu: {settings.thursdayHours}</p>
+                  <p>Fri: {settings.fridayHours}</p>
+                  <p>Sat: {settings.saturdayHours}</p>
+                  <p>Sun: {settings.sundayHours}</p>
+                </div>
               </div>
+              
+              {/* Social Media Links */}
+              {(settings.facebookUrl || settings.googleUrl || settings.yelpUrl) && (
+                <div className="mt-6">
+                  <p className="font-semibold mb-3">Follow Us:</p>
+                  <div className="flex space-x-4">
+                    {settings.facebookUrl && (
+                      <a 
+                        href={settings.facebookUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-300 hover:text-chocolate-orange transition-colors"
+                        aria-label="Facebook"
+                      >
+                        <FaFacebook className="h-6 w-6" />
+                      </a>
+                    )}
+                    {settings.googleUrl && (
+                      <a 
+                        href={settings.googleUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-300 hover:text-chocolate-orange transition-colors"
+                        aria-label="Google Business"
+                      >
+                        <FaGoogle className="h-6 w-6" />
+                      </a>
+                    )}
+                    {settings.yelpUrl && (
+                      <a 
+                        href={settings.yelpUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-300 hover:text-chocolate-orange transition-colors"
+                        aria-label="Yelp"
+                      >
+                        <FaYelp className="h-6 w-6" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
         
         <div className="border-t border-gray-600 mt-8 pt-8 text-center">
-          <p className="text-gray-400">&copy; 2024 Brown Feed Store. All rights reserved. | Proudly serving Lampasas County since 1985</p>
+          <p className="text-gray-400">&copy; 2024 {settings.storeName}. All rights reserved. | Proudly serving since {settings.foundedYear}</p>
         </div>
       </div>
     </footer>
