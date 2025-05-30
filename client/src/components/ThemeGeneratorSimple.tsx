@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Palette, Sparkles } from "lucide-react";
 import ThemePreviewSimulator from "./ThemePreviewSimulator";
+import StockPhotoSelector from "./StockPhotoSelector";
 import type { StoreSettings } from "@shared/schema";
 
 const businessDescriptionSchema = z.object({
@@ -38,6 +39,8 @@ export default function ThemeGenerator() {
   const [generatedThemes, setGeneratedThemes] = useState<ThemeGenerationResult | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [previewTheme, setPreviewTheme] = useState<ThemeOption | null>(null);
+  const [showPhotoSelector, setShowPhotoSelector] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<string>("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -83,7 +86,7 @@ export default function ThemeGenerator() {
   });
 
   const applyThemeMutation = useMutation({
-    mutationFn: async (data: { themeId: string; themes: ThemeOption[] }) => {
+    mutationFn: async (data: { themeId: string; themes: ThemeOption[]; heroImage?: string }) => {
       const response = await fetch("/api/apply-theme", {
         method: "POST",
         body: JSON.stringify(data),
@@ -100,10 +103,12 @@ export default function ThemeGenerator() {
       queryClient.invalidateQueries({ queryKey: ['/api/store-settings'] });
       toast({
         title: "Theme Applied",
-        description: "Your website theme has been updated! Check the home page to see the changes."
+        description: selectedPhoto ? "Theme and hero image updated successfully!" : "Theme applied successfully! Check the home page to see the changes."
       });
       setGeneratedThemes(null);
       setSelectedTheme(null);
+      setSelectedPhoto("");
+      setShowPhotoSelector(false);
       form.reset();
     },
     onError: (error) => {
@@ -123,7 +128,8 @@ export default function ThemeGenerator() {
     if (selectedTheme && generatedThemes) {
       applyThemeMutation.mutate({
         themeId: selectedTheme,
-        themes: generatedThemes.themes
+        themes: generatedThemes.themes,
+        heroImage: selectedPhoto || undefined
       });
     }
   };
@@ -285,25 +291,42 @@ export default function ThemeGenerator() {
 
           {selectedTheme && (
             <div className="flex flex-col items-center gap-4">
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-2">
+              <div className="text-center space-y-3">
+                <p className="text-sm text-muted-foreground">
                   Ready to apply the selected theme to your website?
                 </p>
-                <Button 
-                  onClick={handleApplyTheme}
-                  disabled={applyThemeMutation.isPending}
-                  size="lg"
-                >
-                  {applyThemeMutation.isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Applying Theme...
-                    </>
-                  ) : (
-                    "Apply Selected Theme"
-                  )}
-                </Button>
+                
+                <div className="flex gap-3 justify-center">
+                  <Button 
+                    variant="outline"
+                    onClick={() => setShowPhotoSelector(!showPhotoSelector)}
+                  >
+                    {showPhotoSelector ? "Hide" : "Add"} Photos
+                  </Button>
+                  
+                  <Button 
+                    onClick={handleApplyTheme}
+                    disabled={applyThemeMutation.isPending}
+                    size="lg"
+                  >
+                    {applyThemeMutation.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Applying Theme...
+                      </>
+                    ) : (
+                      "Apply Selected Theme"
+                    )}
+                  </Button>
+                </div>
+                
+                {selectedPhoto && (
+                  <p className="text-xs text-green-600">
+                    Photo selected for hero image
+                  </p>
+                )}
               </div>
+              
               <p className="text-xs text-center text-muted-foreground max-w-md">
                 This will update your website's colors, fonts, and styling. You can always generate new themes or manually adjust colors in the admin panel.
               </p>
@@ -326,6 +349,19 @@ export default function ThemeGenerator() {
                   Close Preview
                 </Button>
               </div>
+            </div>
+          )}
+
+          {showPhotoSelector && selectedTheme && (
+            <div className="mt-8">
+              <StockPhotoSelector
+                category="agriculture"
+                theme={generatedThemes?.themes.find(t => t.id === selectedTheme)}
+                onPhotoSelect={(photoUrl, description) => {
+                  setSelectedPhoto(photoUrl);
+                }}
+                selectedPhoto={selectedPhoto}
+              />
             </div>
           )}
         </div>

@@ -342,7 +342,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Apply selected theme to store settings
   app.post('/api/apply-theme', async (req, res) => {
     try {
-      const { themeId, themes } = req.body;
+      const { themeId, themes, heroImage } = req.body;
       
       if (!themeId || !themes) {
         return res.status(400).json({ message: "Theme ID and themes are required" });
@@ -359,12 +359,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const updatedSettings = applyThemeToStoreSettings(selectedTheme, currentSettings);
+      
+      // Update hero image if provided
+      if (heroImage) {
+        updatedSettings.heroImageUrl = heroImage;
+      }
+      
       const result = await storage.updateStoreSettings(updatedSettings);
       
       res.json(result);
     } catch (error) {
       console.error("Error applying theme:", error);
       res.status(500).json({ message: "Failed to apply theme" });
+    }
+  });
+
+  // Stock photos API endpoint
+  app.get('/api/stock-photos/search', async (req, res) => {
+    try {
+      const { query } = req.query;
+      
+      if (!query || typeof query !== 'string') {
+        return res.status(400).json({ message: "Search query is required" });
+      }
+
+      const accessKey = process.env.UNSPLASH_ACCESS_KEY;
+      
+      if (!accessKey) {
+        return res.status(500).json({ message: "Unsplash API key not configured" });
+      }
+
+      const response = await fetch(
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=20&orientation=landscape`,
+        {
+          headers: {
+            'Authorization': `Client-ID ${accessKey}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Unsplash API request failed');
+      }
+
+      const data = await response.json();
+      
+      res.json({
+        photos: data.results.map((photo: any) => ({
+          id: photo.id,
+          urls: {
+            small: photo.urls.small,
+            regular: photo.urls.regular,
+            full: photo.urls.full
+          },
+          alt_description: photo.alt_description,
+          description: photo.description,
+          user: {
+            name: photo.user.name,
+            username: photo.user.username
+          }
+        }))
+      });
+    } catch (error) {
+      console.error("Error fetching stock photos:", error);
+      res.status(500).json({ message: "Failed to fetch stock photos" });
     }
   });
 
