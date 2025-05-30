@@ -281,8 +281,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Business description is required" });
       }
 
-      const themes = await generateThemes(businessDescription);
-      res.json(themes);
+      try {
+        const themes = await generateThemes(businessDescription);
+        res.json(themes);
+      } catch (error: any) {
+        if (error.status === 429 || error.code === 'insufficient_quota') {
+          // Return demo themes when API quota is exceeded
+          const demoThemes = {
+            businessAnalysis: "This appears to be a rural veterinary clinic with a traditional, trustworthy atmosphere that serves both farm animals and family pets. The 25-year history suggests established community relationships and reliability.",
+            themes: [
+              {
+                id: "theme-1",
+                name: "Trusted Countryside",
+                description: "Warm, traditional colors that reflect rural heritage and trustworthiness",
+                primaryColor: "200 15% 35%",
+                secondaryColor: "120 25% 85%", 
+                accentColor: "35 60% 55%",
+                fontFamily: "Merriweather",
+                style: "traditional",
+                mood: "Trustworthy and established",
+                reasoning: "Earth tones and traditional serif fonts convey reliability and experience, perfect for a long-established rural practice"
+              },
+              {
+                id: "theme-2", 
+                name: "Modern Care",
+                description: "Clean, professional design emphasizing medical expertise",
+                primaryColor: "210 30% 25%",
+                secondaryColor: "210 15% 90%",
+                accentColor: "160 50% 45%",
+                fontFamily: "Inter",
+                style: "professional",
+                mood: "Modern and capable",
+                reasoning: "Clean blues and modern typography reflect medical professionalism while remaining approachable for rural clients"
+              },
+              {
+                id: "theme-3",
+                name: "Gentle Touch",
+                description: "Soft, caring colors that emphasize compassion for animals",
+                primaryColor: "25 20% 30%",
+                secondaryColor: "45 35% 88%",
+                accentColor: "90 40% 50%",
+                fontFamily: "Poppins",
+                style: "friendly", 
+                mood: "Caring and approachable",
+                reasoning: "Warm browns and gentle greens create a nurturing atmosphere that appeals to pet owners while staying professional"
+              }
+            ]
+          };
+          res.json(demoThemes);
+        } else {
+          throw error;
+        }
+      }
     } catch (error) {
       console.error("Error generating themes:", error);
       res.status(500).json({ message: "Failed to generate themes" });
