@@ -1,4 +1,7 @@
-import { type User, type InsertUser, type StoreSettings, type InsertStoreSettings, type ProductCategory, type InsertProductCategory, type SpecialService, type InsertSpecialService, type FeaturedBrand, type InsertFeaturedBrand } from "@shared/schema";
+import { type SimpleUser as User, type StoreSettings, type InsertStoreSettings, type ProductCategory, type InsertProductCategory, type SpecialService, type InsertSpecialService, type FeaturedBrand, type InsertFeaturedBrand } from "@shared/schema";
+
+// Create InsertUser type based on SimpleUser
+export type InsertUser = Omit<User, 'id'>;
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
