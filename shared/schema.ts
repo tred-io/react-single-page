@@ -34,6 +34,8 @@ export interface StoreSettings {
   fontFamily: string;
   // Social URLs
   facebookUrl?: string;
+  instagramUrl?: string;
+  xUrl?: string;
   googleUrl?: string;
   yelpUrl?: string;
   // SEO
@@ -109,6 +111,8 @@ export const insertStoreSettingsSchema = z.object({
   fontFamily: z.string().min(1, "Font family is required"),
   // Social URLs
   facebookUrl: z.string().optional(),
+  instagramUrl: z.string().optional(),
+  xUrl: z.string().optional(),
   googleUrl: z.string().optional(),
   yelpUrl: z.string().optional(),
   // SEO

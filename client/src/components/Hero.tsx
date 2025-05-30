@@ -28,11 +28,11 @@ export default function Hero() {
             <p className="text-lg mb-8">Serving our community since {settings.foundedYear} with quality feed, supplies, and local expertise</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
-                onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
                 className="bg-chocolate-orange hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-300 flex items-center justify-center"
               >
                 <MapPin className="mr-2 h-5 w-5" />
-                Visit Our Store
+                View Products
               </button>
               <a 
                 href={`tel:${settings.phone.replace(/[^\d]/g, '')}`}

@@ -83,6 +83,8 @@ export default function AdminEnhanced() {
       accentColor: "#CD853F",
       fontFamily: "Inter",
       facebookUrl: "",
+      instagramUrl: "",
+      xUrl: "",
       googleUrl: "",
       yelpUrl: "",
       seoTitle: "",
@@ -958,6 +960,32 @@ export default function AdminEnhanced() {
                             <FormLabel>Facebook URL</FormLabel>
                             <FormControl>
                               <Input {...field} placeholder="https://facebook.com/yourbusiness" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="instagramUrl"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Instagram URL</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="https://instagram.com/yourbusiness" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="xUrl"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>X (Twitter) URL</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="https://x.com/yourbusiness" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>

@@ -1,5 +1,6 @@
 import { Tractor, MapPin, Phone, Mail } from "lucide-react";
-import { FaFacebook, FaGoogle, FaYelp } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaGoogle, FaYelp } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import { useQuery } from "@tanstack/react-query";
 import { type StoreSettings } from "@shared/schema";
 
@@ -144,7 +145,7 @@ export default function Footer() {
               </div>
               
               {/* Social Media Links */}
-              {(settings.facebookUrl || settings.googleUrl || settings.yelpUrl) && (
+              {(settings.facebookUrl || settings.instagramUrl || settings.xUrl || settings.googleUrl || settings.yelpUrl) && (
                 <div className="mt-6">
                   <p className="font-semibold mb-3">Follow Us:</p>
                   <div className="flex space-x-4">
@@ -157,6 +158,28 @@ export default function Footer() {
                         aria-label="Facebook"
                       >
                         <FaFacebook className="h-6 w-6" />
+                      </a>
+                    )}
+                    {settings.instagramUrl && (
+                      <a 
+                        href={settings.instagramUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-300 hover:text-chocolate-orange transition-colors"
+                        aria-label="Instagram"
+                      >
+                        <FaInstagram className="h-6 w-6" />
+                      </a>
+                    )}
+                    {settings.xUrl && (
+                      <a 
+                        href={settings.xUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-300 hover:text-chocolate-orange transition-colors"
+                        aria-label="X (Twitter)"
+                      >
+                        <FaXTwitter className="h-6 w-6" />
                       </a>
                     )}
                     {settings.googleUrl && (
