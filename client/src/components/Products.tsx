@@ -40,23 +40,7 @@ export default function Products() {
     );
   }
 
-  const services = [
-    {
-      icon: Truck,
-      title: "Free Local Delivery",
-      description: "Orders over $100 within 15 miles"
-    },
-    {
-      icon: ClipboardList,
-      title: "Custom Feed Mixing",
-      description: "Tailored nutrition for your animals"
-    },
-    {
-      icon: GraduationCap,
-      title: "Expert Consultation",
-      description: "Free advice from our experienced team"
-    }
-  ];
+
 
   return (
     <section id="products" className="py-16 bg-gray-50">
