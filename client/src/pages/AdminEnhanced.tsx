@@ -11,10 +11,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { queryClient, apiRequest } from "@/lib/queryClient";
-import { insertStoreSettingsSchema, type InsertStoreSettings, type StoreSettings } from "@shared/schema";
+import { queryClient } from "@/lib/queryClient";
+import { insertStoreSettingsSchema, insertProductCategorySchema, type InsertStoreSettings, type StoreSettings, type ProductCategory, type InsertProductCategory } from "@shared/schema";
 import LogoUpload from "@/components/LogoUpload";
-import { Copy, Palette } from "lucide-react";
+import FileUpload from "@/components/FileUpload";
+import { Copy, Palette, Plus, Edit2, Trash2 } from "lucide-react";
 
 const fontOptions = [
   { value: "Inter", label: "Inter (Modern Sans-serif)" },
@@ -30,9 +31,22 @@ const fontOptions = [
 export default function AdminEnhanced() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("basic");
+  const [editingCategory, setEditingCategory] = useState<ProductCategory | null>(null);
+  const [newCategory, setNewCategory] = useState<InsertProductCategory>({
+    title: "",
+    description: "",
+    imageUrl: "",
+    iconName: "",
+    items: [],
+    displayOrder: 0
+  });
 
   const { data: storeSettings, isLoading } = useQuery<StoreSettings>({
     queryKey: ["/api/store-settings"],
+  });
+
+  const { data: categories = [] } = useQuery<ProductCategory[]>({
+    queryKey: ["/api/product-categories"],
   });
 
   const form = useForm<InsertStoreSettings>({
@@ -95,6 +109,70 @@ export default function AdminEnhanced() {
     },
   });
 
+  const updateCategoryMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: InsertProductCategory }) => {
+      const response = await fetch(`/api/product-categories/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error("Failed to update category");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/product-categories"] });
+      setEditingCategory(null);
+      toast({
+        title: "Category updated",
+        description: "Product category has been updated successfully.",
+      });
+    },
+  });
+
+  const createCategoryMutation = useMutation({
+    mutationFn: async (data: InsertProductCategory) => {
+      const response = await fetch("/api/product-categories", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error("Failed to create category");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/product-categories"] });
+      setNewCategory({
+        title: "",
+        description: "",
+        imageUrl: "",
+        iconName: "",
+        items: [],
+        displayOrder: 0
+      });
+      toast({
+        title: "Category created",
+        description: "New product category has been created successfully.",
+      });
+    },
+  });
+
+  const deleteCategoryMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/product-categories/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Failed to delete category");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/product-categories"] });
+      toast({
+        title: "Category deleted",
+        description: "Product category has been deleted successfully.",
+      });
+    },
+  });
+
   const onSubmit = (data: InsertStoreSettings) => {
     updateSettingsMutation.mutate(data);
   };
@@ -135,10 +213,11 @@ export default function AdminEnhanced() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <TabsList className="grid w-full grid-cols-6">
+              <TabsList className="grid w-full grid-cols-7">
                 <TabsTrigger value="basic">Basic Info</TabsTrigger>
                 <TabsTrigger value="hours">Hours</TabsTrigger>
                 <TabsTrigger value="about">About</TabsTrigger>
+                <TabsTrigger value="categories">Categories</TabsTrigger>
                 <TabsTrigger value="branding">Branding</TabsTrigger>
                 <TabsTrigger value="social">Social</TabsTrigger>
                 <TabsTrigger value="seo">SEO</TabsTrigger>
@@ -410,6 +489,188 @@ export default function AdminEnhanced() {
                         </FormItem>
                       )}
                     />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="categories" className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Product Categories</CardTitle>
+                    <CardDescription>Manage your product categories and their details</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* Existing Categories */}
+                    <div className="space-y-4">
+                      <h4 className="font-medium text-gray-900">Current Categories</h4>
+                      {categories.map((category) => (
+                        <div key={category.id} className="border rounded-lg p-4">
+                          {editingCategory?.id === category.id ? (
+                            <div className="space-y-4">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                  <Label htmlFor={`edit-title-${category.id}`}>Title</Label>
+                                  <Input
+                                    id={`edit-title-${category.id}`}
+                                    value={editingCategory.title}
+                                    onChange={(e) => setEditingCategory({ ...editingCategory, title: e.target.value })}
+                                  />
+                                </div>
+                                <div>
+                                  <Label htmlFor={`edit-icon-${category.id}`}>Icon Name</Label>
+                                  <Input
+                                    id={`edit-icon-${category.id}`}
+                                    value={editingCategory.iconName}
+                                    onChange={(e) => setEditingCategory({ ...editingCategory, iconName: e.target.value })}
+                                    placeholder="Heart, Wrench, Beef, etc."
+                                  />
+                                </div>
+                              </div>
+                              <div>
+                                <Label htmlFor={`edit-description-${category.id}`}>Description</Label>
+                                <Textarea
+                                  id={`edit-description-${category.id}`}
+                                  value={editingCategory.description}
+                                  onChange={(e) => setEditingCategory({ ...editingCategory, description: e.target.value })}
+                                  className="min-h-[80px]"
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor={`edit-items-${category.id}`}>Items (one per line)</Label>
+                                <Textarea
+                                  id={`edit-items-${category.id}`}
+                                  value={editingCategory.items.join('\n')}
+                                  onChange={(e) => setEditingCategory({ 
+                                    ...editingCategory, 
+                                    items: e.target.value.split('\n').filter(item => item.trim()) 
+                                  })}
+                                  className="min-h-[100px]"
+                                />
+                              </div>
+                              <FileUpload
+                                onUpload={(url) => setEditingCategory({ ...editingCategory, imageUrl: url })}
+                                currentUrl={editingCategory.imageUrl}
+                                label="Category Image"
+                                accept="image/*"
+                              />
+                              <div className="flex gap-2">
+                                <Button
+                                  type="button"
+                                  onClick={() => updateCategoryMutation.mutate({ id: category.id, data: editingCategory })}
+                                  disabled={updateCategoryMutation.isPending}
+                                >
+                                  {updateCategoryMutation.isPending ? "Saving..." : "Save"}
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  onClick={() => setEditingCategory(null)}
+                                >
+                                  Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <h5 className="font-medium">{category.title}</h5>
+                                <p className="text-sm text-gray-600 mt-1">{category.description}</p>
+                                <p className="text-xs text-gray-500 mt-2">
+                                  {category.items.length} items • Icon: {category.iconName}
+                                </p>
+                              </div>
+                              <div className="flex gap-2 ml-4">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setEditingCategory(category)}
+                                >
+                                  <Edit2 className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => deleteCategoryMutation.mutate(category.id)}
+                                  disabled={deleteCategoryMutation.isPending}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Add New Category */}
+                    <div className="border-t pt-6">
+                      <h4 className="font-medium text-gray-900 mb-4">Add New Category</h4>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="new-title">Title</Label>
+                            <Input
+                              id="new-title"
+                              value={newCategory.title}
+                              onChange={(e) => setNewCategory({ ...newCategory, title: e.target.value })}
+                              placeholder="Category name"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="new-icon">Icon Name</Label>
+                            <Input
+                              id="new-icon"
+                              value={newCategory.iconName}
+                              onChange={(e) => setNewCategory({ ...newCategory, iconName: e.target.value })}
+                              placeholder="Heart, Wrench, Beef, etc."
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <Label htmlFor="new-description">Description</Label>
+                          <Textarea
+                            id="new-description"
+                            value={newCategory.description}
+                            onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
+                            placeholder="Describe this category..."
+                            className="min-h-[80px]"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="new-items">Items (one per line)</Label>
+                          <Textarea
+                            id="new-items"
+                            value={newCategory.items.join('\n')}
+                            onChange={(e) => setNewCategory({ 
+                              ...newCategory, 
+                              items: e.target.value.split('\n').filter(item => item.trim()) 
+                            })}
+                            placeholder="Item 1&#10;Item 2&#10;Item 3"
+                            className="min-h-[100px]"
+                          />
+                        </div>
+                        <FileUpload
+                          onUpload={(url) => setNewCategory({ ...newCategory, imageUrl: url })}
+                          currentUrl={newCategory.imageUrl}
+                          label="Category Image"
+                          accept="image/*"
+                        />
+                        <Button
+                          type="button"
+                          onClick={() => createCategoryMutation.mutate({
+                            ...newCategory,
+                            displayOrder: categories.length + 1
+                          })}
+                          disabled={createCategoryMutation.isPending}
+                          className="bg-chocolate-brown hover:bg-chocolate-brown/90"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          {createCategoryMutation.isPending ? "Adding..." : "Add Category"}
+                        </Button>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
