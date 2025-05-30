@@ -1,0 +1,14 @@
+{
+  "templateVersion": "1.0.0",
+  "clients": [],
+  "deploymentStats": {
+    "totalClients": 0,
+    "lastUpdated": null,
+    "platforms": {
+      "vercel": 0,
+      "netlify": 0,
+      "railway": 0,
+      "other": 0
+    }
+  }
+}
