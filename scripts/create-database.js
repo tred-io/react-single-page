@@ -5,8 +5,8 @@
  * Supports Neon, Supabase, and PlanetScale
  */
 
-const https = require('https');
-const { execSync } = require('child_process');
+import https from 'https';
+import { execSync } from 'child_process';
 
 class DatabaseManager {
   constructor(provider, credentials) {

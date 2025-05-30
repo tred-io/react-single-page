@@ -76,19 +76,25 @@ jobs:
       - name: Provision database automatically
         env:
           NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_ORG_ID: ${{ secrets.SUPABASE_ORG_ID }}
-          PLANETSCALE_SERVICE_TOKEN: ${{ secrets.PLANETSCALE_SERVICE_TOKEN }}
-          PLANETSCALE_SERVICE_TOKEN_ID: ${{ secrets.PLANETSCALE_SERVICE_TOKEN_ID }}
         run: |
           cd deployments/${{ inputs.client_name }}
           
-          # Create database using automation script
-          node ../../scripts/create-database.js ${{ inputs.database_provider }} ${{ inputs.client_name }}-website
+          # Create Neon database directly using API
+          DATABASE_RESPONSE=$(curl -s -X POST 'https://console.neon.tech/api/v2/projects' \
+            -H "Authorization: Bearer $NEON_API_KEY" \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "project": {
+                "name": "${{ inputs.client_name }}-website",
+                "region_id": "aws-us-east-1"
+              }
+            }')
+          
+          # Extract connection URI
+          DATABASE_URL=$(echo "$DATABASE_RESPONSE" | grep -o '"connection_uri":"[^"]*' | cut -d'"' -f4 | head -1)
           
           # Configure environment with database URL
-          if [ -n "$DATABASE_URL" ]; then
-            cat > .env << EOF
+          cat > .env << EOF
           DATABASE_URL=$DATABASE_URL
           CLIENT_CONFIG_PATH=./client-config.json
           TEMPLATE_PATH=../../..
@@ -96,7 +102,6 @@ jobs:
           NODE_ENV=production
           VERCEL_URL=${{ inputs.domain }}
           EOF
-          fi
 
       - name: Initialize database schema
         run: |
