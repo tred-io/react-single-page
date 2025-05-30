@@ -1,7 +1,17 @@
 import { z } from "zod";
+import {
+  pgTable,
+  text,
+  varchar,
+  timestamp,
+  jsonb,
+  index,
+  integer,
+  serial,
+} from "drizzle-orm/pg-core";
 
 // Simple TypeScript types for business website template
-export interface User {
+export interface SimpleUser {
   id: number;
   username: string;
   password: string;
@@ -166,3 +176,98 @@ export type InsertSpecialService = z.infer<typeof insertSpecialServiceSchema>;
 export type InsertFeaturedBrand = z.infer<typeof insertFeaturedBrandSchema>;
 export type InsertCustomPage = z.infer<typeof insertCustomPageSchema>;
 export type AdminLogin = z.infer<typeof adminLoginSchema>;
+
+// Database tables
+export const storeSettings = pgTable("store_settings", {
+  id: serial("id").primaryKey(),
+  storeName: varchar("store_name", { length: 255 }).notNull(),
+  tagline: text("tagline").notNull(),
+  address: text("address").notNull(),
+  phone: varchar("phone", { length: 50 }).notNull(),
+  email: varchar("email", { length: 255 }),
+  mondayHours: varchar("monday_hours", { length: 100 }).notNull(),
+  tuesdayHours: varchar("tuesday_hours", { length: 100 }).notNull(),
+  wednesdayHours: varchar("wednesday_hours", { length: 100 }).notNull(),
+  thursdayHours: varchar("thursday_hours", { length: 100 }).notNull(),
+  fridayHours: varchar("friday_hours", { length: 100 }).notNull(),
+  saturdayHours: varchar("saturday_hours", { length: 100 }).notNull(),
+  sundayHours: varchar("sunday_hours", { length: 100 }).notNull(),
+  aboutTitle: varchar("about_title", { length: 255 }).notNull(),
+  aboutDescription: text("about_description").notNull(),
+  aboutStory: text("about_story").notNull(),
+  foundedYear: varchar("founded_year", { length: 10 }).notNull(),
+  logoUrl: text("logo_url"),
+  faviconUrl: text("favicon_url"),
+  heroImageUrl: text("hero_image_url"),
+  aboutImageUrl: text("about_image_url"),
+  primaryColor: varchar("primary_color", { length: 20 }).notNull(),
+  secondaryColor: varchar("secondary_color", { length: 20 }).notNull(),
+  accentColor: varchar("accent_color", { length: 20 }).notNull(),
+  fontFamily: varchar("font_family", { length: 100 }).notNull(),
+  facebookUrl: text("facebook_url"),
+  instagramUrl: text("instagram_url"),
+  xUrl: text("x_url"),
+  googleUrl: text("google_url"),
+  yelpUrl: text("yelp_url"),
+  seoTitle: varchar("seo_title", { length: 255 }).notNull(),
+  seoDescription: text("seo_description").notNull(),
+  seoKeywords: text("seo_keywords").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const productCategories = pgTable("product_categories", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description").notNull(),
+  imageUrl: text("image_url").notNull(),
+  iconName: varchar("icon_name", { length: 100 }).notNull(),
+  items: jsonb("items").$type<string[]>().notNull(),
+  displayOrder: integer("display_order").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const specialServices = pgTable("special_services", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description").notNull(),
+  iconName: varchar("icon_name", { length: 100 }).notNull(),
+  displayOrder: integer("display_order").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const featuredBrands = pgTable("featured_brands", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  logoUrl: text("logo_url").notNull(),
+  displayOrder: integer("display_order").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Session storage table for authentication
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
+
+// User storage table for authentication
+export const users = pgTable("users", {
+  id: varchar("id").primaryKey().notNull(),
+  email: varchar("email").unique(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  profileImageUrl: varchar("profile_image_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type UpsertUser = typeof users.$inferInsert;
+export type User = typeof users.$inferSelect;
