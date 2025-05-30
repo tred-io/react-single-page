@@ -45,6 +45,7 @@
     "@types/memoizee": "^0.4.12",
     "@types/multer": "^1.4.12",
     "@vitejs/plugin-react-swc": "^3.10.0",
+    "caniuse-lite": "^1.0.30001720",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
