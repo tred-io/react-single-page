@@ -15,6 +15,7 @@ import { queryClient } from "@/lib/queryClient";
 import { insertStoreSettingsSchema, insertProductCategorySchema, insertSpecialServiceSchema, insertFeaturedBrandSchema, type InsertStoreSettings, type StoreSettings, type ProductCategory, type InsertProductCategory, type SpecialService, type InsertSpecialService, type FeaturedBrand, type InsertFeaturedBrand } from "@shared/schema";
 import LogoUpload from "@/components/LogoUpload";
 import FileUpload from "@/components/FileUpload";
+import ThemeGenerator from "@/components/ThemeGenerator";
 import { Copy, Palette, Plus, Edit2, Trash2 } from "lucide-react";
 
 const fontOptions = [
@@ -225,13 +226,14 @@ export default function AdminEnhanced() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <TabsList className="grid w-full grid-cols-8 text-xs">
+              <TabsList className="grid w-full grid-cols-9 text-xs">
                 <TabsTrigger value="basic">Basic</TabsTrigger>
                 <TabsTrigger value="hours">Hours</TabsTrigger>
                 <TabsTrigger value="about">About</TabsTrigger>
                 <TabsTrigger value="categories">Categories</TabsTrigger>
                 <TabsTrigger value="services">Services</TabsTrigger>
                 <TabsTrigger value="brands">Brands</TabsTrigger>
+                <TabsTrigger value="themes">Themes</TabsTrigger>
                 <TabsTrigger value="branding">Design</TabsTrigger>
                 <TabsTrigger value="social">Social/SEO</TabsTrigger>
               </TabsList>
@@ -979,6 +981,10 @@ export default function AdminEnhanced() {
                     </div>
                   </CardContent>
                 </Card>
+              </TabsContent>
+
+              <TabsContent value="themes" className="space-y-6">
+                <ThemeGenerator />
               </TabsContent>
 
               <TabsContent value="social" className="space-y-6">
