@@ -700,31 +700,52 @@ export default function AdminEnhanced() {
                   <CardContent className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-4">
-                        <h4 className="font-medium text-gray-900">Logo & Icons</h4>
-                        <LogoUpload
-                          currentUrl={form.watch("logoUrl")}
-                          onUpload={(url) => form.setValue("logoUrl", url)}
-                          label="Logo"
-                        />
-                        <LogoUpload
-                          currentUrl={form.watch("faviconUrl")}
-                          onUpload={(url) => form.setValue("faviconUrl", url)}
-                          label="Favicon"
-                        />
-                        <FileUpload
-                          currentUrl={form.watch("heroImageUrl")}
-                          onUpload={(url) => form.setValue("heroImageUrl", url)}
-                          label="Hero Background Image"
-                          accept=".jpg,.jpeg,.png,.webp"
-                          maxSize={5}
-                        />
-                        <FileUpload
-                          currentUrl={form.watch("aboutImageUrl")}
-                          onUpload={(url) => form.setValue("aboutImageUrl", url)}
-                          label="About Section Image"
-                          accept=".jpg,.jpeg,.png,.webp"
-                          maxSize={5}
-                        />
+                        <h4 className="font-medium text-gray-900">Images & Branding</h4>
+                        <div className="space-y-4">
+                          <div>
+                            <FileUpload
+                              currentUrl={form.watch("logoUrl")}
+                              onUpload={(url) => form.setValue("logoUrl", url)}
+                              label="Business Logo"
+                              accept=".jpg,.jpeg,.png,.svg,.webp"
+                              maxSize={2}
+                            />
+                            <p className="text-xs text-gray-500 mt-1">Recommended: 200x80px, appears in navigation</p>
+                          </div>
+                          
+                          <div>
+                            <FileUpload
+                              currentUrl={form.watch("faviconUrl")}
+                              onUpload={(url) => form.setValue("faviconUrl", url)}
+                              label="Favicon"
+                              accept=".ico,.png,.svg"
+                              maxSize={1}
+                            />
+                            <p className="text-xs text-gray-500 mt-1">Recommended: 32x32px or 16x16px, appears in browser tab</p>
+                          </div>
+                          
+                          <div>
+                            <FileUpload
+                              currentUrl={form.watch("heroImageUrl")}
+                              onUpload={(url) => form.setValue("heroImageUrl", url)}
+                              label="Hero Background Image"
+                              accept=".jpg,.jpeg,.png,.webp"
+                              maxSize={5}
+                            />
+                            <p className="text-xs text-gray-500 mt-1">Recommended: 1920x600px, appears behind main hero text</p>
+                          </div>
+                          
+                          <div>
+                            <FileUpload
+                              currentUrl={form.watch("aboutImageUrl")}
+                              onUpload={(url) => form.setValue("aboutImageUrl", url)}
+                              label="About Section Image"
+                              accept=".jpg,.jpeg,.png,.webp"
+                              maxSize={5}
+                            />
+                            <p className="text-xs text-gray-500 mt-1">Recommended: 600x400px, appears in about section</p>
+                          </div>
+                        </div>
                       </div>
                       
                       <div className="space-y-4">
