@@ -3,6 +3,7 @@ import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertStoreSettingsSchema, insertProductCategorySchema } from "@shared/schema";
+import { healthCheckHandler, quickHealthCheck } from "./health";
 import { z } from "zod";
 import multer from "multer";
 import path from "path";
@@ -266,6 +267,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to delete featured brand" });
     }
   });
+
+  // Health check endpoints
+  app.get("/api/health", healthCheckHandler);
+  app.get("/api/health/quick", quickHealthCheck);
 
   const httpServer = createServer(app);
   return httpServer;
