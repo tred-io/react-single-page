@@ -29,15 +29,15 @@ export default function Navigation() {
   const isAdmin = location === "/admin";
 
   return (
-    <nav className={`bg-saddle-brown shadow-lg sticky top-0 z-50 transition-all duration-300 ${
+    <nav className={`bg-primary shadow-lg sticky top-0 z-50 transition-all duration-300 ${
       isScrolled ? "py-2" : "py-4"
     }`}>
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center">
           <Link href="/">
             <div className="flex items-center space-x-3 cursor-pointer">
-              <Tractor className="text-warm-beige text-2xl" />
-              <h1 className="text-warm-beige font-serif text-xl font-bold">Brown Feed Store</h1>
+              <Tractor className="text-primary-foreground text-2xl" />
+              <h1 className="text-primary-foreground font-serif text-xl font-bold">Brown Feed Store</h1>
             </div>
           </Link>
           
