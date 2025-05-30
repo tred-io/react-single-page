@@ -89,14 +89,14 @@ export default function Hero() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-                className="bg-chocolate-orange hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-300 flex items-center justify-center"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-lg font-semibold transition-colors duration-300 flex items-center justify-center"
               >
                 <MapPin className="mr-2 h-5 w-5" />
                 View Products
               </button>
               <a 
                 href={`tel:${settings.phone.replace(/[^\d]/g, '')}`}
-                className="bg-forest-green hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-300 flex items-center justify-center"
+                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground px-8 py-3 rounded-lg font-semibold transition-colors duration-300 flex items-center justify-center"
               >
                 <Phone className="mr-2 h-5 w-5" />
                 Call {settings.phone}
@@ -107,7 +107,7 @@ export default function Hero() {
       </div>
       
       {/* Quick Info Bar */}
-      <div className="bg-forest-green text-white py-3">
+      <div className="bg-secondary text-secondary-foreground py-3">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
             <div className="flex items-center justify-center space-x-2">
