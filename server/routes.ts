@@ -44,6 +44,9 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health check endpoints (must be first to avoid conflicts)
+  app.get("/api/health", healthCheckHandler);
+  app.get("/api/health/quick", quickHealthCheck);
   // Serve uploaded files statically
   app.use('/uploads', express.static(uploadDir));
   
@@ -267,10 +270,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to delete featured brand" });
     }
   });
-
-  // Health check endpoints
-  app.get("/api/health", healthCheckHandler);
-  app.get("/api/health/quick", quickHealthCheck);
 
   const httpServer = createServer(app);
   return httpServer;
