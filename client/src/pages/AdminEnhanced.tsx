@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
-import { insertStoreSettingsSchema, insertProductCategorySchema, type InsertStoreSettings, type StoreSettings, type ProductCategory, type InsertProductCategory } from "@shared/schema";
+import { insertStoreSettingsSchema, insertProductCategorySchema, insertSpecialServiceSchema, insertFeaturedBrandSchema, type InsertStoreSettings, type StoreSettings, type ProductCategory, type InsertProductCategory, type SpecialService, type InsertSpecialService, type FeaturedBrand, type InsertFeaturedBrand } from "@shared/schema";
 import LogoUpload from "@/components/LogoUpload";
 import FileUpload from "@/components/FileUpload";
 import { Copy, Palette, Plus, Edit2, Trash2 } from "lucide-react";

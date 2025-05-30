@@ -115,6 +115,102 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Special Services routes
+  app.get("/api/special-services", async (req, res) => {
+    try {
+      const services = await storage.getSpecialServices();
+      res.json(services);
+    } catch (error) {
+      console.error("Error fetching special services:", error);
+      res.status(500).json({ message: "Failed to fetch special services" });
+    }
+  });
+
+  app.post("/api/special-services", async (req, res) => {
+    try {
+      const service = await storage.createSpecialService(req.body);
+      res.json({ success: true, data: service });
+    } catch (error) {
+      console.error("Error creating special service:", error);
+      res.status(500).json({ message: "Failed to create special service" });
+    }
+  });
+
+  app.put("/api/special-services/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const service = await storage.updateSpecialService(id, req.body);
+      res.json({ success: true, data: service });
+    } catch (error) {
+      console.error("Error updating special service:", error);
+      res.status(500).json({ message: "Failed to update special service" });
+    }
+  });
+
+  app.delete("/api/special-services/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteSpecialService(id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Service not found" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting special service:", error);
+      res.status(500).json({ message: "Failed to delete special service" });
+    }
+  });
+
+  // Featured Brands routes
+  app.get("/api/featured-brands", async (req, res) => {
+    try {
+      const brands = await storage.getFeaturedBrands();
+      res.json(brands);
+    } catch (error) {
+      console.error("Error fetching featured brands:", error);
+      res.status(500).json({ message: "Failed to fetch featured brands" });
+    }
+  });
+
+  app.post("/api/featured-brands", async (req, res) => {
+    try {
+      const brand = await storage.createFeaturedBrand(req.body);
+      res.json({ success: true, data: brand });
+    } catch (error) {
+      console.error("Error creating featured brand:", error);
+      res.status(500).json({ message: "Failed to create featured brand" });
+    }
+  });
+
+  app.put("/api/featured-brands/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const brand = await storage.updateFeaturedBrand(id, req.body);
+      res.json({ success: true, data: brand });
+    } catch (error) {
+      console.error("Error updating featured brand:", error);
+      res.status(500).json({ message: "Failed to update featured brand" });
+    }
+  });
+
+  app.delete("/api/featured-brands/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteFeaturedBrand(id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Brand not found" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting featured brand:", error);
+      res.status(500).json({ message: "Failed to delete featured brand" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
