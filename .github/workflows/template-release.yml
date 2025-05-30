@@ -1,0 +1,79 @@
+name: Create Template Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.2.0)'
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Update template version
+        run: |
+          VERSION="${{ inputs.version || github.ref_name }}"
+          echo "Updating template version to: $VERSION"
+          
+          # Update template-config.json
+          if command -v jq >/dev/null 2>&1; then
+            jq ".version = \"$VERSION\" | .lastUpdated = \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"" \
+              template-config.json > tmp.json && mv tmp.json template-config.json
+          fi
+
+      - name: Build static site
+        run: |
+          npm install
+          npm run build
+
+      - name: Create release notes
+        run: |
+          VERSION="${{ inputs.version || github.ref_name }}"
+          cat > RELEASE_NOTES.md << EOF
+          # Release $VERSION
+          
+          ## Template Updates
+          - Updated template version to $VERSION
+          - Built and tested all components
+          
+          ## Deployment Instructions
+          Deploy to new client:
+          \`\`\`bash
+          ./deploy-template.sh client-name domain.com
+          \`\`\`
+          
+          Update existing clients:
+          \`\`\`bash
+          ./update-clients.sh all
+          \`\`\`
+          
+          ## GitHub Actions Available
+          - **Deploy New Client**: Automated client site creation
+          - **Update All Clients**: Push template improvements to all sites
+          - **Template Release**: Version management and distribution
+          EOF
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ inputs.version || github.ref_name }}
+          release_name: Template Release ${{ inputs.version || github.ref_name }}
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: false

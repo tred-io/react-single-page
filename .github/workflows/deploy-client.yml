@@ -1,0 +1,92 @@
+name: Deploy New Client Site
+
+on:
+  workflow_dispatch:
+    inputs:
+      client_name:
+        description: 'Client name (e.g., brown-feed)'
+        required: true
+        type: string
+      domain:
+        description: 'Client domain (e.g., brownfeedstore.com)'
+        required: true
+        type: string
+      github_org:
+        description: 'GitHub organization/username'
+        required: true
+        type: string
+      vercel_deploy:
+        description: 'Auto-deploy to Vercel'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout template repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Create client deployment
+        run: |
+          chmod +x deploy-template.sh
+          ./deploy-template.sh ${{ inputs.client_name }} ${{ inputs.domain }}
+
+      - name: Create GitHub repository for client
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          
+          # Create repository using GitHub CLI
+          gh repo create ${{ inputs.github_org }}/${{ inputs.client_name }}-website \
+            --public \
+            --description "Website for ${{ inputs.client_name }} - ${{ inputs.domain }}" \
+            --clone=false
+
+          # Add remote and push
+          git remote add origin https://github.com/${{ inputs.github_org }}/${{ inputs.client_name }}-website.git
+          git push -u origin main
+
+      - name: Deploy to Vercel
+        if: ${{ inputs.vercel_deploy }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          
+          # Install Vercel CLI
+          npm install -g vercel@latest
+          
+          # Deploy to Vercel
+          vercel --token $VERCEL_TOKEN \
+            --scope $VERCEL_ORG_ID \
+            --prod \
+            --yes \
+            --env DATABASE_URL="postgresql://placeholder" \
+            --env SESSION_SECRET="$(openssl rand -base64 32)"
+
+      - name: Create deployment summary
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          echo "## 🚀 Client Deployment Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Client:** ${{ inputs.client_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Domain:** ${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Repository:** https://github.com/${{ inputs.github_org }}/${{ inputs.client_name }}-website" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Set up database at [neon.tech](https://neon.tech)" >> $GITHUB_STEP_SUMMARY
+          echo "2. Update DATABASE_URL in Vercel environment variables" >> $GITHUB_STEP_SUMMARY
+          echo "3. Configure custom domain: ${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
+          echo "4. Access admin panel at: https://${{ inputs.domain }}/admin" >> $GITHUB_STEP_SUMMARY

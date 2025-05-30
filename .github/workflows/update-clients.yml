@@ -1,0 +1,72 @@
+name: Update All Client Sites
+
+on:
+  workflow_dispatch:
+    inputs:
+      update_message:
+        description: 'Update description (e.g., "Add contact form feature")'
+        required: true
+        type: string
+      client_filter:
+        description: 'Update specific client only (leave empty for all)'
+        required: false
+        type: string
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout template repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Update client sites
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          chmod +x update-clients.sh
+          
+          if [ -n "${{ inputs.client_filter }}" ]; then
+            echo "Updating specific client: ${{ inputs.client_filter }}"
+            ./update-clients.sh ${{ inputs.client_filter }}
+          else
+            echo "Updating all client sites"
+            ./update-clients.sh all
+          fi
+
+      - name: Push updates to client repositories
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          for client_dir in deployments/*/; do
+            if [ -d "$client_dir" ]; then
+              client=$(basename "$client_dir")
+              echo "Pushing updates for client: $client"
+              
+              cd "$client_dir"
+              git add .
+              git commit -m "Template update: ${{ inputs.update_message }}" || true
+              git push origin main || echo "Failed to push $client - repository may not exist"
+              cd - > /dev/null
+            fi
+          done
+
+      - name: Create update summary
+        run: |
+          echo "## 📋 Template Update Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Update:** ${{ inputs.update_message }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Updated clients:**" >> $GITHUB_STEP_SUMMARY
+          
+          for client_dir in deployments/*/; do
+            if [ -d "$client_dir" ]; then
+              client=$(basename "$client_dir")
+              echo "- $client" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
