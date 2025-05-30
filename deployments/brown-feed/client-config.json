@@ -1,0 +1,22 @@
+{
+  "clientName": "brown-feed",
+  "domain": "brownfeedstore.com",
+  "deployedAt": "2025-05-30T06:03:14Z",
+  "templateVersion": "1.0.0",
+  "customizations": {
+    "database": {
+      "provider": "neon",
+      "connectionString": "TO_BE_SET"
+    },
+    "deployment": {
+      "platform": "vercel",
+      "customDomain": "brownfeedstore.com"
+    },
+    "branding": {
+      "primaryColor": "#8B4513",
+      "secondaryColor": "#2F4F4F",
+      "accentColor": "#CD853F",
+      "fontFamily": "Inter"
+    }
+  }
+}
