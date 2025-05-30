@@ -36,10 +36,8 @@ update_client() {
     
     # Copy updated template files
     echo "📋 Copying template updates..."
-    rsync -av --exclude='node_modules' --exclude='dist' --exclude='.git' \
-        --exclude='deployments' --exclude='uploads' \
-        --exclude='client-config.json' --exclude='.env' \
-        ../../ ./
+    cp -r ../../* ./ 2>/dev/null || true
+    rm -rf node_modules dist .git deployments uploads 2>/dev/null || true
     
     # Restore client customizations
     echo "🔧 Restoring client customizations..."

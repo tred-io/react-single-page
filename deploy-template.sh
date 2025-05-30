@@ -23,10 +23,9 @@ mkdir -p "$CLIENT_DIR"
 
 # Copy template files (excluding node_modules and build artifacts)
 echo "📁 Copying template files..."
-mkdir -p "$CLIENT_DIR"
-cp -r . "$CLIENT_DIR/" 2>/dev/null || true
-rm -rf "$CLIENT_DIR/node_modules" "$CLIENT_DIR/dist" "$CLIENT_DIR/.git" \
-       "$CLIENT_DIR/deployments" "$CLIENT_DIR/uploads" 2>/dev/null || true
+find . -type f -not -path "./node_modules/*" -not -path "./dist/*" \
+    -not -path "./.git/*" -not -path "./deployments/*" -not -path "./uploads/*" \
+    -exec cp --parents {} "$CLIENT_DIR/" \;
 
 # Create client-specific configuration
 echo "⚙️  Creating client configuration..."
