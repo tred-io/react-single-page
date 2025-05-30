@@ -134,6 +134,8 @@ EOF
 
 # Initialize minimal git repository
 cd "$CLIENT_DIR"
+git config --global user.email "deploy@template.com"
+git config --global user.name "Template Deploy"
 git init
 git add .
 git commit -m "Initial client configuration for $CLIENT_NAME"

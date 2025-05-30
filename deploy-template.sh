@@ -103,6 +103,8 @@ EOF
 
 # Initialize git repository for client
 cd "$CLIENT_DIR"
+git config --global user.email "deploy@template.com"
+git config --global user.name "Template Deploy"
 git init
 git add .
 git commit -m "Initial deployment for $CLIENT_NAME - Template v1.0.0"
