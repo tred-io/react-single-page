@@ -4,6 +4,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertStoreSettingsSchema, insertProductCategorySchema } from "@shared/schema";
 import { healthCheckHandler, quickHealthCheck } from "./health";
+import { generateThemes, applyThemeToStoreSettings } from "./theme-generator";
 import { z } from "zod";
 import multer from "multer";
 import path from "path";
@@ -268,6 +269,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting featured brand:", error);
       res.status(500).json({ message: "Failed to delete featured brand" });
+    }
+  });
+
+  // Theme generation endpoint
+  app.post('/api/generate-themes', async (req, res) => {
+    try {
+      const { businessDescription } = req.body;
+      
+      if (!businessDescription || typeof businessDescription !== 'string') {
+        return res.status(400).json({ message: "Business description is required" });
+      }
+
+      const themes = await generateThemes(businessDescription);
+      res.json(themes);
+    } catch (error) {
+      console.error("Error generating themes:", error);
+      res.status(500).json({ message: "Failed to generate themes" });
+    }
+  });
+
+  // Apply selected theme to store settings
+  app.post('/api/apply-theme', async (req, res) => {
+    try {
+      const { themeId, themes } = req.body;
+      
+      if (!themeId || !themes) {
+        return res.status(400).json({ message: "Theme ID and themes are required" });
+      }
+
+      const selectedTheme = themes.find((t: any) => t.id === themeId);
+      if (!selectedTheme) {
+        return res.status(400).json({ message: "Theme not found" });
+      }
+
+      const currentSettings = await storage.getStoreSettings();
+      if (!currentSettings) {
+        return res.status(404).json({ message: "Store settings not found" });
+      }
+
+      const updatedSettings = applyThemeToStoreSettings(selectedTheme, currentSettings);
+      const result = await storage.updateStoreSettings(updatedSettings);
+      
+      res.json(result);
+    } catch (error) {
+      console.error("Error applying theme:", error);
+      res.status(500).json({ message: "Failed to apply theme" });
     }
   });
 
