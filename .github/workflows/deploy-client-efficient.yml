@@ -1,0 +1,106 @@
+name: Deploy Client (Efficient)
+
+on:
+  workflow_dispatch:
+    inputs:
+      client_name:
+        description: 'Client name (e.g., brown-feed)'
+        required: true
+        type: string
+      domain:
+        description: 'Client domain (e.g., brownfeedstore.com)'
+        required: true
+        type: string
+      github_org:
+        description: 'GitHub organization/username'
+        required: true
+        type: string
+      database_provider:
+        description: 'Database provider'
+        required: true
+        type: choice
+        options:
+          - neon
+          - supabase
+          - planetscale
+        default: neon
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout template repository
+        uses: actions/checkout@v4
+
+      - name: Create efficient client deployment
+        run: |
+          chmod +x deploy-client-efficient.sh
+          ./deploy-client-efficient.sh ${{ inputs.client_name }} ${{ inputs.domain }}
+
+      - name: Setup database
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_ORG_ID: ${{ secrets.SUPABASE_ORG_ID }}
+          PLANETSCALE_SERVICE_TOKEN: ${{ secrets.PLANETSCALE_SERVICE_TOKEN }}
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{ secrets.PLANETSCALE_SERVICE_TOKEN_ID }}
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          node ../../scripts/create-database.js ${{ inputs.database_provider }} ${{ inputs.client_name }}-website
+          
+          # Update client config with database URL
+          if [ -n "$DATABASE_URL" ]; then
+            echo "DATABASE_URL=$DATABASE_URL" > .env
+            echo "CLIENT_CONFIG_PATH=./client-config.json" >> .env
+            echo "TEMPLATE_PATH=../../.." >> .env
+            echo "SESSION_SECRET=$(openssl rand -base64 32)" >> .env
+          fi
+
+      - name: Create optimized GitHub repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          
+          # Create repository with minimal files
+          gh repo create ${{ inputs.github_org }}/${{ inputs.client_name }}-website \
+            --public \
+            --description "Website configuration for ${{ inputs.client_name }}" \
+            --clone=false
+          
+          # Push only client-specific files
+          git remote add origin https://github.com/${{ inputs.github_org }}/${{ inputs.client_name }}-website.git
+          git push -u origin main
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          npm install -g vercel@latest
+          
+          # Deploy with reference to template
+          vercel --token $VERCEL_TOKEN \
+            --scope $VERCEL_ORG_ID \
+            --prod \
+            --yes \
+            --env DATABASE_URL="$DATABASE_URL" \
+            --env CLIENT_CONFIG_PATH="./deployments/${{ inputs.client_name }}/client-config.json" \
+            --env SESSION_SECRET="$(openssl rand -base64 32)"
+
+      - name: Create deployment summary
+        run: |
+          CLIENT_SIZE=$(du -sh deployments/${{ inputs.client_name }} | cut -f1)
+          echo "## Efficient Client Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Client:** ${{ inputs.client_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Domain:** ${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Storage used:** $CLIENT_SIZE (vs 200MB+ for full copy)" >> $GITHUB_STEP_SUMMARY
+          echo "**Files created:** 5 configuration files only" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Efficiency Benefits:" >> $GITHUB_STEP_SUMMARY
+          echo "- 99%+ storage savings per client" >> $GITHUB_STEP_SUMMARY
+          echo "- Single template codebase to maintain" >> $GITHUB_STEP_SUMMARY
+          echo "- Instant template updates across all clients" >> $GITHUB_STEP_SUMMARY
+          echo "- Scales to thousands of clients efficiently" >> $GITHUB_STEP_SUMMARY

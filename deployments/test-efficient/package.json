@@ -1,0 +1,14 @@
+{
+  "name": "test-efficient-website",
+  "version": "1.0.0",
+  "description": "Website for test-efficient",
+  "scripts": {
+    "dev": "node ../../../server/index.ts",
+    "build": "npm run --prefix ../../.. build",
+    "start": "npm run --prefix ../../.. start",
+    "db:push": "npm run --prefix ../../.. db:push"
+  },
+  "dependencies": {
+    "template": "file:../../.."
+  }
+}
