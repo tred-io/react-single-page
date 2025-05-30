@@ -36,13 +36,32 @@ export class MemStorage implements IStorage {
       address: "1234 Highway 281, Lampasas, TX 76550",
       phone: "(512) 555-1234",
       email: "info@brownfeedstore.com",
-      mondayFridayHours: "7:00 AM - 6:00 PM",
+      mondayHours: "7:00 AM - 6:00 PM",
+      tuesdayHours: "7:00 AM - 6:00 PM",
+      wednesdayHours: "7:00 AM - 6:00 PM",
+      thursdayHours: "7:00 AM - 6:00 PM",
+      fridayHours: "7:00 AM - 6:00 PM",
       saturdayHours: "7:00 AM - 6:00 PM",
       sundayHours: "9:00 AM - 4:00 PM",
       aboutTitle: "About Brown Feed Store",
       aboutDescription: "A family-owned business proudly serving Lampasas County and surrounding areas for nearly four decades",
       aboutStory: "Founded in 1985 by the Brown family, our feed store has been the cornerstone of agricultural supply in Lampasas County. What started as a small family operation has grown into a trusted resource for farmers, ranchers, and pet owners throughout Central Texas. We believe in supporting our local community with quality products, fair prices, and the kind of personal service that only comes from knowing our customers and their unique needs.",
-      foundedYear: "1985"
+      foundedYear: "1985",
+      logoUrl: "",
+      faviconUrl: "",
+      // Theme & Branding
+      primaryColor: "#8B4513",
+      secondaryColor: "#2F4F4F", 
+      accentColor: "#CD853F",
+      fontFamily: "Inter",
+      // Social URLs
+      facebookUrl: "",
+      googleUrl: "",
+      yelpUrl: "",
+      // SEO
+      seoTitle: "Brown Feed Store - Quality Agricultural Supplies in Lampasas, TX",
+      seoDescription: "Your trusted agricultural partner since 1985. Premium livestock feed, farming equipment, and expert advice in Lampasas County, Texas.",
+      seoKeywords: "feed store, livestock feed, agricultural supplies, farming equipment, Lampasas Texas, cattle feed, horse feed"
     };
     
     // Initialize with default product categories

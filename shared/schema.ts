@@ -14,7 +14,11 @@ export interface StoreSettings {
   address: string;
   phone: string;
   email?: string;
-  mondayFridayHours: string;
+  mondayHours: string;
+  tuesdayHours: string;
+  wednesdayHours: string;
+  thursdayHours: string;
+  fridayHours: string;
   saturdayHours: string;
   sundayHours: string;
   aboutTitle: string;
@@ -23,6 +27,19 @@ export interface StoreSettings {
   foundedYear: string;
   logoUrl?: string;
   faviconUrl?: string;
+  // Theme & Branding
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  fontFamily: string;
+  // Social URLs
+  facebookUrl?: string;
+  googleUrl?: string;
+  yelpUrl?: string;
+  // SEO
+  seoTitle: string;
+  seoDescription: string;
+  seoKeywords: string;
 }
 
 export interface ProductCategory {
@@ -56,7 +73,11 @@ export const insertStoreSettingsSchema = z.object({
   address: z.string().min(1, "Address is required"),
   phone: z.string().min(1, "Phone is required"),
   email: z.string().optional(),
-  mondayFridayHours: z.string().min(1, "Monday-Friday hours are required"),
+  mondayHours: z.string().min(1, "Monday hours are required"),
+  tuesdayHours: z.string().min(1, "Tuesday hours are required"),
+  wednesdayHours: z.string().min(1, "Wednesday hours are required"),
+  thursdayHours: z.string().min(1, "Thursday hours are required"),
+  fridayHours: z.string().min(1, "Friday hours are required"),
   saturdayHours: z.string().min(1, "Saturday hours are required"),
   sundayHours: z.string().min(1, "Sunday hours are required"),
   aboutTitle: z.string().min(1, "About title is required"),
@@ -65,6 +86,19 @@ export const insertStoreSettingsSchema = z.object({
   foundedYear: z.string().min(1, "Founded year is required"),
   logoUrl: z.string().optional(),
   faviconUrl: z.string().optional(),
+  // Theme & Branding
+  primaryColor: z.string().min(1, "Primary color is required"),
+  secondaryColor: z.string().min(1, "Secondary color is required"),
+  accentColor: z.string().min(1, "Accent color is required"),
+  fontFamily: z.string().min(1, "Font family is required"),
+  // Social URLs
+  facebookUrl: z.string().optional(),
+  googleUrl: z.string().optional(),
+  yelpUrl: z.string().optional(),
+  // SEO
+  seoTitle: z.string().min(1, "SEO title is required"),
+  seoDescription: z.string().min(1, "SEO description is required"),
+  seoKeywords: z.string().min(1, "SEO keywords are required"),
 });
 
 export const insertProductCategorySchema = z.object({
