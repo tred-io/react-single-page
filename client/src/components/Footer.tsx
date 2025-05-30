@@ -82,15 +82,22 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4">Store Information</h4>
             <div className="space-y-2 text-gray-300">
-              <p className="flex items-center">
-                <MapPin className="text-chocolate-orange h-4 w-4 mr-2" />
+              <p className="flex items-start">
+                <MapPin className="text-chocolate-orange h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
                 <a 
                   href={`https://maps.google.com/?q=${encodeURIComponent(settings.address)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-chocolate-orange transition-colors"
+                  className="hover:text-chocolate-orange transition-colors leading-tight"
                 >
-                  {settings.address}
+                  {settings.address.includes(',') ? (
+                    <>
+                      {settings.address.split(',')[0]}<br />
+                      {settings.address.split(',').slice(1).join(',').trim()}
+                    </>
+                  ) : (
+                    settings.address
+                  )}
                 </a>
               </p>
               <p className="flex items-center">

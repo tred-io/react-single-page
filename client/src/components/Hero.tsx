@@ -52,7 +52,10 @@ export default function Hero() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
             <div className="flex items-center justify-center space-x-2">
               <Clock className="h-5 w-5 flex-shrink-0" />
-              <span className="text-sm">Today: {settings.mondayHours}</span>
+              <span className="text-sm">
+                Today: {settings.mondayHours}
+                <span className="text-xs opacity-75 ml-1">*</span>
+              </span>
             </div>
             <div className="flex items-center justify-center space-x-2">
               <MapPin className="h-5 w-5 flex-shrink-0" />
@@ -66,6 +69,9 @@ export default function Hero() {
               </a>
             </div>
           </div>
+        </div>
+        <div className="text-center text-xs opacity-75 mt-2">
+          *Hours may vary on federal holidays
         </div>
       </div>
     </section>

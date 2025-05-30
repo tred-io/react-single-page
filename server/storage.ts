@@ -188,8 +188,8 @@ export class MemStorage implements IStorage {
   }
 
   async updateStoreSettings(settings: InsertStoreSettings): Promise<StoreSettings> {
-    this.storeSettings = { ...settings, id: 1, email: settings.email || null };
-    return this.storeSettings;
+    this.storeSettings = { ...settings, id: 1, email: settings.email || undefined };
+    return this.storeSettings!;
   }
 
   async getProductCategories(): Promise<ProductCategory[]> {
