@@ -78,6 +78,8 @@ export default function AdminEnhanced() {
       foundedYear: "",
       logoUrl: "",
       faviconUrl: "",
+      heroImageUrl: "",
+      aboutImageUrl: "",
       primaryColor: "#8B4513",
       secondaryColor: "#2F4F4F",
       accentColor: "#CD853F",
