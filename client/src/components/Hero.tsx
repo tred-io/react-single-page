@@ -47,20 +47,23 @@ export default function Hero() {
       </div>
       
       {/* Quick Info Bar */}
-      <div className="bg-forest-green text-white py-4">
+      <div className="bg-forest-green text-white py-3">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
             <div className="flex items-center justify-center space-x-2">
-              <Clock className="h-5 w-5" />
-              <span>Mon-Fri {settings.mondayFridayHours}, Sat {settings.saturdayHours}, Sun {settings.sundayHours}</span>
+              <Clock className="h-5 w-5 flex-shrink-0" />
+              <span className="text-sm">Today: {settings.mondayHours}</span>
             </div>
             <div className="flex items-center justify-center space-x-2">
-              <MapPin className="h-5 w-5" />
-              <span>{settings.address}</span>
-            </div>
-            <div className="flex items-center justify-center space-x-2">
-              <Truck className="h-5 w-5" />
-              <span>Free Local Delivery Available</span>
+              <MapPin className="h-5 w-5 flex-shrink-0" />
+              <a 
+                href={`https://maps.google.com/?q=${encodeURIComponent(settings.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm hover:underline"
+              >
+                {settings.address}
+              </a>
             </div>
           </div>
         </div>

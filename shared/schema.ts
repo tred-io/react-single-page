@@ -47,7 +47,23 @@ export interface ProductCategory {
   title: string;
   description: string;
   imageUrl: string;
+  iconName: string;
   items: string[];
+  displayOrder: number;
+}
+
+export interface SpecialService {
+  id: number;
+  title: string;
+  description: string;
+  iconName: string;
+  displayOrder: number;
+}
+
+export interface FeaturedBrand {
+  id: number;
+  name: string;
+  logoUrl: string;
   displayOrder: number;
 }
 
@@ -105,8 +121,22 @@ export const insertProductCategorySchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   imageUrl: z.string().min(1, "Image URL is required"),
+  iconName: z.string().min(1, "Icon name is required"),
   items: z.array(z.string()).min(1, "At least one item is required"),
   displayOrder: z.number().default(0),
+});
+
+export const insertSpecialServiceSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  iconName: z.string().min(1, "Icon name is required"),
+  displayOrder: z.number().min(0).default(0),
+});
+
+export const insertFeaturedBrandSchema = z.object({
+  name: z.string().min(1, "Brand name is required"),
+  logoUrl: z.string().min(1, "Logo URL is required"),
+  displayOrder: z.number().min(0).default(0),
 });
 
 export const insertCustomPageSchema = z.object({
@@ -124,5 +154,7 @@ export const adminLoginSchema = z.object({
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type InsertStoreSettings = z.infer<typeof insertStoreSettingsSchema>;
 export type InsertProductCategory = z.infer<typeof insertProductCategorySchema>;
+export type InsertSpecialService = z.infer<typeof insertSpecialServiceSchema>;
+export type InsertFeaturedBrand = z.infer<typeof insertFeaturedBrandSchema>;
 export type InsertCustomPage = z.infer<typeof insertCustomPageSchema>;
 export type AdminLogin = z.infer<typeof adminLoginSchema>;
