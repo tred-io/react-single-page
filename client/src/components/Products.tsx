@@ -1,4 +1,4 @@
-import { ServerCog, Dog, Wrench, Egg, Sprout, Stethoscope, Truck, ClipboardList, GraduationCap } from "lucide-react";
+import { ServerCog, Dog, Wrench, Egg, Sprout, Stethoscope } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { ProductCategory } from "@shared/schema";
 
@@ -92,23 +92,7 @@ export default function Products() {
             );
           })}
         </div>
-        
-        {/* Special Services */}
-        <div className="mt-16 bg-saddle-brown text-white rounded-lg p-8">
-          <h3 className="text-2xl font-serif font-bold text-center mb-8">Special Services</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {services.map((service, index) => {
-              const IconComponent = service.icon;
-              return (
-                <div key={index} className="text-center">
-                  <IconComponent className="text-chocolate-orange h-8 w-8 mb-3 mx-auto" />
-                  <h4 className="font-semibold mb-2">{service.title}</h4>
-                  <p className="text-warm-beige text-sm">{service.description}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+
       </div>
     </section>
   );
