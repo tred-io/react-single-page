@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type StoreSettings, type InsertStoreSettings, type ProductCategory, type InsertProductCategory } from "@shared/schema";
+import { type User, type InsertUser, type StoreSettings, type InsertStoreSettings, type ProductCategory, type InsertProductCategory, type SpecialService, type InsertSpecialService, type FeaturedBrand, type InsertFeaturedBrand } from "@shared/schema";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -10,17 +10,26 @@ export interface IStorage {
   updateProductCategory(id: number, category: InsertProductCategory): Promise<ProductCategory>;
   createProductCategory(category: InsertProductCategory): Promise<ProductCategory>;
   deleteProductCategory(id: number): Promise<boolean>;
-  // Custom pages (for future expansion)
-  // getCustomPages(): Promise<CustomPage[]>;
-  // getCustomPageBySlug(slug: string): Promise<CustomPage | undefined>;
+  getSpecialServices(): Promise<SpecialService[]>;
+  updateSpecialService(id: number, service: InsertSpecialService): Promise<SpecialService>;
+  createSpecialService(service: InsertSpecialService): Promise<SpecialService>;
+  deleteSpecialService(id: number): Promise<boolean>;
+  getFeaturedBrands(): Promise<FeaturedBrand[]>;
+  updateFeaturedBrand(id: number, brand: InsertFeaturedBrand): Promise<FeaturedBrand>;
+  createFeaturedBrand(brand: InsertFeaturedBrand): Promise<FeaturedBrand>;
+  deleteFeaturedBrand(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private storeSettings: StoreSettings | undefined;
   private productCategories: Map<number, ProductCategory>;
+  private specialServices: Map<number, SpecialService>;
+  private featuredBrands: Map<number, FeaturedBrand>;
   private currentUserId: number;
   private currentCategoryId: number;
+  private currentServiceId: number;
+  private currentBrandId: number;
 
   constructor() {
     this.users = new Map();
@@ -70,6 +79,7 @@ export class MemStorage implements IStorage {
         title: "Livestock Feed",
         description: "Premium quality feed for cattle, horses, pigs, goats, and sheep. Custom mixes available.",
         imageUrl: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        iconName: "Beef",
         items: ["Range Cubes & Pellets", "Sweet Feed & Grain", "Mineral Supplements", "Custom Blends"],
         displayOrder: 1
       },
@@ -77,6 +87,7 @@ export class MemStorage implements IStorage {
         title: "Pet Supplies",
         description: "Complete line of pet food, treats, toys, and care products for dogs, cats, and small animals.",
         imageUrl: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        iconName: "Heart",
         items: ["Premium Dog & Cat Food", "Treats & Supplements", "Toys & Accessories", "Grooming Supplies"],
         displayOrder: 2
       },
@@ -84,6 +95,7 @@ export class MemStorage implements IStorage {
         title: "Farm Equipment",
         description: "Essential tools and equipment for farming, ranching, and property maintenance.",
         imageUrl: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        iconName: "Wrench",
         items: ["Hand Tools & Hardware", "Fencing Materials", "Water Systems", "Safety Equipment"],
         displayOrder: 3
       },
@@ -91,6 +103,7 @@ export class MemStorage implements IStorage {
         title: "Poultry Supplies",
         description: "Complete poultry care including feed, supplements, and housing solutions.",
         imageUrl: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        iconName: "Bird",
         items: ["Layer & Broiler Feed", "Poultry Vitamins", "Feeders & Waterers", "Coop Supplies"],
         displayOrder: 4
       },
@@ -98,6 +111,7 @@ export class MemStorage implements IStorage {
         title: "Seeds & Garden",
         description: "Quality seeds, fertilizers, and gardening supplies for your growing needs.",
         imageUrl: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        iconName: "Sprout",
         items: ["Vegetable & Flower Seeds", "Grass & Pasture Seed", "Fertilizers & Soil", "Garden Tools"],
         displayOrder: 5
       },
@@ -105,6 +119,7 @@ export class MemStorage implements IStorage {
         title: "Animal Health",
         description: "Veterinary supplies, medications, and health products for livestock and pets.",
         imageUrl: "https://images.unsplash.com/photo-1559190394-df5a28aab5c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
+        iconName: "Stethoscope",
         items: ["Vaccines & Medications", "Dewormers & Treatments", "First Aid Supplies", "Grooming Products"],
         displayOrder: 6
       }
@@ -113,6 +128,39 @@ export class MemStorage implements IStorage {
     defaultCategories.forEach(category => {
       const id = this.currentCategoryId++;
       this.productCategories.set(id, { ...category, id });
+    });
+
+    // Initialize special services and featured brands storage
+    this.specialServices = new Map();
+    this.featuredBrands = new Map();
+    this.currentServiceId = 1;
+    this.currentBrandId = 1;
+
+    // Initialize with default special services
+    const defaultServices = [
+      {
+        title: "Expert Consultation",
+        description: "Get personalized advice from our agricultural specialists",
+        iconName: "Users",
+        displayOrder: 1
+      },
+      {
+        title: "Local Delivery",
+        description: "Free delivery for orders over $100 within 20 miles",
+        iconName: "Truck",
+        displayOrder: 2
+      },
+      {
+        title: "Custom Feed Mixing",
+        description: "Tailored nutrition solutions for your livestock",
+        iconName: "Settings",
+        displayOrder: 3
+      }
+    ];
+
+    defaultServices.forEach(service => {
+      const id = this.currentServiceId++;
+      this.specialServices.set(id, { ...service, id });
     });
   }
 

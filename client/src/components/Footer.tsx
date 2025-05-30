@@ -109,13 +109,37 @@ export default function Footer() {
               <div className="mt-4">
                 <p className="font-semibold">Store Hours:</p>
                 <div className="text-sm space-y-1">
-                  <p>Mon: {settings.mondayHours}</p>
-                  <p>Tue: {settings.tuesdayHours}</p>
-                  <p>Wed: {settings.wednesdayHours}</p>
-                  <p>Thu: {settings.thursdayHours}</p>
-                  <p>Fri: {settings.fridayHours}</p>
-                  <p>Sat: {settings.saturdayHours}</p>
-                  <p>Sun: {settings.sundayHours}</p>
+                  {(() => {
+                    const weekdayHours = settings.mondayHours;
+                    const allWeekdaysSame = [
+                      settings.tuesdayHours,
+                      settings.wednesdayHours,
+                      settings.thursdayHours,
+                      settings.fridayHours
+                    ].every(hours => hours === weekdayHours);
+                    
+                    if (allWeekdaysSame && settings.mondayHours === settings.tuesdayHours) {
+                      return (
+                        <>
+                          <p>Mon-Fri: {weekdayHours}</p>
+                          <p>Sat: {settings.saturdayHours}</p>
+                          <p>Sun: {settings.sundayHours}</p>
+                        </>
+                      );
+                    } else {
+                      return (
+                        <>
+                          <p>Mon: {settings.mondayHours}</p>
+                          <p>Tue: {settings.tuesdayHours}</p>
+                          <p>Wed: {settings.wednesdayHours}</p>
+                          <p>Thu: {settings.thursdayHours}</p>
+                          <p>Fri: {settings.fridayHours}</p>
+                          <p>Sat: {settings.saturdayHours}</p>
+                          <p>Sun: {settings.sundayHours}</p>
+                        </>
+                      );
+                    }
+                  })()}
                 </div>
               </div>
               
