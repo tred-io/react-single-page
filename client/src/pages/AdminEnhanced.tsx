@@ -233,7 +233,7 @@ export default function AdminEnhanced() {
                 <TabsTrigger value="categories">Categories</TabsTrigger>
                 <TabsTrigger value="services">Services</TabsTrigger>
                 <TabsTrigger value="brands">Brands</TabsTrigger>
-                <TabsTrigger value="themes">Themes</TabsTrigger>
+                <TabsTrigger value="themes" type="button">Themes</TabsTrigger>
                 <TabsTrigger value="branding">Design</TabsTrigger>
                 <TabsTrigger value="social">Social/SEO</TabsTrigger>
               </TabsList>
