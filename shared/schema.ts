@@ -27,6 +27,8 @@ export interface StoreSettings {
   foundedYear: string;
   logoUrl?: string;
   faviconUrl?: string;
+  heroImageUrl?: string;
+  aboutImageUrl?: string;
   // Theme & Branding
   primaryColor: string;
   secondaryColor: string;
@@ -104,6 +106,8 @@ export const insertStoreSettingsSchema = z.object({
   foundedYear: z.string().min(1, "Founded year is required"),
   logoUrl: z.string().optional(),
   faviconUrl: z.string().optional(),
+  heroImageUrl: z.string().optional(),
+  aboutImageUrl: z.string().optional(),
   // Theme & Branding
   primaryColor: z.string().min(1, "Primary color is required"),
   secondaryColor: z.string().min(1, "Secondary color is required"),

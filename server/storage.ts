@@ -58,6 +58,8 @@ export class MemStorage implements IStorage {
       foundedYear: "1985",
       logoUrl: "",
       faviconUrl: "",
+      heroImageUrl: "",
+      aboutImageUrl: "",
       // Theme & Branding
       primaryColor: "#8B4513",
       secondaryColor: "#2F4F4F", 
