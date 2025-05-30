@@ -40,21 +40,30 @@ function hexToHsl(hex: string): string {
 function updateCSSVariables(settings: StoreSettings) {
   const root = document.documentElement;
   
+  console.log('Updating CSS variables with settings:', settings);
+  
   // Update color variables
   if (settings.primaryColor) {
-    root.style.setProperty('--primary', hexToHsl(settings.primaryColor));
+    const hslValue = hexToHsl(settings.primaryColor);
+    console.log('Setting --primary to:', hslValue);
+    root.style.setProperty('--primary', hslValue);
   }
   
   if (settings.secondaryColor) {
-    root.style.setProperty('--secondary', hexToHsl(settings.secondaryColor));
+    const hslValue = hexToHsl(settings.secondaryColor);
+    console.log('Setting --secondary to:', hslValue);
+    root.style.setProperty('--secondary', hslValue);
   }
   
   if (settings.accentColor) {
-    root.style.setProperty('--accent', hexToHsl(settings.accentColor));
+    const hslValue = hexToHsl(settings.accentColor);
+    console.log('Setting --accent to:', hslValue);
+    root.style.setProperty('--accent', hslValue);
   }
   
   // Update font family
   if (settings.fontFamily) {
+    console.log('Setting font family to:', settings.fontFamily);
     document.body.style.fontFamily = settings.fontFamily;
   }
 }
