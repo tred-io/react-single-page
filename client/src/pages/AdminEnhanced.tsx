@@ -49,6 +49,14 @@ export default function AdminEnhanced() {
     queryKey: ["/api/product-categories"],
   });
 
+  const { data: services = [] } = useQuery<SpecialService[]>({
+    queryKey: ["/api/special-services"],
+  });
+
+  const { data: brands = [] } = useQuery<FeaturedBrand[]>({
+    queryKey: ["/api/featured-brands"],
+  });
+
   const form = useForm<InsertStoreSettings>({
     resolver: zodResolver(insertStoreSettingsSchema),
     defaultValues: storeSettings || {
@@ -213,14 +221,15 @@ export default function AdminEnhanced() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <TabsList className="grid w-full grid-cols-7">
-                <TabsTrigger value="basic">Basic Info</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-8 text-xs">
+                <TabsTrigger value="basic">Basic</TabsTrigger>
                 <TabsTrigger value="hours">Hours</TabsTrigger>
                 <TabsTrigger value="about">About</TabsTrigger>
                 <TabsTrigger value="categories">Categories</TabsTrigger>
-                <TabsTrigger value="branding">Branding</TabsTrigger>
-                <TabsTrigger value="social">Social</TabsTrigger>
-                <TabsTrigger value="seo">SEO</TabsTrigger>
+                <TabsTrigger value="services">Services</TabsTrigger>
+                <TabsTrigger value="brands">Brands</TabsTrigger>
+                <TabsTrigger value="branding">Design</TabsTrigger>
+                <TabsTrigger value="social">Social/SEO</TabsTrigger>
               </TabsList>
 
               <TabsContent value="basic" className="space-y-6">
@@ -798,108 +807,243 @@ export default function AdminEnhanced() {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="social" className="space-y-6">
+              <TabsContent value="services" className="space-y-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Social Media Links</CardTitle>
-                    <CardDescription>Add your social media profiles (leave empty to hide from footer)</CardDescription>
+                    <CardTitle>Special Services</CardTitle>
+                    <CardDescription>Showcase the extra services that set your business apart (max 3 recommended)</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="facebookUrl"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Facebook URL</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="https://facebook.com/yourbusiness" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="googleUrl"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Google Business URL</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="https://maps.google.com/your-business" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="yelpUrl"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Yelp URL</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="https://yelp.com/biz/your-business" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <CardContent className="space-y-6">
+                    {/* Current Services */}
+                    <div className="space-y-4">
+                      <h4 className="font-medium text-gray-900">Current Services</h4>
+                      {services.map((service) => (
+                        <div key={service.id} className="border rounded-lg p-4 flex items-start justify-between">
+                          <div className="flex-1">
+                            <h5 className="font-medium">{service.title}</h5>
+                            <p className="text-sm text-gray-600 mt-1">{service.description}</p>
+                            <p className="text-xs text-gray-500 mt-2">Icon: {service.iconName}</p>
+                          </div>
+                          <div className="flex gap-2 ml-4">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                // Set editing state for services
+                              }}
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                // Delete service
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Add New Service */}
+                    <div className="border-t pt-6">
+                      <h4 className="font-medium text-gray-900 mb-4">Add New Service</h4>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label>Service Title</Label>
+                            <Input placeholder="Expert Consultation" />
+                          </div>
+                          <div>
+                            <Label>Icon Name</Label>
+                            <Input placeholder="Users, Truck, Settings, etc." />
+                          </div>
+                        </div>
+                        <div>
+                          <Label>Description</Label>
+                          <Textarea placeholder="Describe this service..." className="min-h-[80px]" />
+                        </div>
+                        <Button type="button" className="bg-chocolate-brown hover:bg-chocolate-brown/90">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Service
+                        </Button>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
 
-              <TabsContent value="seo" className="space-y-6">
+              <TabsContent value="brands" className="space-y-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>SEO Settings</CardTitle>
-                    <CardDescription>Optimize your website for search engines</CardDescription>
+                    <CardTitle>Featured Brands</CardTitle>
+                    <CardDescription>Showcase the trusted brands you carry</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="seoTitle"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Page Title</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="Your Business - Quality Products in Your City" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
+                  <CardContent className="space-y-6">
+                    {/* Current Brands */}
+                    <div className="space-y-4">
+                      <h4 className="font-medium text-gray-900">Current Brands</h4>
+                      {brands.length === 0 ? (
+                        <p className="text-gray-500 text-center py-8">No brands added yet</p>
+                      ) : (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {brands.map((brand) => (
+                            <div key={brand.id} className="border rounded-lg p-4 text-center">
+                              <img 
+                                src={brand.logoUrl} 
+                                alt={brand.name}
+                                className="max-h-12 w-auto mx-auto mb-2"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                }}
+                              />
+                              <p className="text-sm font-medium">{brand.name}</p>
+                              <div className="flex gap-1 mt-2 justify-center">
+                                <Button variant="outline" size="sm">
+                                  <Edit2 className="h-3 w-3" />
+                                </Button>
+                                <Button variant="outline" size="sm">
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="seoDescription"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Meta Description</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              {...field} 
-                              placeholder="A compelling description of your business for search results..."
-                              className="min-h-[80px]"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="seoKeywords"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Keywords</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="keyword1, keyword2, keyword3" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    </div>
+
+                    {/* Add New Brand */}
+                    <div className="border-t pt-6">
+                      <h4 className="font-medium text-gray-900 mb-4">Add New Brand</h4>
+                      <div className="space-y-4">
+                        <div>
+                          <Label>Brand Name</Label>
+                          <Input placeholder="Brand Name" />
+                        </div>
+                        <FileUpload
+                          onUpload={(url) => {}}
+                          currentUrl=""
+                          label="Brand Logo"
+                          accept="image/*"
+                        />
+                        <Button type="button" className="bg-chocolate-brown hover:bg-chocolate-brown/90">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Brand
+                        </Button>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
+              </TabsContent>
+
+              <TabsContent value="social" className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Social Media</CardTitle>
+                      <CardDescription>Add your social media profiles (leave empty to hide)</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="facebookUrl"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Facebook URL</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="https://facebook.com/yourbusiness" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="googleUrl"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Google Business URL</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="https://maps.google.com/your-business" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="yelpUrl"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Yelp URL</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="https://yelp.com/biz/your-business" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>SEO Settings</CardTitle>
+                      <CardDescription>Optimize your website for search engines</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="seoTitle"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Page Title</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="Your Business - Quality Products in Your City" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="seoDescription"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Meta Description</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                {...field} 
+                                placeholder="A compelling description of your business for search results..."
+                                className="min-h-[80px]"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="seoKeywords"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Keywords</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="keyword1, keyword2, keyword3" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </CardContent>
+                  </Card>
+                </div>
               </TabsContent>
             </Tabs>
 
