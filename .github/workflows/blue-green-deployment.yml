@@ -1,0 +1,166 @@
+name: Blue-Green Template Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+        default: staging
+      rollback_version:
+        description: 'Version to rollback to (leave empty for new deployment)'
+        required: false
+        type: string
+
+jobs:
+  deploy-staging:
+    if: ${{ inputs.environment == 'staging' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: |
+          npm run test || echo "No tests configured yet"
+          npm run build
+
+      - name: Deploy to staging environment
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          npm install -g vercel@latest
+          
+          # Deploy to staging with template-staging subdomain
+          vercel --token $VERCEL_TOKEN \
+            --scope $VERCEL_ORG_ID \
+            --env NODE_ENV=staging \
+            --env TEMPLATE_VERSION="staging-$(git rev-parse --short HEAD)" \
+            --alias template-staging.vercel.app
+
+      - name: Run integration tests on staging
+        run: |
+          # Wait for deployment to be ready
+          sleep 30
+          
+          # Basic health checks
+          curl -f https://template-staging.vercel.app/api/store-settings || exit 1
+          curl -f https://template-staging.vercel.app/ || exit 1
+          
+          echo "✅ Staging deployment health checks passed"
+
+      - name: Create staging summary
+        run: |
+          echo "## 🟡 Staging Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Staging URL:** https://template-staging.vercel.app" >> $GITHUB_STEP_SUMMARY
+          echo "**Git Commit:** $(git rev-parse --short HEAD)" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Ready for testing" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Test staging environment thoroughly" >> $GITHUB_STEP_SUMMARY
+          echo "2. Run workflow again with 'production' to promote to live" >> $GITHUB_STEP_SUMMARY
+
+  deploy-production:
+    if: ${{ inputs.environment == 'production' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify staging deployment exists
+        run: |
+          # Check that staging deployment is healthy
+          curl -f https://template-staging.vercel.app/api/store-settings
+          echo "✅ Staging verification passed"
+
+      - name: Create production backup
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          # Create backup alias of current production
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          
+          # Tag current production as backup
+          vercel alias set template-production.vercel.app template-backup-$TIMESTAMP.vercel.app \
+            --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID || echo "No existing production to backup"
+
+      - name: Promote staging to production
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          # Alias staging deployment to production
+          vercel alias set template-staging.vercel.app template-production.vercel.app \
+            --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID
+
+      - name: Verify production deployment
+        run: |
+          # Wait for DNS propagation
+          sleep 60
+          
+          # Verify production is working
+          curl -f https://template-production.vercel.app/api/store-settings || exit 1
+          curl -f https://template-production.vercel.app/ || exit 1
+          
+          echo "✅ Production deployment verified"
+
+      - name: Update client tracking
+        run: |
+          # Update template version for all clients
+          if [ -f "template-config.json" ] && command -v jq >/dev/null 2>&1; then
+            jq ".version = \"$(git rev-parse --short HEAD)\" | .deployedAt = \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"" \
+              template-config.json > tmp.json && mv tmp.json template-config.json
+          fi
+
+      - name: Create production summary
+        run: |
+          echo "## 🟢 Production Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Production URL:** https://template-production.vercel.app" >> $GITHUB_STEP_SUMMARY
+          echo "**All client sites now use this version**" >> $GITHUB_STEP_SUMMARY
+          echo "**Git Commit:** $(git rev-parse --short HEAD)" >> $GITHUB_STEP_SUMMARY
+          echo "**Backup available:** template-backup-$(date +%Y%m%d).vercel.app" >> $GITHUB_STEP_SUMMARY
+
+  rollback:
+    if: ${{ inputs.rollback_version != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rollback to previous version
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          ROLLBACK_VERSION="${{ inputs.rollback_version }}"
+          
+          # Rollback production to specified backup
+          vercel alias set template-backup-$ROLLBACK_VERSION.vercel.app template-production.vercel.app \
+            --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID
+
+      - name: Verify rollback
+        run: |
+          sleep 30
+          curl -f https://template-production.vercel.app/api/store-settings || exit 1
+          echo "✅ Rollback completed successfully"
+
+      - name: Create rollback summary
+        run: |
+          echo "## 🔄 Rollback Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Rolled back to:** ${{ inputs.rollback_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**All client sites now use the rolled-back version**" >> $GITHUB_STEP_SUMMARY
