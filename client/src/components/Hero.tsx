@@ -2,6 +2,66 @@ import { MapPin, Phone, Clock, Truck } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { StoreSettings } from "@shared/schema";
 
+// Function to check if today is a federal holiday
+function isFederalHoliday(): boolean {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth(); // 0-based
+  const date = today.getDate();
+  
+  // Fixed date holidays
+  const fixedHolidays = [
+    { month: 0, date: 1 },   // New Year's Day
+    { month: 6, date: 4 },   // Independence Day
+    { month: 11, date: 25 }, // Christmas Day
+  ];
+  
+  // Check fixed holidays
+  for (const holiday of fixedHolidays) {
+    if (month === holiday.month && date === holiday.date) {
+      return true;
+    }
+  }
+  
+  // Variable holidays (calculated)
+  // Memorial Day - Last Monday in May
+  if (month === 4) {
+    const memorialDay = getLastWeekdayOfMonth(year, 4, 1); // Last Monday
+    if (date === memorialDay) return true;
+  }
+  
+  // Labor Day - 1st Monday in September
+  if (month === 8) {
+    const laborDay = getNthWeekdayOfMonth(year, 8, 1, 1); // 1st Monday
+    if (date === laborDay) return true;
+  }
+  
+  // Thanksgiving - 4th Thursday in November
+  if (month === 10) {
+    const thanksgiving = getNthWeekdayOfMonth(year, 10, 4, 4); // 4th Thursday
+    if (date === thanksgiving) return true;
+  }
+  
+  return false;
+}
+
+// Helper function to get the nth weekday of a month
+function getNthWeekdayOfMonth(year: number, month: number, weekday: number, n: number): number {
+  const firstDay = new Date(year, month, 1);
+  const firstWeekday = firstDay.getDay();
+  const offset = (weekday - firstWeekday + 7) % 7;
+  return 1 + offset + (n - 1) * 7;
+}
+
+// Helper function to get the last weekday of a month
+function getLastWeekdayOfMonth(year: number, month: number, weekday: number): number {
+  const lastDay = new Date(year, month + 1, 0).getDate();
+  const lastDate = new Date(year, month, lastDay);
+  const lastWeekday = lastDate.getDay();
+  const offset = (lastWeekday - weekday + 7) % 7;
+  return lastDay - offset;
+}
+
 export default function Hero() {
   const { data: settings } = useQuery<StoreSettings>({
     queryKey: ["/api/store-settings"],
@@ -54,7 +114,7 @@ export default function Hero() {
               <Clock className="h-5 w-5 flex-shrink-0" />
               <span className="text-sm">
                 Today: {settings.mondayHours}
-                <span className="text-xs opacity-75 ml-1">*</span>
+                {isFederalHoliday() && <span className="text-xs opacity-75 ml-1">*</span>}
               </span>
             </div>
             <div className="flex items-center justify-center space-x-2">
@@ -70,9 +130,11 @@ export default function Hero() {
             </div>
           </div>
         </div>
-        <div className="text-center text-xs opacity-75 mt-2">
-          *Hours may vary on federal holidays
-        </div>
+        {isFederalHoliday() && (
+          <div className="text-center text-xs opacity-75 mt-2">
+            *Hours may vary on federal holidays
+          </div>
+        )}
       </div>
     </section>
   );
