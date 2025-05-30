@@ -32,6 +32,7 @@ export default function ThemePreviewSimulator({
   phone = "(555) 123-4567"
 }: ThemePreviewSimulatorProps) {
   const [activePreview, setActivePreview] = useState("homepage");
+  const [isMobileView, setIsMobileView] = useState(false);
 
   const getColorPreview = (hslColor: string) => {
     return `hsl(${hslColor})`;
@@ -183,9 +184,19 @@ export default function ThemePreviewSimulator({
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>Interactive Preview: {theme.name}</span>
-          <span className="text-sm font-normal text-muted-foreground">
-            {theme.style} • {theme.mood}
-          </span>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsMobileView(!isMobileView)}
+              className="text-xs"
+            >
+              {isMobileView ? "Desktop" : "Mobile"} View
+            </Button>
+            <span className="text-sm font-normal text-muted-foreground">
+              {theme.style} • {theme.mood}
+            </span>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -197,19 +208,25 @@ export default function ThemePreviewSimulator({
           </TabsList>
           
           <TabsContent value="homepage" className="mt-6">
-            <div className="border rounded-lg p-4 bg-gray-50 min-h-96">
+            <div className={`border rounded-lg p-4 bg-gray-50 min-h-96 transition-all ${
+              isMobileView ? "max-w-sm mx-auto" : ""
+            }`}>
               <HomepagePreview />
             </div>
           </TabsContent>
           
           <TabsContent value="products" className="mt-6">
-            <div className="border rounded-lg p-4 bg-gray-50 min-h-96">
+            <div className={`border rounded-lg p-4 bg-gray-50 min-h-96 transition-all ${
+              isMobileView ? "max-w-sm mx-auto" : ""
+            }`}>
               <ProductsPreview />
             </div>
           </TabsContent>
           
           <TabsContent value="about" className="mt-6">
-            <div className="border rounded-lg p-4 bg-gray-50 min-h-96">
+            <div className={`border rounded-lg p-4 bg-gray-50 min-h-96 transition-all ${
+              isMobileView ? "max-w-sm mx-auto" : ""
+            }`}>
               <AboutPreview />
             </div>
           </TabsContent>
