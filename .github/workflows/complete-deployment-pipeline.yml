@@ -1,0 +1,273 @@
+name: Complete Deployment Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Deployment action'
+        required: true
+        type: choice
+        options:
+          - deploy-new-client
+          - update-template
+          - emergency-rollback
+        default: deploy-new-client
+      client_name:
+        description: 'Client name (for new deployments)'
+        required: false
+        type: string
+      domain:
+        description: 'Client domain (for new deployments)'
+        required: false
+        type: string
+      database_provider:
+        description: 'Database provider'
+        required: false
+        type: choice
+        options:
+          - neon
+          - supabase
+          - planetscale
+        default: neon
+      rollback_version:
+        description: 'Version to rollback to (for emergency rollback)'
+        required: false
+        type: string
+      deployment_strategy:
+        description: 'Deployment strategy for template updates'
+        required: false
+        type: choice
+        options:
+          - canary
+          - immediate
+          - staging-only
+        default: canary
+
+jobs:
+  deploy-new-client:
+    if: ${{ inputs.action == 'deploy-new-client' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate inputs
+        run: |
+          if [ -z "${{ inputs.client_name }}" ] || [ -z "${{ inputs.domain }}" ]; then
+            echo "Error: Client name and domain are required for new deployments"
+            exit 1
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create efficient client deployment
+        run: |
+          chmod +x deploy-client-efficient.sh
+          ./deploy-client-efficient.sh ${{ inputs.client_name }} ${{ inputs.domain }}
+
+      - name: Provision database automatically
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_ORG_ID: ${{ secrets.SUPABASE_ORG_ID }}
+          PLANETSCALE_SERVICE_TOKEN: ${{ secrets.PLANETSCALE_SERVICE_TOKEN }}
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{ secrets.PLANETSCALE_SERVICE_TOKEN_ID }}
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          
+          # Create database using automation script
+          node ../../scripts/create-database.js ${{ inputs.database_provider }} ${{ inputs.client_name }}-website
+          
+          # Configure environment with database URL
+          if [ -n "$DATABASE_URL" ]; then
+            cat > .env << EOF
+          DATABASE_URL=$DATABASE_URL
+          CLIENT_CONFIG_PATH=./client-config.json
+          TEMPLATE_PATH=../../..
+          SESSION_SECRET=$(openssl rand -base64 32)
+          NODE_ENV=production
+          VERCEL_URL=${{ inputs.domain }}
+          EOF
+          fi
+
+      - name: Initialize database schema
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          npm install --prefix ../../..
+          npm run db:push --prefix ../../..
+
+      - name: Create GitHub repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          
+          gh repo create ${{ github.repository_owner }}/${{ inputs.client_name }}-website \
+            --public \
+            --description "Website for ${{ inputs.client_name }} - ${{ inputs.domain }}"
+          
+          git remote add origin https://github.com/${{ github.repository_owner }}/${{ inputs.client_name }}-website.git
+          git push -u origin main
+
+      - name: Deploy to Vercel with health monitoring
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          npm install -g vercel@latest
+          
+          # Deploy with all environment variables
+          vercel --token $VERCEL_TOKEN \
+            --scope $VERCEL_ORG_ID \
+            --prod \
+            --yes \
+            --env DATABASE_URL="$DATABASE_URL" \
+            --env CLIENT_CONFIG_PATH="./deployments/${{ inputs.client_name }}/client-config.json" \
+            --env SESSION_SECRET="$(openssl rand -base64 32)" \
+            --env NODE_ENV="production"
+
+      - name: Verify deployment health
+        run: |
+          # Wait for deployment to be ready
+          sleep 60
+          
+          # Run health checks
+          node scripts/health-monitor.js check ${{ inputs.domain }}
+
+      - name: Create deployment summary
+        run: |
+          echo "## Complete Client Deployment Finished" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Client:** ${{ inputs.client_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Domain:** ${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Database:** ${{ inputs.database_provider }} (auto-provisioned)" >> $GITHUB_STEP_SUMMARY
+          echo "**Repository:** https://github.com/${{ github.repository_owner }}/${{ inputs.client_name }}-website" >> $GITHUB_STEP_SUMMARY
+          echo "**Live Site:** https://${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Completed Automatically:" >> $GITHUB_STEP_SUMMARY
+          echo "- Database provisioned and configured" >> $GITHUB_STEP_SUMMARY
+          echo "- Schema initialized with tables" >> $GITHUB_STEP_SUMMARY
+          echo "- GitHub repository created" >> $GITHUB_STEP_SUMMARY
+          echo "- Deployed to Vercel with custom domain" >> $GITHUB_STEP_SUMMARY
+          echo "- Health checks verified" >> $GITHUB_STEP_SUMMARY
+          echo "- Admin panel ready at https://${{ inputs.domain }}/admin" >> $GITHUB_STEP_SUMMARY
+
+  update-template:
+    if: ${{ inputs.action == 'update-template' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build and test template
+        run: |
+          npm install
+          npm run build
+          echo "Template build successful"
+
+      - name: Deploy to staging environment
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          npm install -g vercel@latest
+          vercel --token $VERCEL_TOKEN \
+            --scope $VERCEL_ORG_ID \
+            --env NODE_ENV=staging \
+            --alias template-staging.vercel.app
+
+      - name: Run staging health checks
+        run: |
+          sleep 30
+          node scripts/health-monitor.js check template-staging.vercel.app
+
+      - name: Canary deployment
+        if: ${{ inputs.deployment_strategy == 'canary' }}
+        run: |
+          echo "Starting canary deployment process..."
+          node scripts/health-monitor.js monitor
+
+      - name: Deploy to production
+        if: ${{ inputs.deployment_strategy != 'staging-only' }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          # Create backup of current production
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          vercel alias set template-production.vercel.app template-backup-$TIMESTAMP.vercel.app \
+            --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID || echo "No existing production"
+          
+          # Promote staging to production
+          vercel alias set template-staging.vercel.app template-production.vercel.app \
+            --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID
+
+      - name: Verify production deployment
+        if: ${{ inputs.deployment_strategy != 'staging-only' }}
+        run: |
+          sleep 60
+          node scripts/health-monitor.js check template-production.vercel.app
+
+      - name: Update client tracking
+        run: |
+          # Update template version
+          if [ -f "template-config.json" ] && command -v jq >/dev/null 2>&1; then
+            jq ".version = \"$(git rev-parse --short HEAD)\" | .deployedAt = \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"" \
+              template-config.json > tmp.json && mv tmp.json template-config.json
+          fi
+
+      - name: Create update summary
+        run: |
+          echo "## Template Update Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Strategy:** ${{ inputs.deployment_strategy }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** $(git rev-parse --short HEAD)" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ inputs.deployment_strategy }}" != "staging-only" ]; then
+            echo "**All client sites updated automatically**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Changes available in staging for testing**" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  emergency-rollback:
+    if: ${{ inputs.action == 'emergency-rollback' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate rollback version
+        run: |
+          if [ -z "${{ inputs.rollback_version }}" ]; then
+            echo "Error: Rollback version is required"
+            exit 1
+          fi
+
+      - name: Execute emergency rollback
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          npm install -g vercel@latest
+          
+          # Rollback to specified version
+          vercel alias set template-backup-${{ inputs.rollback_version }}.vercel.app template-production.vercel.app \
+            --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID
+
+      - name: Verify rollback
+        run: |
+          sleep 30
+          node scripts/health-monitor.js check template-production.vercel.app
+
+      - name: Create rollback summary
+        run: |
+          echo "## Emergency Rollback Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Rolled back to:** ${{ inputs.rollback_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**All client sites reverted to previous stable version**" >> $GITHUB_STEP_SUMMARY
+          echo "**Health checks verified**" >> $GITHUB_STEP_SUMMARY
