@@ -11,7 +11,7 @@ I've created three powerful GitHub Actions workflows that completely automate yo
 
 To enable full automation, add these secrets to your GitHub repository:
 
-### 1. Personal Access Token
+### 1. Personal Access Token (Required)
 - **Name**: `PERSONAL_ACCESS_TOKEN`
 - **Purpose**: Create repositories and push to client repos
 - **How to create**:
@@ -22,7 +22,7 @@ To enable full automation, add these secrets to your GitHub repository:
      - `delete_repo` (Delete repositories)
   3. Copy the token and add as secret
 
-### 2. Vercel Integration (Optional but Recommended)
+### 2. Vercel Integration (Recommended)
 - **Name**: `VERCEL_TOKEN`
 - **Purpose**: Automatically deploy to Vercel
 - **How to create**:
@@ -36,6 +36,22 @@ To enable full automation, add these secrets to your GitHub repository:
   1. Go to Vercel team settings
   2. Copy the Team ID
   3. Add as secret
+
+### 3. Database Automation (Choose One Provider)
+
+**For Neon (Recommended)**
+- **Name**: `NEON_API_KEY`
+- **How to get**: Neon Console > Account Settings > API Keys
+
+**For Supabase**
+- **Name**: `SUPABASE_ACCESS_TOKEN`
+- **Name**: `SUPABASE_ORG_ID`
+- **How to get**: Supabase Dashboard > Organization Settings > Access Tokens
+
+**For PlanetScale**
+- **Name**: `PLANETSCALE_SERVICE_TOKEN`
+- **Name**: `PLANETSCALE_SERVICE_TOKEN_ID`
+- **How to get**: PlanetScale Dashboard > Account Settings > Service Tokens
 
 ## How to Use the Automation
 

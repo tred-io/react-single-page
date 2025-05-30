@@ -1,0 +1,204 @@
+name: Complete Client Setup with Database
+
+on:
+  workflow_dispatch:
+    inputs:
+      client_name:
+        description: 'Client name (e.g., brown-feed)'
+        required: true
+        type: string
+      domain:
+        description: 'Client domain (e.g., brownfeedstore.com)'
+        required: true
+        type: string
+      github_org:
+        description: 'GitHub organization/username'
+        required: true
+        type: string
+      database_provider:
+        description: 'Database provider'
+        required: true
+        type: choice
+        options:
+          - neon
+          - supabase
+          - planetscale
+        default: neon
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout template repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Create client deployment
+        run: |
+          chmod +x deploy-template.sh
+          ./deploy-template.sh ${{ inputs.client_name }} ${{ inputs.domain }}
+
+      - name: Setup Neon Database
+        if: ${{ inputs.database_provider == 'neon' }}
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+        run: |
+          CLIENT_NAME="${{ inputs.client_name }}"
+          
+          # Create Neon project
+          PROJECT_RESPONSE=$(curl -X POST \
+            "https://console.neon.tech/api/v2/projects" \
+            -H "Authorization: Bearer $NEON_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"project\": {
+                \"name\": \"$CLIENT_NAME-website\",
+                \"region_id\": \"aws-us-east-1\"
+              }
+            }")
+          
+          # Extract connection details
+          PROJECT_ID=$(echo $PROJECT_RESPONSE | jq -r '.project.id')
+          DATABASE_URL=$(echo $PROJECT_RESPONSE | jq -r '.connection_uris[0].connection_uri')
+          
+          echo "DATABASE_URL=$DATABASE_URL" >> $GITHUB_ENV
+          echo "PROJECT_ID=$PROJECT_ID" >> $GITHUB_ENV
+
+      - name: Setup Supabase Database
+        if: ${{ inputs.database_provider == 'supabase' }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          CLIENT_NAME="${{ inputs.client_name }}"
+          
+          # Create Supabase project
+          PROJECT_RESPONSE=$(curl -X POST \
+            "https://api.supabase.com/v1/projects" \
+            -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"name\": \"$CLIENT_NAME-website\",
+              \"organization_id\": \"${{ secrets.SUPABASE_ORG_ID }}\",
+              \"plan\": \"free\",
+              \"region\": \"us-east-1\"
+            }")
+          
+          PROJECT_ID=$(echo $PROJECT_RESPONSE | jq -r '.id')
+          DATABASE_URL=$(echo $PROJECT_RESPONSE | jq -r '.database.host' | sed 's/^/postgresql:\/\//').supabase.co:5432/postgres
+          
+          echo "DATABASE_URL=$DATABASE_URL" >> $GITHUB_ENV
+          echo "PROJECT_ID=$PROJECT_ID" >> $GITHUB_ENV
+
+      - name: Setup PlanetScale Database
+        if: ${{ inputs.database_provider == 'planetscale' }}
+        env:
+          PLANETSCALE_SERVICE_TOKEN: ${{ secrets.PLANETSCALE_SERVICE_TOKEN }}
+          PLANETSCALE_SERVICE_TOKEN_ID: ${{ secrets.PLANETSCALE_SERVICE_TOKEN_ID }}
+        run: |
+          CLIENT_NAME="${{ inputs.client_name }}"
+          
+          # Install PlanetScale CLI
+          curl -L https://github.com/planetscale/cli/releases/latest/download/pscale_linux_amd64.tar.gz | tar -xz
+          sudo mv pscale /usr/local/bin
+          
+          # Create database
+          pscale auth login --service-token $PLANETSCALE_SERVICE_TOKEN --service-token-id $PLANETSCALE_SERVICE_TOKEN_ID
+          pscale database create $CLIENT_NAME-website --region us-east
+          
+          # Get connection string
+          CONNECTION_STRING=$(pscale connect $CLIENT_NAME-website main --execute-env-url)
+          echo "DATABASE_URL=$CONNECTION_STRING" >> $GITHUB_ENV
+
+      - name: Initialize database schema
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          
+          # Install dependencies
+          npm install
+          
+          # Create .env file with database URL
+          echo "DATABASE_URL=$DATABASE_URL" > .env
+          echo "SESSION_SECRET=$(openssl rand -base64 32)" >> .env
+          echo "NODE_ENV=production" >> .env
+          echo "VERCEL_URL=${{ inputs.domain }}" >> .env
+          
+          # Run database migrations
+          npm run db:push
+
+      - name: Create GitHub repository for client
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          
+          # Create repository
+          gh repo create ${{ inputs.github_org }}/${{ inputs.client_name }}-website \
+            --public \
+            --description "Website for ${{ inputs.client_name }} - ${{ inputs.domain }}" \
+            --clone=false
+          
+          # Add remote and push
+          git remote add origin https://github.com/${{ inputs.github_org }}/${{ inputs.client_name }}-website.git
+          git push -u origin main
+
+      - name: Deploy to Vercel with database
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          
+          # Install Vercel CLI
+          npm install -g vercel@latest
+          
+          # Deploy with environment variables
+          vercel --token $VERCEL_TOKEN \
+            --scope $VERCEL_ORG_ID \
+            --prod \
+            --yes \
+            --env DATABASE_URL="$DATABASE_URL" \
+            --env SESSION_SECRET="$(openssl rand -base64 32)" \
+            --env NODE_ENV="production" \
+            --env VERCEL_URL="${{ inputs.domain }}"
+
+      - name: Setup custom domain in Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          # Get project ID from Vercel
+          PROJECT_ID=$(curl -s "https://api.vercel.com/v9/projects/${{ inputs.client_name }}-website" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" | jq -r '.id')
+          
+          # Add custom domain
+          curl -X POST "https://api.vercel.com/v9/projects/$PROJECT_ID/domains" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"name\": \"${{ inputs.domain }}\"}"
+
+      - name: Create comprehensive deployment summary
+        run: |
+          echo "## 🚀 Complete Client Setup Finished!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Client:** ${{ inputs.client_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Domain:** ${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Database:** ${{ inputs.database_provider }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Repository:** https://github.com/${{ inputs.github_org }}/${{ inputs.client_name }}-website" >> $GITHUB_STEP_SUMMARY
+          echo "**Live Site:** https://${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ✅ What's Complete:" >> $GITHUB_STEP_SUMMARY
+          echo "- Database created and configured" >> $GITHUB_STEP_SUMMARY
+          echo "- GitHub repository set up" >> $GITHUB_STEP_SUMMARY
+          echo "- Deployed to Vercel" >> $GITHUB_STEP_SUMMARY
+          echo "- Custom domain configured" >> $GITHUB_STEP_SUMMARY
+          echo "- Admin panel ready" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Next Steps for Client:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Update DNS records to point ${{ inputs.domain }} to Vercel" >> $GITHUB_STEP_SUMMARY
+          echo "2. Access admin panel: https://${{ inputs.domain }}/admin" >> $GITHUB_STEP_SUMMARY
+          echo "3. Customize business information and branding" >> $GITHUB_STEP_SUMMARY
+          echo "4. Upload logo and images" >> $GITHUB_STEP_SUMMARY
