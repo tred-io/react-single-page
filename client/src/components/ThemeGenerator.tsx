@@ -251,27 +251,66 @@ export default function ThemeGenerator() {
                     <p className="text-sm font-medium">Why this works</p>
                     <p className="text-xs text-muted-foreground">{theme.reasoning}</p>
                   </div>
+
+                  <div className="pt-4 border-t">
+                    <p className="text-sm font-medium mb-2">Preview</p>
+                    <div 
+                      className="border rounded p-3 text-xs"
+                      style={{
+                        backgroundColor: getColorPreview(theme.secondaryColor),
+                        color: getColorPreview(theme.primaryColor),
+                        fontFamily: theme.fontFamily
+                      }}
+                    >
+                      <div className="font-bold text-base mb-1" style={{ color: getColorPreview(theme.primaryColor) }}>
+                        Your Store Name
+                      </div>
+                      <div className="text-xs mb-2" style={{ color: getColorPreview(theme.accentColor) }}>
+                        Quality products since 1985
+                      </div>
+                      <div className="text-xs">
+                        Welcome to our store! We provide excellent service...
+                      </div>
+                      <div 
+                        className="inline-block mt-2 px-2 py-1 rounded text-xs"
+                        style={{
+                          backgroundColor: getColorPreview(theme.accentColor),
+                          color: 'white'
+                        }}
+                      >
+                        Shop Now
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             ))}
           </div>
 
           {selectedTheme && (
-            <div className="flex justify-center">
-              <Button 
-                onClick={handleApplyTheme}
-                disabled={applyThemeMutation.isPending}
-                size="lg"
-              >
-                {applyThemeMutation.isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Applying Theme...
-                  </>
-                ) : (
-                  "Apply Selected Theme"
-                )}
-              </Button>
+            <div className="flex flex-col items-center gap-4">
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground mb-2">
+                  Ready to apply the selected theme to your website?
+                </p>
+                <Button 
+                  onClick={handleApplyTheme}
+                  disabled={applyThemeMutation.isPending}
+                  size="lg"
+                >
+                  {applyThemeMutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Applying Theme...
+                    </>
+                  ) : (
+                    "Apply Selected Theme"
+                  )}
+                </Button>
+              </div>
+              <p className="text-xs text-center text-muted-foreground max-w-md">
+                This will update your website's colors, fonts, and styling. You can always generate new themes or manually adjust colors in the admin panel.
+              </p>
             </div>
           )}
         </div>
