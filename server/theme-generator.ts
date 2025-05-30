@@ -106,12 +106,28 @@ Respond with JSON in this exact format:
   }
 }
 
+function hslToHex(hsl: string): string {
+  const [h, s, l] = hsl.split(' ').map((val, index) => {
+    if (index === 0) return parseInt(val);
+    return parseInt(val.replace('%', '')) / 100;
+  });
+  
+  const a = s * Math.min(l, 1 - l);
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+
 export function applyThemeToStoreSettings(theme: ThemeOption, storeSettings: any) {
   return {
     ...storeSettings,
-    primaryColor: theme.primaryColor,
-    secondaryColor: theme.secondaryColor, 
-    accentColor: theme.accentColor,
+    primaryColor: hslToHex(theme.primaryColor),
+    secondaryColor: hslToHex(theme.secondaryColor), 
+    accentColor: hslToHex(theme.accentColor),
     fontFamily: theme.fontFamily
   };
 }
