@@ -42,6 +42,38 @@ on:
           - immediate
           - staging-only
         default: canary
+      business_description:
+        description: 'Business description for AI theme generation'
+        required: false
+        type: string
+        default: 'A family-owned agricultural supply store serving local farmers and ranchers'
+      theme_style:
+        description: 'Preferred theme style'
+        required: false
+        type: choice
+        options:
+          - modern
+          - rustic
+          - professional
+          - elegant
+          - bold
+          - minimal
+        default: rustic
+      primary_color:
+        description: 'Primary color (HSL format: hue saturation% lightness%)'
+        required: false
+        type: string
+        default: '25 76% 31%'
+      secondary_color:
+        description: 'Secondary color (HSL format)'
+        required: false
+        type: string
+        default: '180 25% 25%'
+      accent_color:
+        description: 'Accent color (HSL format)'
+        required: false
+        type: string
+        default: '30 59% 53%'
 
 jobs:
   deploy-new-client:
@@ -73,6 +105,32 @@ jobs:
           chmod +x deploy-client-efficient.sh
           ./deploy-client-efficient.sh ${{ inputs.client_name }} ${{ inputs.domain }}
 
+      - name: Configure theme settings
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          
+          # Update client-config.json with theme preferences
+          cat > theme-config.json << EOF
+          {
+            "businessDescription": "${{ inputs.business_description }}",
+            "themeStyle": "${{ inputs.theme_style }}",
+            "colors": {
+              "primary": "${{ inputs.primary_color }}",
+              "secondary": "${{ inputs.secondary_color }}",
+              "accent": "${{ inputs.accent_color }}"
+            }
+          }
+          EOF
+          
+          # Merge theme config into client config
+          if command -v jq >/dev/null 2>&1; then
+            jq ".branding.primaryColor = \"${{ inputs.primary_color }}\" | 
+                .branding.secondaryColor = \"${{ inputs.secondary_color }}\" | 
+                .branding.accentColor = \"${{ inputs.accent_color }}\" |
+                .branding.themeStyle = \"${{ inputs.theme_style }}\"" \
+              client-config.json > tmp.json && mv tmp.json client-config.json
+          fi
+
       - name: Provision database automatically
         env:
           NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
@@ -103,6 +161,57 @@ jobs:
           cd deployments/${{ inputs.client_name }}
           npm install --prefix ../../..
           npm run db:push --prefix ../../..
+
+      - name: Apply initial theme to database
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          
+          # Create a theme application script
+          cat > apply-theme.js << 'EOF'
+          const { Pool } = require('@neondatabase/serverless');
+          const ws = require('ws');
+          
+          async function applyTheme() {
+            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+            
+            const themeConfig = {
+              primaryColor: process.argv[2] || '25 76% 31%',
+              secondaryColor: process.argv[3] || '180 25% 25%',
+              accentColor: process.argv[4] || '30 59% 53%',
+              fontFamily: 'Inter'
+            };
+            
+            try {
+              await pool.query(`
+                UPDATE store_settings SET 
+                  primary_color = $1,
+                  secondary_color = $2,
+                  accent_color = $3,
+                  font_family = $4
+                WHERE id = 1
+              `, [
+                themeConfig.primaryColor,
+                themeConfig.secondaryColor, 
+                themeConfig.accentColor,
+                themeConfig.fontFamily
+              ]);
+              
+              console.log('Theme applied successfully');
+            } catch (error) {
+              console.error('Error applying theme:', error);
+            } finally {
+              await pool.end();
+            }
+          }
+          
+          applyTheme();
+          EOF
+          
+          # Apply the theme with specified colors
+          node apply-theme.js "${{ inputs.primary_color }}" "${{ inputs.secondary_color }}" "${{ inputs.accent_color }}"
 
       - name: Create GitHub repository
         env:
