@@ -65,6 +65,8 @@ export class MemStorage implements IStorage {
       fontFamily: "Inter",
       // Social URLs
       facebookUrl: "",
+      instagramUrl: "",
+      xUrl: "",
       googleUrl: "",
       yelpUrl: "",
       // SEO
