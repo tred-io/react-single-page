@@ -10,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Palette, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 
 const businessDescriptionSchema = z.object({
   description: z.string().min(10, "Please provide a detailed description (at least 10 characters)")
@@ -103,7 +102,6 @@ export default function ThemeGenerator() {
         title: "Theme Applied",
         description: "Your website theme has been updated!"
       });
-      // Reset the generator
       setGeneratedThemes(null);
       setSelectedTheme(null);
       form.reset();
