@@ -711,6 +711,20 @@ export default function AdminEnhanced() {
                           onUpload={(url) => form.setValue("faviconUrl", url)}
                           label="Favicon"
                         />
+                        <FileUpload
+                          currentUrl={form.watch("heroImageUrl")}
+                          onUpload={(url) => form.setValue("heroImageUrl", url)}
+                          label="Hero Background Image"
+                          accept=".jpg,.jpeg,.png,.webp"
+                          maxSize={5}
+                        />
+                        <FileUpload
+                          currentUrl={form.watch("aboutImageUrl")}
+                          onUpload={(url) => form.setValue("aboutImageUrl", url)}
+                          label="About Section Image"
+                          accept=".jpg,.jpeg,.png,.webp"
+                          maxSize={5}
+                        />
                       </div>
                       
                       <div className="space-y-4">
