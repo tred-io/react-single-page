@@ -220,6 +220,9 @@ export default function Footer() {
         
         <div className="border-t border-gray-600 mt-8 pt-8 text-center">
           <p className="text-gray-400">&copy; 2024 {settings.storeName}. All rights reserved. | Proudly serving since {settings.foundedYear}</p>
+          <p className="text-xs text-gray-500 mt-2">
+            Built with sustainable business practices in mind
+          </p>
         </div>
       </div>
     </footer>
