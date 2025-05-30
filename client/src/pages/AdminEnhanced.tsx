@@ -1078,7 +1078,7 @@ export default function AdminEnhanced() {
             <div className="flex justify-end mt-8">
               <Button 
                 type="submit" 
-                className="bg-chocolate-brown hover:bg-chocolate-brown/90 text-white px-8"
+                className="bg-forest-green hover:bg-green-700 text-white font-semibold px-8 py-3 text-base shadow-lg"
                 disabled={updateSettingsMutation.isPending}
               >
                 {updateSettingsMutation.isPending ? "Saving..." : "Save All Settings"}
