@@ -1,0 +1,21 @@
+{
+  "clientName": "sp-upholstery",
+  "domain": "spupholstery.com",
+  "deployedAt": "2025-05-30T17:02:23Z",
+  "templateVersion": "1.0.0",
+  "templatePath": "../../..",
+  "database": {
+    "provider": "neon",
+    "connectionString": "TO_BE_SET"
+  },
+  "deployment": {
+    "platform": "vercel",
+    "customDomain": "spupholstery.com"
+  },
+  "branding": {
+    "primaryColor": "#8B4513",
+    "secondaryColor": "#2F4F4F", 
+    "accentColor": "#CD853F",
+    "fontFamily": "Inter"
+  }
+}
