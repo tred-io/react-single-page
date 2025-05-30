@@ -984,7 +984,9 @@ export default function AdminEnhanced() {
               </TabsContent>
 
               <TabsContent value="themes" className="space-y-6">
-                <ThemeGenerator />
+                <div className="space-y-6">
+                  <ThemeGenerator />
+                </div>
               </TabsContent>
 
               <TabsContent value="social" className="space-y-6">
