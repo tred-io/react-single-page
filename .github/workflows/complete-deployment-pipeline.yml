@@ -120,29 +120,18 @@ jobs:
           npm install --prefix ../../..
           npm run db:push --prefix ../../..
 
-      - name: Create GitHub repository
+      - name: Create GitHub repository and push
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           cd deployments/${{ inputs.client_name }}
           
-          # Initialize git repository if not already done
-          git init
-          git add .
-          git commit -m "Initial deployment for ${{ inputs.client_name }}"
-          git branch -M main
-          
-          # Check if repository exists, create if it doesn't
-          if ! gh repo view ${{ github.repository_owner }}/${{ inputs.client_name }}-website >/dev/null 2>&1; then
-            echo "Repository doesn't exist, creating..."
-            gh repo create ${{ github.repository_owner }}/${{ inputs.client_name }}-website \
-              --public \
-              --description "Website for ${{ inputs.client_name }} - ${{ inputs.domain }}" \
-              --clone=false
-          else
-            echo "Repository already exists, skipping creation..."
-          fi
+          # Create repository using GitHub CLI (ignore if already exists)
+          gh repo create ${{ github.repository_owner }}/${{ inputs.client_name }}-website \
+            --public \
+            --description "Website for ${{ inputs.client_name }} - ${{ inputs.domain }}" \
+            --clone=false || echo "Repository already exists, continuing..."
           
           # Add remote and push
           git remote add origin https://github.com/${{ github.repository_owner }}/${{ inputs.client_name }}-website.git || git remote set-url origin https://github.com/${{ github.repository_owner }}/${{ inputs.client_name }}-website.git
