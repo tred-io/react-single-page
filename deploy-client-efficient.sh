@@ -139,6 +139,7 @@ git config --global user.name "Template Deploy"
 git init
 git add .
 git commit -m "Initial client configuration for $CLIENT_NAME"
+git branch -M main
 
 echo "✅ Efficient deployment created for $CLIENT_NAME"
 echo "📂 Location: $CLIENT_DIR ($(du -sh $CLIENT_DIR | cut -f1) vs full copy: ~200MB)"
