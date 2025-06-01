@@ -88,11 +88,6 @@ cat > "$CLIENT_DIR/vercel.json" << EOF
   "outputDirectory": "../../../dist",
   "installCommand": "cd ../../.. && npm install",
   "framework": null,
-  "functions": {
-    "server/index.ts": {
-      "runtime": "nodejs18.x"
-    }
-  },
   "env": {
     "CLIENT_CONFIG_PATH": "./deployments/$CLIENT_NAME/client-config.json"
   }
