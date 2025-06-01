@@ -132,14 +132,7 @@ npm run dev
 The Vercel configuration points to the shared template build, with client-specific environment variables.
 EOF
 
-# Initialize minimal git repository
-cd "$CLIENT_DIR"
-git config --global user.email "deploy@template.com"
-git config --global user.name "Template Deploy"
-git init
-git add .
-git commit -m "Initial client configuration for $CLIENT_NAME"
-git branch -M main
+# Note: Git repository will be initialized by the GitHub Actions workflow
 
 echo "✅ Efficient deployment created for $CLIENT_NAME"
 echo "📂 Location: $CLIENT_DIR ($(du -sh $CLIENT_DIR | cut -f1) vs full copy: ~200MB)"
