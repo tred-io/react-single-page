@@ -70,14 +70,23 @@ jobs:
           git remote add origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ inputs.github_org }}/${{ inputs.client_name }}-website.git
           git push -u origin main
 
-      - name: Skip Vercel deployment (manual setup required)
+      - name: Deploy to Vercel
         if: ${{ inputs.vercel_deploy }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          echo "⚠️  Vercel deployment skipped - requires manual setup"
-          echo "📝 Next steps for Vercel deployment:"
-          echo "   1. Connect the GitHub repository to Vercel manually"
-          echo "   2. Configure environment variables in Vercel dashboard"
-          echo "   3. Set up custom domain: ${{ inputs.domain }}"
+          cd deployments/${{ inputs.client_name }}
+          
+          # Install Vercel CLI
+          npm install -g vercel@latest
+          
+          # Login using token
+          echo "$VERCEL_TOKEN" | vercel login --stdin
+          
+          # Deploy to Vercel
+          vercel --prod --yes \
+            --env DATABASE_URL="postgresql://placeholder" \
+            --env SESSION_SECRET="$(openssl rand -base64 32)"
 
       - name: Create deployment summary
         run: |
