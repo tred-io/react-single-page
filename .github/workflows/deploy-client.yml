@@ -51,11 +51,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
-          # Create repository using GitHub REST API
+          # Create repository using GitHub REST API under organization
           curl -X POST \
             -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/user/repos \
+            https://api.github.com/orgs/trascopurs-projects/repos \
             -d "{
               \"name\": \"${{ inputs.client_name }}-website\",
               \"description\": \"Website for ${{ inputs.client_name }} - ${{ inputs.domain }}\",
@@ -69,7 +69,7 @@ jobs:
           git add .
           git commit -m "Initial deployment for ${{ inputs.client_name }}"
           git branch -M main
-          git remote add origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ inputs.github_org }}/${{ inputs.client_name }}-website.git
+          git remote add origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/trascopurs-projects/${{ inputs.client_name }}-website.git
           git push -u origin main
 
       - name: Fix vercel.json configuration
