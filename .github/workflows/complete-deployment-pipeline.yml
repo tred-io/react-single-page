@@ -120,18 +120,16 @@ jobs:
           npm install --prefix ../../..
           npm run db:push --prefix ../../..
 
-      - name: Push to GitHub repository
+      - name: Create GitHub repository
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           cd deployments/${{ inputs.client_name }}
           
-          # Check if repository exists, create if not
-          if ! gh repo view ${{ github.repository_owner }}/${{ inputs.client_name }}-website >/dev/null 2>&1; then
-            echo "Repository doesn't exist, creating manually via GitHub web interface required"
-            echo "Please create repository: ${{ github.repository_owner }}/${{ inputs.client_name }}-website"
-            exit 1
-          fi
+          gh repo create ${{ github.repository_owner }}/${{ inputs.client_name }}-website \
+            --public \
+            --description "Website for ${{ inputs.client_name }} - ${{ inputs.domain }}"
           
           git remote add origin https://github.com/${{ github.repository_owner }}/${{ inputs.client_name }}-website.git
           git push -u origin main
