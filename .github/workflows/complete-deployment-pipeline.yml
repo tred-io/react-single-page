@@ -12,6 +12,12 @@ on:
           - update-template
           - emergency-rollback
         default: deploy-new-client
+
+permissions:
+  contents: write
+  actions: write
+  metadata: write
+  repository-projects: write
       client_name:
         description: 'Client name (for new deployments)'
         required: false
@@ -116,8 +122,8 @@ jobs:
 
       - name: Create GitHub repository
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           cd deployments/${{ inputs.client_name }}
           
