@@ -55,7 +55,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
+          # Install GitHub CLI
+          sudo apt-get update
+          sudo apt-get install gh
+          
           cd deployments/${{ inputs.client_name }}
+          
+          # Verify git repository exists
+          if [ ! -d ".git" ]; then
+            echo "Git repository not found, reinitializing..."
+            git init
+            git add .
+            git commit -m "Initial deployment for ${{ inputs.client_name }}"
+            git branch -M main
+          fi
           
           # Create repository using GitHub CLI
           gh repo create ${{ inputs.github_org }}/${{ inputs.client_name }}-website \
