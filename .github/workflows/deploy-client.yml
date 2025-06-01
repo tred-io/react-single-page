@@ -41,6 +41,16 @@ jobs:
           chmod +x deploy-template.sh
           ./deploy-template.sh ${{ inputs.client_name }} ${{ inputs.domain }}
 
+      - name: Initialize git repository
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git init
+          git add .
+          git commit -m "Initial deployment for ${{ inputs.client_name }}"
+          git branch -M main
+
       - name: Create GitHub repository for client
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
