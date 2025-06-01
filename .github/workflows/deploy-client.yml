@@ -67,7 +67,7 @@ jobs:
           git add .
           git commit -m "Initial deployment for ${{ inputs.client_name }}"
           git branch -M main
-          git remote add origin https://github.com/${{ inputs.github_org }}/${{ inputs.client_name }}-website.git
+          git remote add origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ inputs.github_org }}/${{ inputs.client_name }}-website.git
           git push -u origin main
 
       - name: Deploy to Vercel
