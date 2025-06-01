@@ -1,10 +1,26 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { initializeClientSchema, initializeClientData } from "./init-client-schema";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Initialize client schema on startup
+const initializeApp = async () => {
+  const clientName = process.env.CLIENT_NAME;
+  const domain = process.env.VERCEL_URL || process.env.DOMAIN;
+  
+  if (clientName && process.env.DATABASE_URL && process.env.DATABASE_URL !== "postgresql://placeholder") {
+    log(`Initializing schema for client: ${clientName}`);
+    await initializeClientSchema(clientName);
+    
+    if (domain) {
+      await initializeClientData(clientName, domain);
+    }
+  }
+};
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -37,6 +53,9 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Initialize client schema before starting server
+  await initializeApp();
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
