@@ -51,16 +51,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
-          # Create repository using GitHub REST API
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/user/repos \
-            -d "{
-              \"name\": \"${{ inputs.client_name }}-website\",
-              \"description\": \"Website for ${{ inputs.client_name }} - ${{ inputs.domain }}\",
-              \"private\": false
-            }"
+          # Install GitHub CLI
+          sudo apt-get update
+          sudo apt-get install gh
+          
+          # Export the token explicitly
+          export GH_TOKEN="${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+          
+          # Create repository using GitHub CLI first
+          gh repo create ${{ inputs.github_org }}/${{ inputs.client_name }}-website \
+            --public \
+            --description "Website for ${{ inputs.client_name }} - ${{ inputs.domain }}" \
+            --clone=false
           
           cd deployments/${{ inputs.client_name }}
           
