@@ -81,6 +81,13 @@ jobs:
           npm install -g vercel@latest
           
           # Deploy to Vercel
+          echo "Checking token availability..."
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "ERROR: VERCEL_TOKEN is empty"
+            exit 1
+          fi
+          echo "Token length: ${#VERCEL_TOKEN}"
+          
           export VERCEL_TOKEN="$VERCEL_TOKEN"
           vercel --prod --yes \
             --env DATABASE_URL="postgresql://placeholder" \
