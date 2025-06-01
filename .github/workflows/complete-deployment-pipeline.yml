@@ -127,10 +127,19 @@ jobs:
         run: |
           cd deployments/${{ inputs.client_name }}
           
+          # Initialize git repository if not already done
+          git init
+          git add .
+          git commit -m "Initial deployment for ${{ inputs.client_name }}"
+          git branch -M main
+          
+          # Create repository using GitHub CLI
           gh repo create ${{ github.repository_owner }}/${{ inputs.client_name }}-website \
             --public \
-            --description "Website for ${{ inputs.client_name }} - ${{ inputs.domain }}"
+            --description "Website for ${{ inputs.client_name }} - ${{ inputs.domain }}" \
+            --clone=false
           
+          # Add remote and push
           git remote add origin https://github.com/${{ github.repository_owner }}/${{ inputs.client_name }}-website.git
           git push -u origin main
 
