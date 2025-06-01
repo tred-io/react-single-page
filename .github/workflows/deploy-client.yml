@@ -11,10 +11,7 @@ on:
         description: 'Client domain (e.g., brownfeedstore.com)'
         required: true
         type: string
-      github_org:
-        description: 'GitHub organization/username'
-        required: true
-        type: string
+
       vercel_deploy:
         description: 'Auto-deploy to Vercel'
         required: false
@@ -166,7 +163,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Client:** ${{ inputs.client_name }}" >> $GITHUB_STEP_SUMMARY
           echo "**Domain:** ${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Repository:** https://github.com/${{ inputs.github_org }}/${{ inputs.client_name }}-website" >> $GITHUB_STEP_SUMMARY
+          echo "**Repository:** https://github.com/trascopurs-projects/${{ inputs.client_name }}-website" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
           echo "1. Set up database at [neon.tech](https://neon.tech)" >> $GITHUB_STEP_SUMMARY
