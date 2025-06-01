@@ -52,7 +52,7 @@ jobs:
           curl -X POST \
             -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/orgs/trascopurs-projects/repos \
+            https://api.github.com/orgs/TRED-Studio/repos \
             -d "{
               \"name\": \"${{ inputs.client_name }}-website\",
               \"description\": \"Website for ${{ inputs.client_name }} - ${{ inputs.domain }}\",
@@ -66,7 +66,7 @@ jobs:
           git add .
           git commit -m "Initial deployment for ${{ inputs.client_name }}"
           git branch -M main
-          git remote add origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/trascopurs-projects/${{ inputs.client_name }}-website.git
+          git remote add origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/TRED-Studio/${{ inputs.client_name }}-website.git
           git push -u origin main
 
       - name: Fix vercel.json configuration
@@ -151,7 +151,7 @@ jobs:
           
           # Deploy to Vercel with token (organization account)
           npx vercel --token "$VERCEL_TOKEN" --prod --yes \
-            --scope "trascopurs-projects" \
+            --scope "TRED-Studio" \
             --env DATABASE_URL="$DATABASE_URL" \
             --env SESSION_SECRET="$(openssl rand -base64 32)" \
             --env CLIENT_NAME="${{ inputs.client_name }}"
@@ -163,7 +163,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Client:** ${{ inputs.client_name }}" >> $GITHUB_STEP_SUMMARY
           echo "**Domain:** ${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Repository:** https://github.com/trascopurs-projects/${{ inputs.client_name }}-website" >> $GITHUB_STEP_SUMMARY
+          echo "**Repository:** https://github.com/TRED-Studio/${{ inputs.client_name }}-website" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
           echo "1. Set up database at [neon.tech](https://neon.tech)" >> $GITHUB_STEP_SUMMARY
