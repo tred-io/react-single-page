@@ -82,10 +82,9 @@ jobs:
           npm install -g vercel@latest
           
           # Deploy to Vercel
-          vercel --token "$VERCEL_TOKEN" \
-            --scope "$VERCEL_ORG_ID" \
-            --prod \
-            --yes \
+          export VERCEL_TOKEN="$VERCEL_TOKEN"
+          export VERCEL_ORG_ID="$VERCEL_ORG_ID"
+          vercel --prod --yes \
             --env DATABASE_URL="postgresql://placeholder" \
             --env SESSION_SECRET="$(openssl rand -base64 32)"
 
