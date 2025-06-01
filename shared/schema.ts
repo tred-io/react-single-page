@@ -8,7 +8,83 @@ import {
   index,
   integer,
   serial,
+  pgSchema,
 } from "drizzle-orm/pg-core";
+
+// Multi-tenant schema support
+export function createClientSchema(clientName: string) {
+  return pgSchema(clientName.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase());
+}
+
+// Get schema-aware tables for a specific client
+export function getClientTables(clientName: string) {
+  const schema = createClientSchema(clientName);
+  
+  return {
+    storeSettings: schema.table("store_settings", {
+      id: serial("id").primaryKey(),
+      storeName: varchar("store_name", { length: 255 }).notNull(),
+      tagline: text("tagline").notNull(),
+      address: text("address").notNull(),
+      phone: varchar("phone", { length: 50 }).notNull(),
+      email: varchar("email", { length: 255 }),
+      mondayHours: varchar("monday_hours", { length: 100 }).notNull(),
+      tuesdayHours: varchar("tuesday_hours", { length: 100 }).notNull(),
+      wednesdayHours: varchar("wednesday_hours", { length: 100 }).notNull(),
+      thursdayHours: varchar("thursday_hours", { length: 100 }).notNull(),
+      fridayHours: varchar("friday_hours", { length: 100 }).notNull(),
+      saturdayHours: varchar("saturday_hours", { length: 100 }).notNull(),
+      sundayHours: varchar("sunday_hours", { length: 100 }).notNull(),
+      aboutTitle: varchar("about_title", { length: 255 }).notNull(),
+      aboutDescription: text("about_description").notNull(),
+      aboutStory: text("about_story").notNull(),
+      foundedYear: varchar("founded_year", { length: 10 }).notNull(),
+      logoUrl: text("logo_url"),
+      faviconUrl: text("favicon_url"),
+      heroImageUrl: text("hero_image_url"),
+      aboutImageUrl: text("about_image_url"),
+      primaryColor: varchar("primary_color", { length: 20 }).notNull(),
+      secondaryColor: varchar("secondary_color", { length: 20 }).notNull(),
+      accentColor: varchar("accent_color", { length: 20 }).notNull(),
+      fontFamily: varchar("font_family", { length: 100 }).notNull(),
+      facebookUrl: text("facebook_url"),
+      instagramUrl: text("instagram_url"),
+      xUrl: text("x_url"),
+      googleUrl: text("google_url"),
+      yelpUrl: text("yelp_url"),
+      seoTitle: varchar("seo_title", { length: 255 }).notNull(),
+      seoDescription: text("seo_description").notNull(),
+      seoKeywords: text("seo_keywords").notNull(),
+      createdAt: timestamp("created_at").defaultNow(),
+      updatedAt: timestamp("updated_at").defaultNow(),
+    }),
+    
+    productCategories: schema.table("product_categories", {
+      id: serial("id").primaryKey(),
+      title: varchar("title", { length: 255 }).notNull(),
+      description: text("description").notNull(),
+      imageUrl: text("image_url").notNull(),
+      iconName: varchar("icon_name", { length: 100 }).notNull(),
+      items: jsonb("items").$type<string[]>().notNull(),
+      displayOrder: integer("display_order").notNull(),
+    }),
+    
+    specialServices: schema.table("special_services", {
+      id: serial("id").primaryKey(),
+      title: varchar("title", { length: 255 }).notNull(),
+      description: text("description").notNull(),
+      iconName: varchar("icon_name", { length: 100 }).notNull(),
+      displayOrder: integer("display_order").notNull(),
+    }),
+    
+    featuredBrands: schema.table("featured_brands", {
+      id: serial("id").primaryKey(),
+      name: varchar("name", { length: 255 }).notNull(),
+      logoUrl: text("logo_url").notNull(),
+      displayOrder: integer("display_order").notNull(),
+    }),
+  };
+}
 
 // Simple TypeScript types for business website template
 export interface SimpleUser {

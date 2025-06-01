@@ -117,33 +117,20 @@ jobs:
           git commit -m "Fix vercel.json configuration - remove functions property"
           git push origin main
 
-      - name: Create Neon database
+      - name: Setup shared database connection
         env:
-          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          # Create database for the client
-          DB_NAME="${{ inputs.client_name }}-db"
-          
-          # Create Neon database using API
-          RESPONSE=$(curl -s -X POST \
-            "https://console.neon.tech/api/v2/projects" \
-            -H "Authorization: Bearer $NEON_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"project\": {
-                \"name\": \"$DB_NAME\",
-                \"region_id\": \"aws-us-east-1\"
-              }
-            }")
-          
-          # Extract connection string
-          CONNECTION_STRING=$(echo "$RESPONSE" | jq -r '.connection_uris[0].connection_uri')
-          
-          echo "Database created: $DB_NAME"
-          echo "Connection string will be set in Vercel environment"
+          # Use the shared database connection string
+          if [ -z "$DATABASE_URL" ]; then
+            echo "Warning: DATABASE_URL secret not set. Please add the shared database connection string."
+            DATABASE_URL="postgresql://placeholder"
+          else
+            echo "Using shared database connection for client: ${{ inputs.client_name }}"
+          fi
           
           # Store for Vercel deployment
-          echo "DATABASE_URL=$CONNECTION_STRING" > /tmp/db_env
+          echo "DATABASE_URL=$DATABASE_URL" > /tmp/db_env
 
       - name: Deploy to Vercel
         if: ${{ inputs.vercel_deploy }}
