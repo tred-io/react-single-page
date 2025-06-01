@@ -79,6 +79,14 @@ jobs:
           chmod +x deploy-client-efficient.sh
           ./deploy-client-efficient.sh ${{ inputs.client_name }} ${{ inputs.domain }}
 
+      - name: Initialize git repository for deployment
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          git init
+          git add .
+          git commit -m "Initial deployment for ${{ inputs.client_name }}"
+          git branch -M main
+
       - name: Provision database automatically
         env:
           NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
