@@ -49,6 +49,7 @@ jobs:
       - name: Create GitHub repository for client
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           # Install GitHub CLI
           sudo apt-get update
@@ -73,6 +74,7 @@ jobs:
       - name: Fix vercel.json configuration
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           cd deployments/${{ inputs.client_name }}
           
