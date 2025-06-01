@@ -70,6 +70,34 @@ jobs:
           git remote add origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ inputs.github_org }}/${{ inputs.client_name }}-website.git
           git push -u origin main
 
+      - name: Create Neon database
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+        run: |
+          # Create database for the client
+          DB_NAME="${{ inputs.client_name }}-db"
+          
+          # Create Neon database using API
+          RESPONSE=$(curl -s -X POST \
+            "https://console.neon.tech/api/v2/projects" \
+            -H "Authorization: Bearer $NEON_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"project\": {
+                \"name\": \"$DB_NAME\",
+                \"region_id\": \"aws-us-east-1\"
+              }
+            }")
+          
+          # Extract connection string
+          CONNECTION_STRING=$(echo "$RESPONSE" | jq -r '.connection_uris[0].connection_uri')
+          
+          echo "Database created: $DB_NAME"
+          echo "Connection string will be set in Vercel environment"
+          
+          # Store for Vercel deployment
+          echo "DATABASE_URL=$CONNECTION_STRING" > /tmp/db_env
+
       - name: Deploy to Vercel
         if: ${{ inputs.vercel_deploy }}
         env:
@@ -80,9 +108,16 @@ jobs:
           # Install Vercel CLI
           npm install -g vercel@latest
           
+          # Read database URL from previous step
+          if [ -f /tmp/db_env ]; then
+            source /tmp/db_env
+          else
+            DATABASE_URL="postgresql://placeholder"
+          fi
+          
           # Deploy to Vercel with token
           npx vercel --token "$VERCEL_TOKEN" --prod --yes \
-            --env DATABASE_URL="postgresql://placeholder" \
+            --env DATABASE_URL="$DATABASE_URL" \
             --env SESSION_SECRET="$(openssl rand -base64 32)"
 
       - name: Create deployment summary
