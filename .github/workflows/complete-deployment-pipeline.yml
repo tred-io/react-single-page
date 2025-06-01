@@ -133,11 +133,16 @@ jobs:
           git commit -m "Initial deployment for ${{ inputs.client_name }}"
           git branch -M main
           
-          # Create repository using GitHub CLI (ignore if already exists)
-          gh repo create ${{ github.repository_owner }}/${{ inputs.client_name }}-website \
-            --public \
-            --description "Website for ${{ inputs.client_name }} - ${{ inputs.domain }}" \
-            --clone=false || echo "Repository already exists, continuing..."
+          # Check if repository exists, create if it doesn't
+          if ! gh repo view ${{ github.repository_owner }}/${{ inputs.client_name }}-website >/dev/null 2>&1; then
+            echo "Repository doesn't exist, creating..."
+            gh repo create ${{ github.repository_owner }}/${{ inputs.client_name }}-website \
+              --public \
+              --description "Website for ${{ inputs.client_name }} - ${{ inputs.domain }}" \
+              --clone=false
+          else
+            echo "Repository already exists, skipping creation..."
+          fi
           
           # Add remote and push
           git remote add origin https://github.com/${{ github.repository_owner }}/${{ inputs.client_name }}-website.git || git remote set-url origin https://github.com/${{ github.repository_owner }}/${{ inputs.client_name }}-website.git
