@@ -80,11 +80,8 @@ jobs:
           # Install Vercel CLI
           npm install -g vercel@latest
           
-          # Login using token
-          echo "$VERCEL_TOKEN" | vercel login --stdin
-          
-          # Deploy to Vercel
-          vercel --prod --yes \
+          # Deploy to Vercel with token
+          npx vercel --token "$VERCEL_TOKEN" --prod --yes \
             --env DATABASE_URL="postgresql://placeholder" \
             --env SESSION_SECRET="$(openssl rand -base64 32)"
 
