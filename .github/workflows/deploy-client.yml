@@ -70,6 +70,30 @@ jobs:
           git remote add origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ inputs.github_org }}/${{ inputs.client_name }}-website.git
           git push -u origin main
 
+      - name: Fix vercel.json configuration
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          
+          # Create corrected vercel.json without functions property
+          cat > vercel.json << EOF
+          {
+            "buildCommand": "cd ../../.. && npm run build",
+            "outputDirectory": "../../../dist",
+            "installCommand": "cd ../../.. && npm install",
+            "framework": null,
+            "env": {
+              "CLIENT_CONFIG_PATH": "./deployments/${{ inputs.client_name }}/client-config.json"
+            }
+          }
+          EOF
+          
+          # Commit and push the fix
+          git add vercel.json
+          git commit -m "Fix vercel.json configuration - remove functions property"
+          git push origin main
+
       - name: Create Neon database
         env:
           NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
