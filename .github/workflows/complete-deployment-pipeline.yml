@@ -12,12 +12,6 @@ on:
           - update-template
           - emergency-rollback
         default: deploy-new-client
-
-permissions:
-  contents: write
-  actions: write
-  metadata: write
-  repository-projects: write
       client_name:
         description: 'Client name (for new deployments)'
         required: false
@@ -40,14 +34,20 @@ permissions:
         required: false
         type: string
       deployment_strategy:
-        description: 'Deployment strategy for template updates'
+        description: 'Deployment strategy'
         required: false
         type: choice
         options:
           - canary
-          - immediate
-          - staging-only
+          - blue-green
+          - rolling
         default: canary
+
+permissions:
+  contents: write
+  actions: write
+  metadata: write
+  repository-projects: write
 
 jobs:
   deploy-new-client:
