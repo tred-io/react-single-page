@@ -55,8 +55,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install gh
           
-          # Export the token explicitly
-          export GH_TOKEN="${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+          # Authenticate GitHub CLI explicitly
+          echo "${{ secrets.PERSONAL_ACCESS_TOKEN }}" | gh auth login --with-token
           
           # Create repository using GitHub CLI first
           gh repo create ${{ inputs.github_org }}/${{ inputs.client_name }}-website \
