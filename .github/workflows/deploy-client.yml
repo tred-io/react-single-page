@@ -83,7 +83,6 @@ jobs:
           
           # Deploy to Vercel
           export VERCEL_TOKEN="$VERCEL_TOKEN"
-          export VERCEL_ORG_ID="$VERCEL_ORG_ID"
           vercel --prod --yes \
             --env DATABASE_URL="postgresql://placeholder" \
             --env SESSION_SECRET="$(openssl rand -base64 32)"
