@@ -76,15 +76,38 @@ jobs:
         run: |
           cd deployments/${{ inputs.client_name }}
           
-          # Create corrected vercel.json without functions property
+          # Create corrected vercel.json for standalone deployment
           cat > vercel.json << EOF
           {
-            "buildCommand": "cd ../../.. && npm run build",
-            "outputDirectory": "../../../dist",
-            "installCommand": "cd ../../.. && npm install",
-            "framework": null,
+            "version": 2,
+            "builds": [
+              {
+                "src": "package.json",
+                "use": "@vercel/node",
+                "config": {
+                  "includeFiles": [
+                    "client/**",
+                    "server/**", 
+                    "shared/**",
+                    "*.json",
+                    "*.ts",
+                    "*.js"
+                  ]
+                }
+              }
+            ],
+            "routes": [
+              {
+                "src": "/api/(.*)",
+                "dest": "/server/index.ts"
+              },
+              {
+                "src": "/(.*)",
+                "dest": "/client/index.html"
+              }
+            ],
             "env": {
-              "CLIENT_CONFIG_PATH": "./deployments/${{ inputs.client_name }}/client-config.json"
+              "CLIENT_CONFIG_PATH": "./client-config.json"
             }
           }
           EOF
