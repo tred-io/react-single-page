@@ -74,7 +74,6 @@ jobs:
         if: ${{ inputs.vercel_deploy }}
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         run: |
           cd deployments/${{ inputs.client_name }}
           
