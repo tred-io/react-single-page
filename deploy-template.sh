@@ -101,13 +101,7 @@ cat > "$CLIENT_DIR/CLIENT_DEPLOYMENT.md" << EOF
 Contact your developer for template updates and technical support.
 EOF
 
-# Initialize git repository for client
-cd "$CLIENT_DIR"
-git config --global user.email "deploy@template.com"
-git config --global user.name "Template Deploy"
-git init
-git add .
-git commit -m "Initial deployment for $CLIENT_NAME - Template v1.0.0"
+# Note: Git repository will be initialized by the GitHub Actions workflow
 
 echo "✅ Template deployed for $CLIENT_NAME"
 echo "📂 Location: $CLIENT_DIR"
