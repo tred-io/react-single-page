@@ -23,9 +23,9 @@ mkdir -p "$CLIENT_DIR"
 
 # Copy template files (excluding node_modules and build artifacts)
 echo "📁 Copying template files..."
-find . -type f -not -path "./node_modules/*" -not -path "./dist/*" \
-    -not -path "./.git/*" -not -path "./deployments/*" -not -path "./uploads/*" \
-    -exec cp --parents {} "$CLIENT_DIR/" \;
+rsync -av --exclude='node_modules' --exclude='dist' --exclude='.git' \
+    --exclude='deployments' --exclude='uploads' --exclude='.replit' \
+    . "$CLIENT_DIR/"
 
 # Create client-specific configuration
 echo "⚙️  Creating client configuration..."
