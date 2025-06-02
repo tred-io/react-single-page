@@ -206,15 +206,20 @@ jobs:
             DATABASE_URL="postgresql://placeholder"
           fi
           
-          # Deploy to Vercel with token (organization account)
-          npx vercel --token "$VERCEL_TOKEN" --prod --yes \
-            --scope "tred-io" \
-            --env DATABASE_URL="$DATABASE_URL" \
-            --env SESSION_SECRET="$(openssl rand -base64 32)" \
-            --env CLIENT_NAME="${{ inputs.client_name }}" \
-            --env OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
-            --env DOMAIN="${{ inputs.domain }}" \
-            --env NODE_ENV="production"
+          # Initialize Vercel project and deploy
+          echo "Initializing Vercel project..."
+          npx vercel --token "$VERCEL_TOKEN" --yes --scope "tred-io"
+          
+          # Set environment variables
+          npx vercel env add DATABASE_URL production --token "$VERCEL_TOKEN" --scope "tred-io" <<< "$DATABASE_URL"
+          npx vercel env add SESSION_SECRET production --token "$VERCEL_TOKEN" --scope "tred-io" <<< "$(openssl rand -base64 32)"
+          npx vercel env add CLIENT_NAME production --token "$VERCEL_TOKEN" --scope "tred-io" <<< "${{ inputs.client_name }}"
+          npx vercel env add OPENAI_API_KEY production --token "$VERCEL_TOKEN" --scope "tred-io" <<< "${{ secrets.OPENAI_API_KEY }}"
+          npx vercel env add DOMAIN production --token "$VERCEL_TOKEN" --scope "tred-io" <<< "${{ inputs.domain }}"
+          npx vercel env add NODE_ENV production --token "$VERCEL_TOKEN" --scope "tred-io" <<< "production"
+          
+          # Deploy to production
+          npx vercel --token "$VERCEL_TOKEN" --prod --scope "tred-io"
 
       - name: Create deployment summary
         run: |
