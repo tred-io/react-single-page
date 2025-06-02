@@ -132,6 +132,27 @@ jobs:
           # Store for Vercel deployment
           echo "DATABASE_URL=$DATABASE_URL" > /tmp/db_env
 
+      - name: Initialize client schema and data
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CLIENT_NAME: ${{ inputs.client_name }}
+        run: |
+          # Install dependencies
+          npm install
+          
+          # Run client schema initialization directly
+          node -e "
+            import('./server/init-client-schema.js').then(async (module) => {
+              const clientName = '${{ inputs.client_name }}';
+              const domain = '${{ inputs.domain }}';
+              console.log('Initializing schema for:', clientName);
+              await module.initializeClientSchema(clientName);
+              console.log('Initializing data for:', clientName);
+              await module.initializeClientData(clientName, domain);
+              console.log('Client initialization complete');
+            }).catch(console.error);
+          "
+
       - name: Deploy to Vercel
         if: ${{ inputs.vercel_deploy }}
         env:
