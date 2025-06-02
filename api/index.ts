@@ -1,98 +1,30 @@
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "../server/routes";
-import { serveStatic, log } from "../server/vite";
-import { initializeClientSchema, initializeClientData } from "../server/init-client-schema";
-
-let app: express.Application | null = null;
-
-// Initialize client schema on startup
-const initializeApp = async () => {
-  const clientName = process.env.CLIENT_NAME;
-  const domain = process.env.VERCEL_URL || process.env.DOMAIN;
-  
-  if (clientName && process.env.DATABASE_URL && process.env.DATABASE_URL !== "postgresql://placeholder") {
-    try {
-      log(`Initializing schema for client: ${clientName}`);
-      await initializeClientSchema(clientName);
-      
-      if (domain) {
-        await initializeClientData(clientName, domain);
-      }
-      log(`Client initialization completed for: ${clientName}`);
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      log(`Failed to initialize client ${clientName}: ${errorMessage}`);
-      // Continue with server startup even if initialization fails
-    }
-  } else {
-    log(`Skipping client initialization - missing CLIENT_NAME or DATABASE_URL`);
-  }
-};
-
-async function getApp() {
-  if (app) return app;
-  
-  app = express();
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: false }));
-
-  app.use((req, res, next) => {
-    const start = Date.now();
-    const path = req.path;
-    let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
-    const originalResJson = res.json;
-    res.json = function (bodyJson, ...args) {
-      capturedJsonResponse = bodyJson;
-      return originalResJson.apply(res, [bodyJson, ...args]);
-    };
-
-    res.on("finish", () => {
-      const duration = Date.now() - start;
-      if (path.startsWith("/api")) {
-        let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-        if (capturedJsonResponse) {
-          logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-        }
-
-        if (logLine.length > 80) {
-          logLine = logLine.slice(0, 79) + "…";
-        }
-
-        log(logLine);
-      }
+export default function handler(req: any, res: any) {
+  // Simple health check
+  if (req.url === '/api/health') {
+    return res.status(200).json({ 
+      status: 'healthy', 
+      timestamp: new Date().toISOString(),
+      client: process.env.CLIENT_NAME || 'unknown'
     });
-
-    next();
-  });
-
-  // Initialize client schema before setting up routes
-  await initializeApp();
+  }
   
-  await registerRoutes(app);
-
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    res.status(status).json({ message });
-    throw err;
-  });
-
-  // In production, serve static files
-  if (process.env.NODE_ENV === "production") {
-    serveStatic(app);
-  }
-
-  return app;
-}
-
-export default async function handler(req: Request, res: Response) {
-  try {
-    const expressApp = await getApp();
-    return expressApp(req, res);
-  } catch (error) {
-    console.error("Handler error:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
+  // Serve basic HTML for all other routes
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Brown Feed Store - Lampasas, TX</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+      <h1>Brown Feed Store</h1>
+      <p>Located in Lampasas, Texas</p>
+      <p>Your local feed and farm supply store</p>
+    </body>
+    </html>
+  `;
+  
+  res.setHeader('Content-Type', 'text/html');
+  res.status(200).send(html);
 }
