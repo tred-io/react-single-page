@@ -135,16 +135,12 @@ jobs:
       - name: Initialize client schema
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CLIENT_NAME: ${{ inputs.client_name }}
         run: |
-          cd deployments/${{ inputs.client_name }}
-          
-          # Install dependencies
+          # Install dependencies in main project
           npm install
           
-          # Set client name for schema creation
-          export CLIENT_NAME="${{ inputs.client_name }}"
-          
-          # Initialize the client schema in shared database
+          # Initialize the client schema in shared database from main directory
           npm run db:push
 
       - name: Deploy to Vercel
