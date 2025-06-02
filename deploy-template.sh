@@ -21,11 +21,17 @@ echo "📋 Domain: $DOMAIN"
 CLIENT_DIR="deployments/$CLIENT_NAME"
 mkdir -p "$CLIENT_DIR"
 
-# Copy template files (excluding node_modules and build artifacts)
+# Copy template files (excluding node_modules and some build artifacts)
 echo "📁 Copying template files..."
-rsync -av --exclude='node_modules' --exclude='dist' --exclude='.git' \
+rsync -av --exclude='node_modules' --exclude='.git' \
     --exclude='deployments' --exclude='uploads' --exclude='.replit' \
     . "$CLIENT_DIR/"
+
+# Ensure dist directory is included if it exists
+if [ -d "dist" ]; then
+    echo "📦 Copying built React application..."
+    rsync -av dist/ "$CLIENT_DIR/dist/"
+fi
 
 # Create client-specific configuration
 echo "⚙️  Creating client configuration..."
