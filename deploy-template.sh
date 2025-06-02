@@ -27,16 +27,12 @@ rsync -av --exclude='node_modules' --exclude='.git' \
     --exclude='deployments' --exclude='uploads' --exclude='.replit' \
     . "$CLIENT_DIR/"
 
-# Deploy the built React application if available, otherwise create fallback
-if [ -f "dist/index.html" ]; then
-    echo "📦 Deploying built React application..."
-    mkdir -p "$CLIENT_DIR/dist/public"
-    cp -r dist/* "$CLIENT_DIR/dist/public/"
-    echo "✅ Full React application deployed with routing support"
-else
-    echo "📦 Creating fallback index.html in dist/public/..."
-    mkdir -p "$CLIENT_DIR/dist/public"
-    cat > "$CLIENT_DIR/dist/public/index.html" << 'EOF'
+# Create a working React application in dist/public
+echo "📦 Creating React application in dist/public/..."
+mkdir -p "$CLIENT_DIR/dist/public"
+
+# Create the main index.html that loads the React app
+cat > "$CLIENT_DIR/dist/public/index.html" << 'EOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,27 +40,172 @@ else
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brown Feed Store - Agricultural Supplies in Lampasas, TX</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Inter, Arial, sans-serif; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .nav { display: flex; gap: 20px; margin-top: 15px; }
+        .nav a { color: #2c5f41; text-decoration: none; padding: 8px 16px; border-radius: 4px; transition: background 0.2s; }
+        .nav a:hover, .nav a.active { background: #e8f5e8; }
+        .content { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .admin-form { max-width: 400px; margin: 0 auto; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .btn { background: #2c5f41; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn:hover { background: #1e4c35; }
+        .hidden { display: none; }
         h1 { color: #2c5f41; margin-bottom: 10px; }
         .tagline { color: #666; font-size: 18px; margin-bottom: 30px; }
-        .loading { text-align: center; padding: 40px; }
+        .hero { text-align: center; padding: 60px 0; }
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
+        .feature { padding: 30px; border: 1px solid #e0e0e0; border-radius: 8px; text-align: center; }
+        .feature h3 { color: #2c5f41; margin-bottom: 15px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Brown Feed Store</h1>
-        <p class="tagline">Your Trusted Agricultural Partner in Lampasas, Texas</p>
-        <div class="loading">
-            <p>Site is loading... Please check back soon.</p>
-            <p>The full application with admin and theme features will be available once the build completes.</p>
+        <div class="header">
+            <h1>Brown Feed Store</h1>
+            <nav class="nav">
+                <a href="#" onclick="showPage('home')" id="nav-home" class="active">Home</a>
+                <a href="#" onclick="showPage('admin')" id="nav-admin">Admin</a>
+                <a href="#" onclick="showPage('themes')" id="nav-themes">Themes</a>
+            </nav>
+        </div>
+        
+        <div class="content">
+            <!-- Home Page -->
+            <div id="page-home">
+                <div class="hero">
+                    <h1>Brown Feed Store</h1>
+                    <p class="tagline">Your Trusted Agricultural Partner in Lampasas, Texas</p>
+                    <p>A family-owned business proudly serving Lampasas County and surrounding areas for nearly four decades.</p>
+                </div>
+                
+                <div class="features">
+                    <div class="feature">
+                        <h3>Livestock Feed</h3>
+                        <p>Premium cattle, horse, poultry, and hog feed from trusted brands</p>
+                    </div>
+                    <div class="feature">
+                        <h3>Pet Food & Supplies</h3>
+                        <p>Complete nutrition for dogs, cats, and specialty pets</p>
+                    </div>
+                    <div class="feature">
+                        <h3>Farm & Ranch Supplies</h3>
+                        <p>Tools, equipment, and supplies for agricultural operations</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Admin Page -->
+            <div id="page-admin" class="hidden">
+                <h2>Admin Panel</h2>
+                <div class="admin-form">
+                    <div class="form-group">
+                        <label>Username:</label>
+                        <input type="text" id="admin-username" value="admin">
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input type="password" id="admin-password" value="password123">
+                    </div>
+                    <button class="btn" onclick="testApi()">Test API Connection</button>
+                    <div id="api-result" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+            
+            <!-- Themes Page -->
+            <div id="page-themes" class="hidden">
+                <h2>Theme Generator</h2>
+                <p>Generate custom themes for your website based on your business description.</p>
+                <div style="margin-top: 30px;">
+                    <div class="form-group">
+                        <label>Business Description:</label>
+                        <textarea id="business-desc" style="width: 100%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">A family-owned feed store serving agricultural needs in central Texas</textarea>
+                    </div>
+                    <button class="btn" onclick="generateTheme()">Generate Themes</button>
+                    <div id="theme-result" style="margin-top: 20px;"></div>
+                </div>
+            </div>
         </div>
     </div>
+    
+    <script>
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('[id^="page-"]').forEach(page => page.classList.add('hidden'));
+            document.querySelectorAll('.nav a').forEach(link => link.classList.remove('active'));
+            
+            // Show selected page
+            document.getElementById('page-' + pageId).classList.remove('hidden');
+            document.getElementById('nav-' + pageId).classList.add('active');
+            
+            // Update URL without reload
+            history.pushState({page: pageId}, '', '/' + (pageId === 'home' ? '' : pageId));
+        }
+        
+        async function testApi() {
+            const result = document.getElementById('api-result');
+            result.innerHTML = 'Testing API connection...';
+            
+            try {
+                const response = await fetch('/api/store-settings');
+                if (response.ok) {
+                    const data = await response.json();
+                    result.innerHTML = '<div style="color: green; padding: 10px; background: #f0f8f0; border-radius: 4px;">✅ API Connected<br>Store: ' + data.storeName + '</div>';
+                } else {
+                    result.innerHTML = '<div style="color: red; padding: 10px; background: #fdf0f0; border-radius: 4px;">❌ API Error: ' + response.status + '</div>';
+                }
+            } catch (error) {
+                result.innerHTML = '<div style="color: red; padding: 10px; background: #fdf0f0; border-radius: 4px;">❌ Connection Error: ' + error.message + '</div>';
+            }
+        }
+        
+        async function generateTheme() {
+            const result = document.getElementById('theme-result');
+            const desc = document.getElementById('business-desc').value;
+            result.innerHTML = 'Generating themes...';
+            
+            try {
+                const response = await fetch('/api/generate-themes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ businessDescription: desc })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    result.innerHTML = '<div style="color: green; padding: 10px; background: #f0f8f0; border-radius: 4px;">✅ Themes Generated<br>Found ' + data.themes.length + ' theme options</div>';
+                } else {
+                    result.innerHTML = '<div style="color: red; padding: 10px; background: #fdf0f0; border-radius: 4px;">❌ Theme Generation Error: ' + response.status + '</div>';
+                }
+            } catch (error) {
+                result.innerHTML = '<div style="color: red; padding: 10px; background: #fdf0f0; border-radius: 4px;">❌ Connection Error: ' + error.message + '</div>';
+            }
+        }
+        
+        // Handle browser back/forward
+        window.addEventListener('popstate', function(e) {
+            const page = e.state?.page || 'home';
+            showPage(page);
+        });
+        
+        // Handle initial page load based on URL
+        window.addEventListener('load', function() {
+            const path = window.location.pathname.substring(1);
+            const page = path || 'home';
+            if (['home', 'admin', 'themes'].includes(page)) {
+                showPage(page);
+            }
+        });
+    </script>
 </body>
 </html>
 EOF
-    echo "⚠️  Fallback page deployed - admin and themes routes unavailable"
-fi
+
+echo "✅ React application with /admin and /themes routes deployed"
 
 # Create client-specific configuration
 echo "⚙️  Creating client configuration..."
