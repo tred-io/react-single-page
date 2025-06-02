@@ -140,18 +140,11 @@ jobs:
           # Install dependencies
           npm install
           
-          # Run client schema initialization directly
-          node -e "
-            import('./server/init-client-schema.js').then(async (module) => {
-              const clientName = '${{ inputs.client_name }}';
-              const domain = '${{ inputs.domain }}';
-              console.log('Initializing schema for:', clientName);
-              await module.initializeClientSchema(clientName);
-              console.log('Initializing data for:', clientName);
-              await module.initializeClientData(clientName, domain);
-              console.log('Client initialization complete');
-            }).catch(console.error);
-          "
+          # Build the project first
+          npm run build
+          
+          # Run client schema initialization
+          node scripts/init-client.js ${{ inputs.client_name }} ${{ inputs.domain }}
 
       - name: Deploy to Vercel
         if: ${{ inputs.vercel_deploy }}
