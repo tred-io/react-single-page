@@ -9,12 +9,76 @@ export async function initializeClientSchema(clientName: string) {
     // Create schema if it doesn't exist
     await db.execute(sql`CREATE SCHEMA IF NOT EXISTS ${sql.identifier(schemaName)}`);
     
-    // Get client-specific tables
-    const tables = getClientTables(clientName);
-    
     // Create tables in the client schema
-    // Note: In production, you'd want to use proper migrations
-    // This is a simplified approach for the demo
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS ${sql.identifier(schemaName)}.store_settings (
+        id SERIAL PRIMARY KEY,
+        store_name VARCHAR(255) NOT NULL,
+        tagline TEXT NOT NULL,
+        address TEXT NOT NULL,
+        phone VARCHAR(50) NOT NULL,
+        email VARCHAR(255),
+        monday_hours VARCHAR(100) NOT NULL,
+        tuesday_hours VARCHAR(100) NOT NULL,
+        wednesday_hours VARCHAR(100) NOT NULL,
+        thursday_hours VARCHAR(100) NOT NULL,
+        friday_hours VARCHAR(100) NOT NULL,
+        saturday_hours VARCHAR(100) NOT NULL,
+        sunday_hours VARCHAR(100) NOT NULL,
+        about_title VARCHAR(255) NOT NULL,
+        about_description TEXT NOT NULL,
+        about_story TEXT NOT NULL,
+        founded_year VARCHAR(10) NOT NULL,
+        logo_url TEXT,
+        favicon_url TEXT,
+        hero_image_url TEXT,
+        about_image_url TEXT,
+        primary_color VARCHAR(20) NOT NULL,
+        secondary_color VARCHAR(20) NOT NULL,
+        accent_color VARCHAR(20) NOT NULL,
+        font_family VARCHAR(100) NOT NULL,
+        facebook_url TEXT,
+        instagram_url TEXT,
+        x_url TEXT,
+        google_url TEXT,
+        yelp_url TEXT,
+        seo_title TEXT NOT NULL,
+        seo_description TEXT NOT NULL,
+        seo_keywords TEXT NOT NULL
+      )
+    `);
+    
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS ${sql.identifier(schemaName)}.product_categories (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        description TEXT NOT NULL,
+        image_url TEXT NOT NULL,
+        icon_name VARCHAR(100) NOT NULL,
+        items TEXT[] NOT NULL,
+        display_order INTEGER NOT NULL DEFAULT 0
+      )
+    `);
+    
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS ${sql.identifier(schemaName)}.special_services (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        description TEXT NOT NULL,
+        icon_name VARCHAR(100) NOT NULL,
+        display_order INTEGER NOT NULL DEFAULT 0
+      )
+    `);
+    
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS ${sql.identifier(schemaName)}.featured_brands (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        logo_url TEXT NOT NULL,
+        display_order INTEGER NOT NULL DEFAULT 0
+      )
+    `);
+    
     console.log(`Initialized schema for client: ${clientName}`);
     
     return true;
