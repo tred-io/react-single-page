@@ -188,7 +188,8 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          # Deploy directly from root directory
+          cd deployments/${{ inputs.client_name }}
+          
           # Install Vercel CLI
           npm install -g vercel@latest
           
@@ -202,7 +203,6 @@ jobs:
           # Deploy to Vercel with token (organization account)
           npx vercel --token "$VERCEL_TOKEN" --prod --yes \
             --scope "tred-io" \
-            --name "${{ inputs.client_name }}" \
             --env DATABASE_URL="$DATABASE_URL" \
             --env SESSION_SECRET="$(openssl rand -base64 32)" \
             --env CLIENT_NAME="${{ inputs.client_name }}" \
