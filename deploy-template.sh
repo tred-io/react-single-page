@@ -27,10 +27,14 @@ rsync -av --exclude='node_modules' --exclude='.git' \
     --exclude='deployments' --exclude='uploads' --exclude='.replit' \
     . "$CLIENT_DIR/"
 
-# Ensure dist directory is included if it exists
+# Move built React files to root for Vercel deployment
 if [ -d "dist" ]; then
-    echo "📦 Copying built React application..."
-    rsync -av dist/ "$CLIENT_DIR/dist/"
+    echo "📦 Moving built React application to root..."
+    # Copy HTML, CSS, JS files to root
+    cp dist/index.html "$CLIENT_DIR/"
+    if [ -d "dist/assets" ]; then
+        cp -r dist/assets "$CLIENT_DIR/"
+    fi
 fi
 
 # Create client-specific configuration
