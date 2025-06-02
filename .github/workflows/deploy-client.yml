@@ -183,6 +183,16 @@ jobs:
           # Run client schema initialization by starting the server briefly
           CLIENT_NAME=${{ inputs.client_name }} DOMAIN=${{ inputs.domain }} timeout 10s node dist/index.js || true
 
+      - name: Build React application
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          
+          # Install dependencies
+          npm install
+          
+          # Build the React app
+          npm run build
+
       - name: Deploy to Vercel
         if: ${{ inputs.vercel_deploy }}
         env:
