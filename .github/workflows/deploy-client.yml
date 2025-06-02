@@ -208,16 +208,14 @@ jobs:
           
           # Initialize Vercel project with correct settings
           echo "Initializing Vercel project..."
-          cat > .vercelignore << 'EOF'
-node_modules
-.git
-deployments
-uploads
-.replit
-EOF
+          echo "node_modules" > .vercelignore
+          echo ".git" >> .vercelignore
+          echo "deployments" >> .vercelignore
+          echo "uploads" >> .vercelignore
+          echo ".replit" >> .vercelignore
           
           # Create vercel.json with correct root and output directories
-          cat > vercel.json << EOF
+          cat > vercel.json << 'EOF'
 {
   "buildCommand": null,
   "rootDirectory": "./",
