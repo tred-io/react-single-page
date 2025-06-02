@@ -1,16 +1,16 @@
-import express, { type Request, Response, NextFunction } from "express";
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import express from "express";
 import { registerRoutes } from "../server/routes";
 import { serveStatic } from "../server/vite";
 
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+let app: express.Application | null = null;
 
-// Initialize the Express app
-let initialized = false;
-
-async function initializeApp() {
-  if (initialized) return app;
+async function getApp() {
+  if (app) return app;
+  
+  app = express();
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
   
   try {
     await registerRoutes(app);
@@ -20,7 +20,6 @@ async function initializeApp() {
       serveStatic(app);
     }
     
-    initialized = true;
     return app;
   } catch (error) {
     console.error("Failed to initialize app:", error);
@@ -28,13 +27,17 @@ async function initializeApp() {
   }
 }
 
-// Vercel serverless function handler
-export default async function handler(req: Request, res: Response) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    const app = await initializeApp();
-    app(req, res);
+    const expressApp = await getApp();
+    return new Promise((resolve, reject) => {
+      expressApp(req as any, res as any, (err: any) => {
+        if (err) reject(err);
+        else resolve(undefined);
+      });
+    });
   } catch (error) {
     console.error("Handler error:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 }
