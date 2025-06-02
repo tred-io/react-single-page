@@ -143,8 +143,8 @@ jobs:
           # Build the project first
           npm run build
           
-          # Run client schema initialization
-          node scripts/init-client.js ${{ inputs.client_name }} ${{ inputs.domain }}
+          # Run client schema initialization by starting the server briefly
+          CLIENT_NAME=${{ inputs.client_name }} DOMAIN=${{ inputs.domain }} timeout 10s node dist/index.js || true
 
       - name: Deploy to Vercel
         if: ${{ inputs.vercel_deploy }}

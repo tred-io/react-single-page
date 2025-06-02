@@ -18,8 +18,8 @@ if (!clientName || !domain) {
 
 async function main() {
   try {
-    // Import the initialization functions
-    const { initializeClientSchema, initializeClientData } = await import('../server/init-client-schema.js');
+    // Import the initialization functions from the built distribution
+    const { initializeClientSchema, initializeClientData } = await import('../dist/index.js');
     
     console.log(`Initializing schema for client: ${clientName}`);
     const schemaResult = await initializeClientSchema(clientName);
