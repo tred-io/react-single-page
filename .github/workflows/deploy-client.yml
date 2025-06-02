@@ -135,6 +135,7 @@ jobs:
       - name: Initialize client schema and data
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           CLIENT_NAME: ${{ inputs.client_name }}
         run: |
           # Install dependencies
