@@ -216,10 +216,11 @@ uploads
 .replit
 EOF
           
-          # Create vercel.json with correct root directory
+          # Create vercel.json with correct root and output directories
           cat > vercel.json << EOF
 {
   "buildCommand": null,
+  "rootDirectory": "./",
   "outputDirectory": "dist/public",
   "functions": {
     "api/index.ts": {
