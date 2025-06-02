@@ -36,9 +36,9 @@ jobs:
 
       - name: Build React application first
         run: |
-          # Install dependencies and build (with timeout handling)
+          # Install dependencies and build frontend only (faster)
           npm install
-          timeout 300s npm run build || echo "Build timed out, will use fallback"
+          timeout 180s npx vite build || echo "Build timed out, will use fallback"
 
       - name: Create client deployment
         run: |
