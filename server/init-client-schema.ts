@@ -44,7 +44,9 @@ export async function initializeClientSchema(clientName: string) {
         yelp_url TEXT,
         seo_title TEXT NOT NULL,
         seo_description TEXT NOT NULL,
-        seo_keywords TEXT NOT NULL
+        seo_keywords TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
       )
     `);
     
@@ -56,7 +58,9 @@ export async function initializeClientSchema(clientName: string) {
         image_url TEXT NOT NULL,
         icon_name VARCHAR(100) NOT NULL,
         items TEXT[] NOT NULL,
-        display_order INTEGER NOT NULL DEFAULT 0
+        display_order INTEGER NOT NULL DEFAULT 0,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
       )
     `);
     
@@ -66,7 +70,9 @@ export async function initializeClientSchema(clientName: string) {
         title VARCHAR(255) NOT NULL,
         description TEXT NOT NULL,
         icon_name VARCHAR(100) NOT NULL,
-        display_order INTEGER NOT NULL DEFAULT 0
+        display_order INTEGER NOT NULL DEFAULT 0,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
       )
     `);
     
@@ -75,7 +81,9 @@ export async function initializeClientSchema(clientName: string) {
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         logo_url TEXT NOT NULL,
-        display_order INTEGER NOT NULL DEFAULT 0
+        display_order INTEGER NOT NULL DEFAULT 0,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
       )
     `);
     
