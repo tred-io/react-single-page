@@ -206,8 +206,39 @@ jobs:
             DATABASE_URL="postgresql://placeholder"
           fi
           
-          # Initialize Vercel project and deploy
+          # Initialize Vercel project with correct settings
           echo "Initializing Vercel project..."
+          cat > .vercelignore << EOF
+node_modules
+.git
+deployments
+uploads
+.replit
+EOF
+          
+          # Create vercel.json with correct root directory
+          cat > vercel.json << EOF
+{
+  "buildCommand": null,
+  "outputDirectory": "dist/public",
+  "functions": {
+    "api/index.ts": {
+      "runtime": "@vercel/node"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+EOF
+          
           npx vercel --token "$VERCEL_TOKEN" --yes --scope "tred-io"
           
           # Set environment variables
