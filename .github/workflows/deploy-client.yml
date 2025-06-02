@@ -208,7 +208,7 @@ jobs:
           
           # Initialize Vercel project with correct settings
           echo "Initializing Vercel project..."
-          cat > .vercelignore << EOF
+          cat > .vercelignore << 'EOF'
 node_modules
 .git
 deployments
