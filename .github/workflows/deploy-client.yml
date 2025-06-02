@@ -44,21 +44,56 @@ jobs:
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
 
+      - name: Check if repository already exists
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          # Check if repository already exists
+          REPO_NAME="${{ inputs.client_name }}-website"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/tred-io/$REPO_NAME)
+          
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "❌ Error: Repository 'tred-io/$REPO_NAME' already exists!"
+            echo "Please use a different client name or delete the existing repository first."
+            exit 1
+          elif [ "$HTTP_STATUS" = "404" ]; then
+            echo "✅ Repository name is available: $REPO_NAME"
+          else
+            echo "⚠️  Unexpected response checking repository: HTTP $HTTP_STATUS"
+            echo "Proceeding with deployment..."
+          fi
+
       - name: Create GitHub repository for client
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           # Create repository using GitHub REST API under organization
-          curl -X POST \
+          REPO_NAME="${{ inputs.client_name }}-website"
+          RESPONSE=$(curl -s -w "HTTPSTATUS:%{http_code}" \
+            -X POST \
             -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/orgs/tred-io/repos \
             -d "{
-              \"name\": \"${{ inputs.client_name }}-website\",
+              \"name\": \"$REPO_NAME\",
               \"description\": \"Website for ${{ inputs.client_name }} - ${{ inputs.domain }}\",
               \"private\": false
-            }"
+            }")
+          
+          HTTP_STATUS=$(echo $RESPONSE | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+          BODY=$(echo $RESPONSE | sed -e 's/HTTPSTATUS\:.*//g')
+          
+          if [ "$HTTP_STATUS" -ne 201 ]; then
+            echo "❌ Failed to create repository. HTTP Status: $HTTP_STATUS"
+            echo "Response: $BODY"
+            exit 1
+          else
+            echo "✅ Successfully created repository: tred-io/$REPO_NAME"
+          fi
           
           cd deployments/${{ inputs.client_name }}
           
