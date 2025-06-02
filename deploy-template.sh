@@ -27,9 +27,10 @@ rsync -av --exclude='node_modules' --exclude='.git' \
     --exclude='deployments' --exclude='uploads' --exclude='.replit' \
     . "$CLIENT_DIR/"
 
-# Always create index.html in the deployment directory
-echo "📦 Creating index.html for Vercel deployment..."
-cat > "$CLIENT_DIR/index.html" << 'EOF'
+# Create dist/public directory and index.html for Vercel deployment
+echo "📦 Creating index.html in dist/public/ for Vercel deployment..."
+mkdir -p "$CLIENT_DIR/dist/public"
+cat > "$CLIENT_DIR/dist/public/index.html" << 'EOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,10 +58,10 @@ cat > "$CLIENT_DIR/index.html" << 'EOF'
 </html>
 EOF
 
-# If we have a built React app, also copy the assets
+# If we have a built React app, also copy the assets to dist/public/
 if [ -d "dist/assets" ]; then
-    echo "📦 Copying React assets..."
-    cp -r dist/assets "$CLIENT_DIR/"
+    echo "📦 Copying React assets to dist/public/..."
+    cp -r dist/assets "$CLIENT_DIR/dist/public/"
 fi
 
 # Create client-specific configuration
