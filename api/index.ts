@@ -32,7 +32,7 @@ async function initializeApp() {
 export default async function handler(req: Request, res: Response) {
   try {
     const app = await initializeApp();
-    return app(req, res);
+    app(req, res);
   } catch (error) {
     console.error("Handler error:", error);
     res.status(500).json({ message: "Internal server error" });
