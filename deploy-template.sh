@@ -195,10 +195,26 @@ cat > "$CLIENT_DIR/dist/public/index.html" << 'EOF'
         // Handle initial page load based on URL
         window.addEventListener('load', function() {
             const path = window.location.pathname.substring(1);
-            const page = path || 'home';
-            if (['home', 'admin', 'themes'].includes(page)) {
-                showPage(page);
-            }
+            let page = path || 'home';
+            
+            // Map URL paths to page names
+            if (path === 'admin') page = 'admin';
+            else if (path === 'themes') page = 'themes';
+            else page = 'home';
+            
+            showPage(page);
+        });
+        
+        // Also run on DOMContentLoaded to ensure it works
+        document.addEventListener('DOMContentLoaded', function() {
+            const path = window.location.pathname.substring(1);
+            let page = path || 'home';
+            
+            if (path === 'admin') page = 'admin';
+            else if (path === 'themes') page = 'themes';
+            else page = 'home';
+            
+            showPage(page);
         });
     </script>
 </body>
