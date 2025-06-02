@@ -25,6 +25,7 @@ jobs:
       - name: Checkout template repository
         uses: actions/checkout@v4
         with:
+          ref: replit-agent
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
