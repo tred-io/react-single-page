@@ -27,10 +27,9 @@ rsync -av --exclude='node_modules' --exclude='.git' \
     --exclude='deployments' --exclude='uploads' --exclude='.replit' \
     . "$CLIENT_DIR/"
 
-# Create a basic index.html if dist doesn't exist or build failed
-if [ ! -f "dist/index.html" ]; then
-    echo "📦 Creating fallback index.html..."
-    cat > "$CLIENT_DIR/index.html" << 'EOF'
+# Always create index.html in the deployment directory
+echo "📦 Creating index.html for Vercel deployment..."
+cat > "$CLIENT_DIR/index.html" << 'EOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,13 +56,11 @@ if [ ! -f "dist/index.html" ]; then
 </body>
 </html>
 EOF
-else
-    echo "📦 Moving built React application to root..."
-    # Copy HTML, CSS, JS files to root
-    cp dist/index.html "$CLIENT_DIR/"
-    if [ -d "dist/assets" ]; then
-        cp -r dist/assets "$CLIENT_DIR/"
-    fi
+
+# If we have a built React app, also copy the assets
+if [ -d "dist/assets" ]; then
+    echo "📦 Copying React assets..."
+    cp -r dist/assets "$CLIENT_DIR/"
 fi
 
 # Create client-specific configuration
