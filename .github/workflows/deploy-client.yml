@@ -132,6 +132,21 @@ jobs:
           # Store for Vercel deployment
           echo "DATABASE_URL=$DATABASE_URL" > /tmp/db_env
 
+      - name: Initialize client schema
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          
+          # Install dependencies
+          npm install
+          
+          # Set client name for schema creation
+          export CLIENT_NAME="${{ inputs.client_name }}"
+          
+          # Initialize the client schema in shared database
+          npm run db:push
+
       - name: Deploy to Vercel
         if: ${{ inputs.vercel_deploy }}
         env:
