@@ -214,10 +214,9 @@ jobs:
           echo "uploads" >> .vercelignore
           echo ".replit" >> .vercelignore
           
-          # Create vercel.json with correct root and output directories
+          # Create vercel.json with correct output directory
           echo '{' > vercel.json
           echo '  "buildCommand": null,' >> vercel.json
-          echo '  "rootDirectory": "./",' >> vercel.json
           echo '  "outputDirectory": "dist/public",' >> vercel.json
           echo '  "functions": {' >> vercel.json
           echo '    "api/index.ts": {' >> vercel.json
