@@ -13,12 +13,21 @@ const initializeApp = async () => {
   const domain = process.env.VERCEL_URL || process.env.DOMAIN;
   
   if (clientName && process.env.DATABASE_URL && process.env.DATABASE_URL !== "postgresql://placeholder") {
-    log(`Initializing schema for client: ${clientName}`);
-    await initializeClientSchema(clientName);
-    
-    if (domain) {
-      await initializeClientData(clientName, domain);
+    try {
+      log(`Initializing schema for client: ${clientName}`);
+      await initializeClientSchema(clientName);
+      
+      if (domain) {
+        await initializeClientData(clientName, domain);
+      }
+      log(`Client initialization completed for: ${clientName}`);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      log(`Failed to initialize client ${clientName}: ${errorMessage}`);
+      // Continue with server startup even if initialization fails
     }
+  } else {
+    log(`Skipping client initialization - missing CLIENT_NAME or DATABASE_URL`);
   }
 };
 

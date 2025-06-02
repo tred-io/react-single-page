@@ -169,7 +169,10 @@ jobs:
             --scope "tred-io" \
             --env DATABASE_URL="$DATABASE_URL" \
             --env SESSION_SECRET="$(openssl rand -base64 32)" \
-            --env CLIENT_NAME="${{ inputs.client_name }}"
+            --env CLIENT_NAME="${{ inputs.client_name }}" \
+            --env OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
+            --env DOMAIN="${{ inputs.domain }}" \
+            --env NODE_ENV="production"
 
       - name: Create deployment summary
         run: |

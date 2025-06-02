@@ -44,6 +44,26 @@ const upload = multer({
   }
 });
 
+// Database error handling middleware
+const handleDatabaseError = (error: any, req: any, res: any, next: any) => {
+  if (error.message?.includes('database') || error.message?.includes('connection')) {
+    return res.status(503).json({ 
+      message: "Database connection unavailable", 
+      error: "Service temporarily unavailable"
+    });
+  }
+  if (error.message?.includes('CLIENT_NAME')) {
+    return res.status(500).json({ 
+      message: "Client configuration error", 
+      error: "Site configuration incomplete"
+    });
+  }
+  return res.status(500).json({ 
+    message: "Internal server error", 
+    error: error.message 
+  });
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Health check endpoints (must be first to avoid conflicts)
   app.get("/api/health", healthCheckHandler);
@@ -71,10 +91,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/store-settings", async (req, res) => {
     try {
       const settings = await storage.getStoreSettings();
+      if (!settings) {
+        // Return basic fallback when no settings exist yet
+        return res.json({
+          id: 1,
+          storeName: "Loading...",
+          tagline: "Website initializing...",
+          address: "",
+          phone: "",
+          primaryColor: "#2563eb",
+          secondaryColor: "#64748b",
+          accentColor: "#f59e0b",
+          fontFamily: "Inter"
+        });
+      }
       res.json(settings);
     } catch (error) {
       console.error("Error fetching store settings:", error);
-      res.status(500).json({ message: "Error fetching store settings" });
+      handleDatabaseError(error, req, res, () => {});
     }
   });
 
@@ -103,10 +137,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/product-categories", async (req, res) => {
     try {
       const categories = await storage.getProductCategories();
-      res.json(categories);
+      res.json(categories || []);
     } catch (error) {
       console.error("Error fetching product categories:", error);
-      res.status(500).json({ message: "Error fetching product categories" });
+      handleDatabaseError(error, req, res, () => {});
     }
   });
 
