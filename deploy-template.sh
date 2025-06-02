@@ -27,10 +27,16 @@ rsync -av --exclude='node_modules' --exclude='.git' \
     --exclude='deployments' --exclude='uploads' --exclude='.replit' \
     . "$CLIENT_DIR/"
 
-# Create dist/public directory and index.html for Vercel deployment
-echo "📦 Creating index.html in dist/public/ for Vercel deployment..."
-mkdir -p "$CLIENT_DIR/dist/public"
-cat > "$CLIENT_DIR/dist/public/index.html" << 'EOF'
+# Deploy the built React application if available, otherwise create fallback
+if [ -f "dist/index.html" ]; then
+    echo "📦 Deploying built React application..."
+    mkdir -p "$CLIENT_DIR/dist/public"
+    cp -r dist/* "$CLIENT_DIR/dist/public/"
+    echo "✅ Full React application deployed with routing support"
+else
+    echo "📦 Creating fallback index.html in dist/public/..."
+    mkdir -p "$CLIENT_DIR/dist/public"
+    cat > "$CLIENT_DIR/dist/public/index.html" << 'EOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,17 +57,13 @@ cat > "$CLIENT_DIR/dist/public/index.html" << 'EOF'
         <p class="tagline">Your Trusted Agricultural Partner in Lampasas, Texas</p>
         <div class="loading">
             <p>Site is loading... Please check back soon.</p>
-            <p>If this message persists, the React application may need to be rebuilt.</p>
+            <p>The full application with admin and theme features will be available once the build completes.</p>
         </div>
     </div>
 </body>
 </html>
 EOF
-
-# If we have a built React app, also copy the assets to dist/public/
-if [ -d "dist/assets" ]; then
-    echo "📦 Copying React assets to dist/public/..."
-    cp -r dist/assets "$CLIENT_DIR/dist/public/"
+    echo "⚠️  Fallback page deployed - admin and themes routes unavailable"
 fi
 
 # Create client-specific configuration
