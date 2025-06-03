@@ -2,13 +2,27 @@
   "buildCommand": "cd ../../.. && npm run build",
   "outputDirectory": "../../../dist",
   "installCommand": "cd ../../.. && npm install",
-  "framework": null,
   "functions": {
-    "server/index.ts": {
-      "runtime": "nodejs18.x"
+    "../../../api/index.ts": {
+      "runtime": "@vercel/node"
     }
   },
-  "env": {
-    "CLIENT_CONFIG_PATH": "./deployments/brown-feed-store/client-config.json"
-  }
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/themes", 
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
