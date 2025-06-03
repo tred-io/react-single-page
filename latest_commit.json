@@ -1,0 +1,101 @@
+{
+  "sha": "ac762272d16fcc4d80ed7c6f2639f5652bd2518e",
+  "node_id": "C_kwDOO1YA89oAKGFjNzYyMjcyZDE2ZmNjNGQ4MGVkN2M2ZjI2MzlmNTY1MmJkMjUxOGU",
+  "commit": {
+    "author": {
+      "name": "Travis Purdy",
+      "email": "tspurdy@protonmail.com",
+      "date": "2025-06-03T15:13:01Z"
+    },
+    "committer": {
+      "name": "Travis Purdy",
+      "email": "tspurdy@protonmail.com",
+      "date": "2025-06-03T15:13:01Z"
+    },
+    "message": "Update deploy-client workflow with efficiency features",
+    "tree": {
+      "sha": "27c21bcfa21e5c9735ae089faf1903225f7b8ea7",
+      "url": "https://api.github.com/repos/tred-io/react-single-page/git/trees/27c21bcfa21e5c9735ae089faf1903225f7b8ea7"
+    },
+    "url": "https://api.github.com/repos/tred-io/react-single-page/git/commits/ac762272d16fcc4d80ed7c6f2639f5652bd2518e",
+    "comment_count": 0,
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  "url": "https://api.github.com/repos/tred-io/react-single-page/commits/ac762272d16fcc4d80ed7c6f2639f5652bd2518e",
+  "html_url": "https://github.com/tred-io/react-single-page/commit/ac762272d16fcc4d80ed7c6f2639f5652bd2518e",
+  "comments_url": "https://api.github.com/repos/tred-io/react-single-page/commits/ac762272d16fcc4d80ed7c6f2639f5652bd2518e/comments",
+  "author": {
+    "login": "trascopur",
+    "id": 844750,
+    "node_id": "MDQ6VXNlcjg0NDc1MA==",
+    "avatar_url": "https://avatars.githubusercontent.com/u/844750?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/trascopur",
+    "html_url": "https://github.com/trascopur",
+    "followers_url": "https://api.github.com/users/trascopur/followers",
+    "following_url": "https://api.github.com/users/trascopur/following{/other_user}",
+    "gists_url": "https://api.github.com/users/trascopur/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/trascopur/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/trascopur/subscriptions",
+    "organizations_url": "https://api.github.com/users/trascopur/orgs",
+    "repos_url": "https://api.github.com/users/trascopur/repos",
+    "events_url": "https://api.github.com/users/trascopur/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/trascopur/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "committer": {
+    "login": "trascopur",
+    "id": 844750,
+    "node_id": "MDQ6VXNlcjg0NDc1MA==",
+    "avatar_url": "https://avatars.githubusercontent.com/u/844750?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/trascopur",
+    "html_url": "https://github.com/trascopur",
+    "followers_url": "https://api.github.com/users/trascopur/followers",
+    "following_url": "https://api.github.com/users/trascopur/following{/other_user}",
+    "gists_url": "https://api.github.com/users/trascopur/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/trascopur/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/trascopur/subscriptions",
+    "organizations_url": "https://api.github.com/users/trascopur/orgs",
+    "repos_url": "https://api.github.com/users/trascopur/repos",
+    "events_url": "https://api.github.com/users/trascopur/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/trascopur/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "parents": [
+    {
+      "sha": "c232ffc76703bd596abb1ce3cf1b1fb1b0569eaf",
+      "url": "https://api.github.com/repos/tred-io/react-single-page/commits/c232ffc76703bd596abb1ce3cf1b1fb1b0569eaf",
+      "html_url": "https://github.com/tred-io/react-single-page/commit/c232ffc76703bd596abb1ce3cf1b1fb1b0569eaf"
+    }
+  ],
+  "stats": {
+    "total": 85,
+    "additions": 76,
+    "deletions": 9
+  },
+  "files": [
+    {
+      "sha": "731c71a1e77dae9fe33a6f29dedfd583b918a80c",
+      "filename": ".github/workflows/deploy-client.yml",
+      "status": "modified",
+      "additions": 76,
+      "deletions": 9,
+      "changes": 85,
+      "blob_url": "https://github.com/tred-io/react-single-page/blob/ac762272d16fcc4d80ed7c6f2639f5652bd2518e/.github%2Fworkflows%2Fdeploy-client.yml",
+      "raw_url": "https://github.com/tred-io/react-single-page/raw/ac762272d16fcc4d80ed7c6f2639f5652bd2518e/.github%2Fworkflows%2Fdeploy-client.yml",
+      "contents_url": "https://api.github.com/repos/tred-io/react-single-page/contents/.github%2Fworkflows%2Fdeploy-client.yml?ref=ac762272d16fcc4d80ed7c6f2639f5652bd2518e",
+      "patch": "@@ -40,10 +40,69 @@ jobs:\n           npm install\n           timeout 180s npx vite build || echo \"Build timed out, will use fallback\"\n \n-      - name: Create client deployment\n+      - name: Create efficient client deployment\n         run: |\n-          chmod +x deploy-template.sh\n-          ./deploy-template.sh ${{ inputs.client_name }} ${{ inputs.domain }}\n+          # Create efficient deployment structure (5KB vs 200MB)\n+          CLIENT_DIR=\"deployments/${{ inputs.client_name }}\"\n+          mkdir -p \"$CLIENT_DIR\"\n+          \n+          # Create client-specific configuration (5KB instead of 200MB)\n+          cat > \"$CLIENT_DIR/client-config.json\" << EOF\n+          {\n+            \"clientName\": \"${{ inputs.client_name }}\",\n+            \"domain\": \"${{ inputs.domain }}\",\n+            \"deployedAt\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\n+            \"templateVersion\": \"1.0.0\"\n+          }\n+          EOF\n+          \n+          # Create efficient Vercel configuration that points to template root\n+          cat > \"$CLIENT_DIR/vercel.json\" << 'EOF'\n+          {\n+            \"buildCommand\": \"cd ../../.. && npm run build\",\n+            \"outputDirectory\": \"../../../dist\",\n+            \"installCommand\": \"cd ../../.. && npm install\",\n+            \"functions\": {\n+              \"../../../api/index.ts\": {\n+                \"runtime\": \"@vercel/node\"\n+              }\n+            },\n+            \"rewrites\": [\n+              {\n+                \"source\": \"/api/(.*)\",\n+                \"destination\": \"/api/index\"\n+              },\n+              {\n+                \"source\": \"/admin\",\n+                \"destination\": \"/index.html\"\n+              },\n+              {\n+                \"source\": \"/themes\", \n+                \"destination\": \"/index.html\"\n+              },\n+              {\n+                \"source\": \"/(.*)\",\n+                \"destination\": \"/index.html\"\n+              }\n+            ]\n+          }\n+          EOF\n+\n+          # Create minimal package.json that references shared template\n+          cat > \"$CLIENT_DIR/package.json\" << 'EOF'\n+          {\n+            \"name\": \"client-deployment\",\n+            \"version\": \"1.0.0\",\n+            \"scripts\": {\n+              \"build\": \"cd ../../.. && npm run build\",\n+              \"dev\": \"cd ../../.. && npm run dev\"\n+            }\n+          }\n+          EOF\n+          \n+          cd \"$CLIENT_DIR\"\n+          git init\n+          git add .\n \n       - name: Configure git settings\n         run: |\n@@ -297,14 +356,22 @@ EOF\n       - name: Create deployment summary\n         run: |\n           cd deployments/${{ inputs.client_name }}\n-          echo \"## 🚀 Client Deployment Complete!\" >> $GITHUB_STEP_SUMMARY\n+          CLIENT_SIZE=$(du -sh . | cut -f1)\n+          echo \"## Efficient Client Deployment Complete!\" >> $GITHUB_STEP_SUMMARY\n           echo \"\" >> $GITHUB_STEP_SUMMARY\n           echo \"**Client:** ${{ inputs.client_name }}\" >> $GITHUB_STEP_SUMMARY\n           echo \"**Domain:** ${{ inputs.domain }}\" >> $GITHUB_STEP_SUMMARY\n           echo \"**Repository:** https://github.com/tred-io/${{ inputs.client_name }}-website\" >> $GITHUB_STEP_SUMMARY\n+          echo \"**Deployment Size:** $CLIENT_SIZE (vs 200MB+ for full copy)\" >> $GITHUB_STEP_SUMMARY\n+          echo \"**Database:** Shared schema with client-specific data\" >> $GITHUB_STEP_SUMMARY\n+          echo \"\" >> $GITHUB_STEP_SUMMARY\n+          echo \"### Efficiency Gains:\" >> $GITHUB_STEP_SUMMARY\n+          echo \"- 5KB configuration files instead of 200MB repository copies\" >> $GITHUB_STEP_SUMMARY\n+          echo \"- Shared template with client-specific configurations\" >> $GITHUB_STEP_SUMMARY\n+          echo \"- Automated GitHub Actions deployment\" >> $GITHUB_STEP_SUMMARY\n+          echo \"- Client-specific database schemas in shared infrastructure\" >> $GITHUB_STEP_SUMMARY\n           echo \"\" >> $GITHUB_STEP_SUMMARY\n-          echo \"### Next Steps:\" >> $GITHUB_STEP_SUMMARY\n-          echo \"1. Set up database at [neon.tech](https://neon.tech)\" >> $GITHUB_STEP_SUMMARY\n-          echo \"2. Update DATABASE_URL in Vercel environment variables\" >> $GITHUB_STEP_SUMMARY\n-          echo \"3. Configure custom domain: ${{ inputs.domain }}\" >> $GITHUB_STEP_SUMMARY\n-          echo \"4. Access admin panel at: https://${{ inputs.domain }}/admin\" >> $GITHUB_STEP_SUMMARY\n\\ No newline at end of file\n+          echo \"### Access Points:\" >> $GITHUB_STEP_SUMMARY\n+          echo \"- **Website:** https://${{ inputs.domain }}\" >> $GITHUB_STEP_SUMMARY\n+          echo \"- **Admin Panel:** https://${{ inputs.domain }}/admin\" >> $GITHUB_STEP_SUMMARY\n+          echo \"- **Theme Generator:** https://${{ inputs.domain }}/themes\" >> $GITHUB_STEP_SUMMARY\n\\ No newline at end of file"
+    }
+  ]
+}
