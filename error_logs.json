@@ -1,0 +1,21 @@
+[
+{"type":"stdout","created":1748966280051,"payload":{"deploymentId":"dpl_HJ1QyPr4pT9ePfCDCRg3hJz7f9Qf","info":{"type":"build","name":"bld_1mgjwbqwp","entrypoint":"."},"text":"Running build in Washington, D.C., USA (East) – iad1","id":"1748966280051058801385000000","date":1748966280051,"serial":"1748966280051058801385000000"}}
+,
+{"type":"stdout","created":1748966280052,"payload":{"deploymentId":"dpl_HJ1QyPr4pT9ePfCDCRg3hJz7f9Qf","info":{"type":"build","name":"bld_1mgjwbqwp","entrypoint":"."},"text":"Build machine configuration: 4 cores, 8 GB","id":"1748966280052058801385000000","date":1748966280052,"serial":"1748966280052058801385000000"}}
+,
+{"type":"stdout","created":1748966280079,"payload":{"deploymentId":"dpl_HJ1QyPr4pT9ePfCDCRg3hJz7f9Qf","info":{"type":"build","name":"bld_1mgjwbqwp","entrypoint":"."},"text":"Cloning github.com/tred-io/react-single-page (Branch: replit-agent, Commit: ac76227)","id":"1748966280079058801385000000","date":1748966280079,"serial":"1748966280079058801385000000"}}
+,
+{"type":"stdout","created":1748966280504,"payload":{"deploymentId":"dpl_HJ1QyPr4pT9ePfCDCRg3hJz7f9Qf","info":{"type":"build","name":"bld_1mgjwbqwp","entrypoint":"."},"text":"Previous build caches not available","id":"1748966280504058801385000001","date":1748966280504,"serial":"1748966280504058801385000001"}}
+,
+{"type":"stdout","created":1748966281312,"payload":{"deploymentId":"dpl_HJ1QyPr4pT9ePfCDCRg3hJz7f9Qf","info":{"type":"build","name":"bld_1mgjwbqwp","entrypoint":"."},"text":"Cloning completed: 1.233s","id":"1748966281312058801385000000","date":1748966281312,"serial":"1748966281312058801385000000"}}
+,
+{"type":"stdout","created":1748966281660,"payload":{"deploymentId":"dpl_HJ1QyPr4pT9ePfCDCRg3hJz7f9Qf","info":{"type":"build","name":"bld_1mgjwbqwp","entrypoint":"."},"text":"Running \"vercel build\"","id":"1748966281660218010987000001","date":1748966281660,"serial":"1748966281660218010987000001"}}
+,
+{"type":"stderr","created":1748966282108,"payload":{"deploymentId":"dpl_HJ1QyPr4pT9ePfCDCRg3hJz7f9Qf","info":{"type":"build","name":"bld_1mgjwbqwp","entrypoint":"."},"text":"Vercel CLI 42.2.0","id":"1748966282108218010987000000","date":1748966282108,"serial":"1748966282108218010987000000"}}
+,
+{"type":"stderr","created":1748966282249,"payload":{"deploymentId":"dpl_HJ1QyPr4pT9ePfCDCRg3hJz7f9Qf","info":{"type":"build","name":"bld_1mgjwbqwp","entrypoint":"."},"text":"Error: Function Runtimes must have a valid version, for example `now-php@1.0.0`.","id":"1748966282249218010987000000","date":1748966282249,"serial":"1748966282249218010987000000"}}
+,
+{"type":"stdout","created":1748966282457,"payload":{"deploymentId":"dpl_HJ1QyPr4pT9ePfCDCRg3hJz7f9Qf","info":{"type":"build","name":"bld_1mgjwbqwp","entrypoint":"."},"text":"","id":"1748966282457218010987000002","date":1748966282457,"serial":"1748966282457218010987000002"}}
+,
+{"type":"stdout","created":1748966284998,"payload":{"deploymentId":"dpl_HJ1QyPr4pT9ePfCDCRg3hJz7f9Qf","info":{"type":"build","name":"bld_1mgjwbqwp","entrypoint":"."},"text":"Exiting build container","id":"1748966284998058801385000000","date":1748966284998,"serial":"1748966284998058801385000000"}}
+]
