@@ -27,12 +27,11 @@ rsync -av --exclude='node_modules' --exclude='.git' \
     --exclude='deployments' --exclude='uploads' --exclude='.replit' \
     . "$CLIENT_DIR/"
 
-# Create a working React application in dist/public
-echo "📦 Creating React application in dist/public/..."
-mkdir -p "$CLIENT_DIR/dist/public"
+# Create a working application in repository root (Vercel standard)
+echo "📦 Creating application in repository root..."
 
 # Create the main index.html that loads the React app
-cat > "$CLIENT_DIR/dist/public/index.html" << 'EOF'
+cat > "$CLIENT_DIR/index.html" << 'EOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
