@@ -277,7 +277,11 @@ EOF
           echo ".git" >> .vercelignore
           echo ".env" >> .vercelignore
           
-          npx vercel --token "$VERCEL_TOKEN" --yes --scope "tred-io"
+          # Deploy with client-specific project name and GitHub connection
+          npx vercel --token "$VERCEL_TOKEN" --yes --scope "tred-io" --name "${{ inputs.client_name }}-website"
+          
+          # Automatically connect to this GitHub repository
+          npx vercel git connect "${{ github.repository }}" --token "$VERCEL_TOKEN" --scope "tred-io" --yes
           
           # Set environment variables
           npx vercel env add DATABASE_URL production --token "$VERCEL_TOKEN" --scope "tred-io" <<< "$DATABASE_URL"
