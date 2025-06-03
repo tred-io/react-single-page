@@ -3,7 +3,7 @@
 // Direct GitHub API cleanup script
 const https = require('https');
 
-const GITHUB_TOKEN = process.env.PERSONAL_ACCESS_TOKEN;
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN_WITH_DELETE;
 
 if (!GITHUB_TOKEN) {
   console.log('❌ PERSONAL_ACCESS_TOKEN environment variable not found');
