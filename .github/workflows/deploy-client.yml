@@ -214,34 +214,34 @@ jobs:
           echo "uploads" >> .vercelignore
           echo ".replit" >> .vercelignore
           
-          # Create vercel.json with correct output directory
-          echo '{' > vercel.json
-          echo '  "buildCommand": null,' >> vercel.json
-          echo '  "outputDirectory": "dist/public",' >> vercel.json
-          echo '  "functions": {' >> vercel.json
-          echo '    "api/index.ts": {' >> vercel.json
-          echo '      "runtime": "@vercel/node"' >> vercel.json
-          echo '    }' >> vercel.json
-          echo '  },' >> vercel.json
-          echo '  "rewrites": [' >> vercel.json
-          echo '    {' >> vercel.json
-          echo '      "source": "/api/(.*)",' >> vercel.json
-          echo '      "destination": "/api/index"' >> vercel.json
-          echo '    },' >> vercel.json
-          echo '    {' >> vercel.json
-          echo '      "source": "/admin",' >> vercel.json
-          echo '      "destination": "/index.html"' >> vercel.json
-          echo '    },' >> vercel.json
-          echo '    {' >> vercel.json
-          echo '      "source": "/themes",' >> vercel.json
-          echo '      "destination": "/index.html"' >> vercel.json
-          echo '    },' >> vercel.json
-          echo '    {' >> vercel.json
-          echo '      "source": "/(.*)",' >> vercel.json
-          echo '      "destination": "/index.html"' >> vercel.json
-          echo '    }' >> vercel.json
-          echo '  ]' >> vercel.json
-          echo '}' >> vercel.json
+          # Create simple vercel.json for routing only (let Vercel handle build)
+          cat > vercel.json << 'EOF'
+{
+  "functions": {
+    "api/index.ts": {
+      "runtime": "@vercel/node"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/themes", 
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+EOF
           
           npx vercel --token "$VERCEL_TOKEN" --yes --scope "tred-io"
           
