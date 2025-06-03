@@ -1,21 +1,47 @@
 [
-{"type":"stdout","created":1748965628017,"payload":{"deploymentId":"dpl_9mExTeoUF35bQZkZXPfcRgzR1NSc","info":{"type":"build","name":"bld_6ntslgz3u","entrypoint":"."},"text":"Running build in Washington, D.C., USA (East) – iad1","id":"1748965628017116150797200000","date":1748965628017,"serial":"1748965628017116150797200000"}}
+{"type":"stdout","created":1748966522211,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"Running build in Washington, D.C., USA (East) – iad1","id":"1748966522211633110390600000","date":1748966522211,"serial":"1748966522211633110390600000"}}
 ,
-{"type":"stdout","created":1748965628018,"payload":{"deploymentId":"dpl_9mExTeoUF35bQZkZXPfcRgzR1NSc","info":{"type":"build","name":"bld_6ntslgz3u","entrypoint":"."},"text":"Build machine configuration: 4 cores, 8 GB","id":"1748965628018116150797200000","date":1748965628018,"serial":"1748965628018116150797200000"}}
+{"type":"stdout","created":1748966522212,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"Build machine configuration: 4 cores, 8 GB","id":"1748966522212633110390600000","date":1748966522212,"serial":"1748966522212633110390600000"}}
 ,
-{"type":"stdout","created":1748965628033,"payload":{"deploymentId":"dpl_9mExTeoUF35bQZkZXPfcRgzR1NSc","info":{"type":"build","name":"bld_6ntslgz3u","entrypoint":"."},"text":"Cloning github.com/tred-io/react-single-page (Branch: replit-agent, Commit: ac76227)","id":"1748965628033116150797200001","date":1748965628033,"serial":"1748965628033116150797200001"}}
+{"type":"stdout","created":1748966522228,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"Cloning github.com/tred-io/brown-feed-store-website (Branch: main, Commit: 9ee02da)","id":"1748966522228633110390600001","date":1748966522228,"serial":"1748966522228633110390600001"}}
 ,
-{"type":"stdout","created":1748965628210,"payload":{"deploymentId":"dpl_9mExTeoUF35bQZkZXPfcRgzR1NSc","info":{"type":"build","name":"bld_6ntslgz3u","entrypoint":"."},"text":"Previous build caches not available","id":"1748965628210116150797200002","date":1748965628210,"serial":"1748965628210116150797200002"}}
+{"type":"stdout","created":1748966522374,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"Previous build caches not available","id":"1748966522374633110390600002","date":1748966522374,"serial":"1748966522374633110390600002"}}
 ,
-{"type":"stdout","created":1748965628449,"payload":{"deploymentId":"dpl_9mExTeoUF35bQZkZXPfcRgzR1NSc","info":{"type":"build","name":"bld_6ntslgz3u","entrypoint":"."},"text":"Cloning completed: 415.000ms","id":"1748965628449116150797200000","date":1748965628449,"serial":"1748965628449116150797200000"}}
+{"type":"stdout","created":1748966522535,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"Cloning completed: 307.000ms","id":"1748966522535633110390600000","date":1748966522535,"serial":"1748966522535633110390600000"}}
 ,
-{"type":"stdout","created":1748965628799,"payload":{"deploymentId":"dpl_9mExTeoUF35bQZkZXPfcRgzR1NSc","info":{"type":"build","name":"bld_6ntslgz3u","entrypoint":"."},"text":"Running \"vercel build\"","id":"1748965628799615503926200000","date":1748965628799,"serial":"1748965628799615503926200000"}}
+{"type":"stdout","created":1748966522827,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"Running \"vercel build\"","id":"1748966522827220489498700001","date":1748966522827,"serial":"1748966522827220489498700001"}}
 ,
-{"type":"stderr","created":1748965629308,"payload":{"deploymentId":"dpl_9mExTeoUF35bQZkZXPfcRgzR1NSc","info":{"type":"build","name":"bld_6ntslgz3u","entrypoint":"."},"text":"Vercel CLI 42.2.0","id":"1748965629308615503926200000","date":1748965629308,"serial":"1748965629308615503926200000"}}
+{"type":"stderr","created":1748966523274,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"Vercel CLI 42.2.0","id":"1748966523274220489498700000","date":1748966523274,"serial":"1748966523274220489498700000"}}
 ,
-{"type":"stderr","created":1748965629467,"payload":{"deploymentId":"dpl_9mExTeoUF35bQZkZXPfcRgzR1NSc","info":{"type":"build","name":"bld_6ntslgz3u","entrypoint":"."},"text":"Error: Function Runtimes must have a valid version, for example `now-php@1.0.0`.","id":"1748965629467615503926200000","date":1748965629467,"serial":"1748965629467615503926200000"}}
+{"type":"stdout","created":1748966523825,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"Installing dependencies...","id":"1748966523825220489498700000","date":1748966523825,"serial":"1748966523825220489498700000"}}
 ,
-{"type":"stdout","created":1748965629724,"payload":{"deploymentId":"dpl_9mExTeoUF35bQZkZXPfcRgzR1NSc","info":{"type":"build","name":"bld_6ntslgz3u","entrypoint":"."},"text":"","id":"1748965629724615503926200000","date":1748965629724,"serial":"1748965629724615503926200000"}}
+{"type":"stdout","created":1748966535692,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"","id":"1748966535692220489498700000","date":1748966535692,"serial":"1748966535692220489498700000"}}
 ,
-{"type":"stdout","created":1748965632429,"payload":{"deploymentId":"dpl_9mExTeoUF35bQZkZXPfcRgzR1NSc","info":{"type":"build","name":"bld_6ntslgz3u","entrypoint":"."},"text":"Exiting build container","id":"1748965632429116150797200000","date":1748965632429,"serial":"1748965632429116150797200000"}}
+{"type":"stdout","created":1748966535692,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"added 191 packages in 12s","id":"1748966535692220489498700001","date":1748966535692,"serial":"1748966535692220489498700001"}}
+,
+{"type":"stdout","created":1748966535693,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"","id":"1748966535693220489498700000","date":1748966535693,"serial":"1748966535693220489498700000"}}
+,
+{"type":"stdout","created":1748966535693,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"44 packages are looking for funding","id":"1748966535693220489498700001","date":1748966535693,"serial":"1748966535693220489498700001"}}
+,
+{"type":"stdout","created":1748966535693,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"  run `npm fund` for details","id":"1748966535693220489498700002","date":1748966535693,"serial":"1748966535693220489498700002"}}
+,
+{"type":"stdout","created":1748966535859,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"","id":"1748966535859220489498700000","date":1748966535859,"serial":"1748966535859220489498700000"}}
+,
+{"type":"stdout","created":1748966535859,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"> brown-feed-store@1.0.0 build","id":"1748966535859220489498700001","date":1748966535859,"serial":"1748966535859220489498700001"}}
+,
+{"type":"stdout","created":1748966535859,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"> tsc && vite build","id":"1748966535859220489498700002","date":1748966535859,"serial":"1748966535859220489498700002"}}
+,
+{"type":"stdout","created":1748966535859,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"","id":"1748966535859220489498700003","date":1748966535859,"serial":"1748966535859220489498700003"}}
+,
+{"type":"stdout","created":1748966537261,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"client/src/pages/Admin.tsx(604,11): error TS17002: Expected corresponding JSX closing tag for 'div'.","id":"1748966537261220489498700000","date":1748966537261,"serial":"1748966537261220489498700000"}}
+,
+{"type":"stdout","created":1748966537261,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"client/src/pages/Admin.tsx(606,5): error TS1005: ')' expected.","id":"1748966537261220489498700001","date":1748966537261,"serial":"1748966537261220489498700001"}}
+,
+{"type":"stdout","created":1748966537261,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"client/src/pages/Admin.tsx(607,3): error TS1109: Expression expected.","id":"1748966537261220489498700002","date":1748966537261,"serial":"1748966537261220489498700002"}}
+,
+{"type":"stderr","created":1748966537281,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"Error: Command \"npm run build\" exited with 2","id":"1748966537281220489498700000","date":1748966537281,"serial":"1748966537281220489498700000"}}
+,
+{"type":"stdout","created":1748966537529,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"","id":"1748966537529220489498700001","date":1748966537529,"serial":"1748966537529220489498700001"}}
+,
+{"type":"stdout","created":1748966540705,"payload":{"deploymentId":"dpl_98w7mpJxqCABDFkwqenvQ7uuZNxK","info":{"type":"build","name":"bld_pz77i7l2l","entrypoint":"."},"text":"Exiting build container","id":"1748966540705633110390600000","date":1748966540705,"serial":"1748966540705633110390600000"}}
 ]
