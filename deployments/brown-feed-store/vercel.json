@@ -1,28 +1,35 @@
 {
-  "buildCommand": "cd ../../.. && npm run build",
-  "outputDirectory": "../../../dist",
-  "installCommand": "cd ../../.. && npm install",
-  "functions": {
-    "../../../api/index.ts": {
-      "runtime": "@vercel/node"
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "buildCommand": "cd ../../.. && npm install && npm run build",
+        "outputDirectory": "../../../dist"
+      }
+    },
+    {
+      "src": "../../../api/index.ts",
+      "use": "@vercel/node"
     }
-  },
-  "rewrites": [
+  ],
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/index"
+      "src": "/api/(.*)",
+      "dest": "/api/index.ts"
     },
     {
-      "source": "/admin",
-      "destination": "/index.html"
+      "src": "/admin",
+      "dest": "/index.html"
     },
     {
-      "source": "/themes", 
-      "destination": "/index.html"
+      "src": "/themes", 
+      "dest": "/index.html"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
