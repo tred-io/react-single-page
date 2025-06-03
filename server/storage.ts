@@ -263,4 +263,132 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database storage implementation
+import { db } from "./db";
+import { eq } from "drizzle-orm";
+
+export class DatabaseStorage implements IStorage {
+  private clientName: string;
+  private tables: ReturnType<typeof getClientTables>;
+
+  constructor(clientName: string = 'brown_feed') {
+    this.clientName = clientName;
+    this.tables = getClientTables(clientName);
+  }
+
+  async getUser(id: number): Promise<User | undefined> {
+    // For now, return undefined as user system is not needed for basic store
+    return undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return undefined;
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    throw new Error("User creation not implemented");
+  }
+
+  async getStoreSettings(): Promise<StoreSettings | undefined> {
+    const [settings] = await db.select().from(this.tables.storeSettings).limit(1);
+    return settings;
+  }
+
+  async updateStoreSettings(settings: InsertStoreSettings): Promise<StoreSettings> {
+    const [updated] = await db
+      .update(this.tables.storeSettings)
+      .set(settings)
+      .where(eq(this.tables.storeSettings.id, 1))
+      .returning();
+    return updated;
+  }
+
+  async getProductCategories(): Promise<ProductCategory[]> {
+    return await db.select().from(this.tables.productCategories).orderBy(this.tables.productCategories.displayOrder);
+  }
+
+  async updateProductCategory(id: number, category: InsertProductCategory): Promise<ProductCategory> {
+    const [updated] = await db
+      .update(this.tables.productCategories)
+      .set(category)
+      .where(eq(this.tables.productCategories.id, id))
+      .returning();
+    return updated;
+  }
+
+  async createProductCategory(category: InsertProductCategory): Promise<ProductCategory> {
+    const [created] = await db
+      .insert(this.tables.productCategories)
+      .values(category)
+      .returning();
+    return created;
+  }
+
+  async deleteProductCategory(id: number): Promise<boolean> {
+    const result = await db
+      .delete(this.tables.productCategories)
+      .where(eq(this.tables.productCategories.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getSpecialServices(): Promise<SpecialService[]> {
+    return await db.select().from(this.tables.specialServices).orderBy(this.tables.specialServices.displayOrder);
+  }
+
+  async updateSpecialService(id: number, service: InsertSpecialService): Promise<SpecialService> {
+    const [updated] = await db
+      .update(this.tables.specialServices)
+      .set(service)
+      .where(eq(this.tables.specialServices.id, id))
+      .returning();
+    return updated;
+  }
+
+  async createSpecialService(service: InsertSpecialService): Promise<SpecialService> {
+    const [created] = await db
+      .insert(this.tables.specialServices)
+      .values(service)
+      .returning();
+    return created;
+  }
+
+  async deleteSpecialService(id: number): Promise<boolean> {
+    const result = await db
+      .delete(this.tables.specialServices)
+      .where(eq(this.tables.specialServices.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getFeaturedBrands(): Promise<FeaturedBrand[]> {
+    return await db.select().from(this.tables.featuredBrands).orderBy(this.tables.featuredBrands.displayOrder);
+  }
+
+  async updateFeaturedBrand(id: number, brand: InsertFeaturedBrand): Promise<FeaturedBrand> {
+    const [updated] = await db
+      .update(this.tables.featuredBrands)
+      .set(brand)
+      .where(eq(this.tables.featuredBrands.id, id))
+      .returning();
+    return updated;
+  }
+
+  async createFeaturedBrand(brand: InsertFeaturedBrand): Promise<FeaturedBrand> {
+    const [created] = await db
+      .insert(this.tables.featuredBrands)
+      .values(brand)
+      .returning();
+    return created;
+  }
+
+  async deleteFeaturedBrand(id: number): Promise<boolean> {
+    const result = await db
+      .delete(this.tables.featuredBrands)
+      .where(eq(this.tables.featuredBrands.id, id));
+    return result.rowCount > 0;
+  }
+}
+
+// Use database storage with client name from environment or default
+export const storage = process.env.CLIENT_NAME 
+  ? new DatabaseStorage(process.env.CLIENT_NAME)
+  : new MemStorage();
