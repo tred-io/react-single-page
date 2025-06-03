@@ -1,0 +1,9 @@
+api/
+server/
+*.md
+test-*/
+deployments/
+scripts/
+uploads/
+.git/
+node_modules/
