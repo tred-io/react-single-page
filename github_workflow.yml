@@ -1,0 +1,310 @@
+name: Deploy New Client Site
+
+on:
+  workflow_dispatch:
+    inputs:
+      client_name:
+        description: 'Client name (e.g., brown-feed)'
+        required: true
+        type: string
+      domain:
+        description: 'Client domain (e.g., brownfeedstore.com)'
+        required: true
+        type: string
+
+      vercel_deploy:
+        description: 'Auto-deploy to Vercel'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout template repository
+        uses: actions/checkout@v4
+        with:
+          ref: replit-agent
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Build React application first
+        run: |
+          # Install dependencies and build frontend only (faster)
+          npm install
+          timeout 180s npx vite build || echo "Build timed out, will use fallback"
+
+      - name: Create client deployment
+        run: |
+          chmod +x deploy-template.sh
+          ./deploy-template.sh ${{ inputs.client_name }} ${{ inputs.domain }}
+
+      - name: Configure git settings
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Check if repository already exists
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          # Check if repository already exists
+          REPO_NAME="${{ inputs.client_name }}-website"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/tred-io/$REPO_NAME)
+          
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "❌ Error: Repository 'tred-io/$REPO_NAME' already exists!"
+            echo "Please use a different client name or delete the existing repository first."
+            exit 1
+          elif [ "$HTTP_STATUS" = "404" ]; then
+            echo "✅ Repository name is available: $REPO_NAME"
+          else
+            echo "⚠️  Unexpected response checking repository: HTTP $HTTP_STATUS"
+            echo "Proceeding with deployment..."
+          fi
+
+      - name: Create GitHub repository for client
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          # Create repository using GitHub REST API under organization
+          REPO_NAME="${{ inputs.client_name }}-website"
+          RESPONSE=$(curl -s -w "HTTPSTATUS:%{http_code}" \
+            -X POST \
+            -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/orgs/tred-io/repos \
+            -d "{
+              \"name\": \"$REPO_NAME\",
+              \"description\": \"Website for ${{ inputs.client_name }} - ${{ inputs.domain }}\",
+              \"private\": false
+            }")
+          
+          HTTP_STATUS=$(echo $RESPONSE | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+          BODY=$(echo $RESPONSE | sed -e 's/HTTPSTATUS\:.*//g')
+          
+          if [ "$HTTP_STATUS" -ne 201 ]; then
+            echo "❌ Failed to create repository. HTTP Status: $HTTP_STATUS"
+            echo "Response: $BODY"
+            exit 1
+          else
+            echo "✅ Successfully created repository: tred-io/$REPO_NAME"
+          fi
+          
+          cd deployments/${{ inputs.client_name }}
+          
+          # Now initialize git and push to the created repository
+          git init
+          git add .
+          git commit -m "Initial deployment for ${{ inputs.client_name }}"
+          git branch -M main
+          git remote add origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/tred-io/${{ inputs.client_name }}-website.git
+          git push -u origin main
+
+      - name: Fix vercel.json configuration
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          
+          # Create corrected vercel.json for standalone deployment
+          cat > vercel.json << EOF
+          {
+            "version": 2,
+            "builds": [
+              {
+                "src": "package.json",
+                "use": "@vercel/node",
+                "config": {
+                  "includeFiles": [
+                    "client/**",
+                    "server/**", 
+                    "shared/**",
+                    "*.json",
+                    "*.ts",
+                    "*.js"
+                  ]
+                }
+              }
+            ],
+            "routes": [
+              {
+                "src": "/api/(.*)",
+                "dest": "/server/index.ts"
+              },
+              {
+                "src": "/(.*)",
+                "dest": "/client/index.html"
+              }
+            ],
+            "env": {
+              "CLIENT_CONFIG_PATH": "./client-config.json"
+            }
+          }
+          EOF
+          
+          # Commit and push the fix
+          git add vercel.json
+          git commit -m "Fix vercel.json configuration - remove functions property"
+          git push origin main
+
+      - name: Setup shared database connection
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          # Use the shared database connection string
+          if [ -z "$DATABASE_URL" ]; then
+            echo "Warning: DATABASE_URL secret not set. Please add the shared database connection string."
+            DATABASE_URL="postgresql://placeholder"
+          else
+            echo "Using shared database connection for client: ${{ inputs.client_name }}"
+          fi
+          
+          # Store for Vercel deployment
+          echo "DATABASE_URL=$DATABASE_URL" > /tmp/db_env
+
+      - name: Initialize client schema and data
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CLIENT_NAME: ${{ inputs.client_name }}
+        run: |
+          # Install dependencies
+          npm install
+          
+          # Build the project first
+          npm run build
+          
+          # Run client schema initialization by starting the server briefly
+          CLIENT_NAME=${{ inputs.client_name }} DOMAIN=${{ inputs.domain }} timeout 10s node dist/index.js || true
+
+      - name: Deploy to Vercel (Efficient)
+        if: ${{ inputs.vercel_deploy }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          # Create efficient deployment structure
+          CLIENT_DIR="deployments/${{ inputs.client_name }}"
+          mkdir -p "$CLIENT_DIR"
+          
+          # Read database URL from previous step
+          if [ -f /tmp/db_env ]; then
+            source /tmp/db_env
+          else
+            DATABASE_URL="postgresql://placeholder"
+          fi
+          
+          # Create client-specific configuration (5KB instead of 200MB)
+          cat > "$CLIENT_DIR/client-config.json" << EOF
+{
+  "clientName": "${{ inputs.client_name }}",
+  "domain": "${{ inputs.domain }}",
+  "deployedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "templateVersion": "1.0.0"
+}
+EOF
+          
+          # Create efficient Vercel configuration that points to template root
+          cat > "$CLIENT_DIR/vercel.json" << 'EOF'
+{
+  "buildCommand": "cd ../../.. && npm run build",
+  "outputDirectory": "../../../dist",
+  "installCommand": "cd ../../.. && npm install",
+  "functions": {
+    "../../../api/index.ts": {
+      "runtime": "@vercel/node"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/themes", 
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+EOF
+
+          # Create environment file
+          cat > "$CLIENT_DIR/.env" << EOF
+DATABASE_URL=$DATABASE_URL
+CLIENT_CONFIG_PATH=./client-config.json
+SESSION_SECRET=$(openssl rand -base64 32)
+NODE_ENV=production
+EOF
+          
+          # Create minimal package.json that references shared template
+          cat > "$CLIENT_DIR/package.json" << 'EOF'
+{
+  "name": "client-deployment",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cd ../../.. && npm run build",
+    "dev": "cd ../../.. && npm run dev"
+  }
+}
+EOF
+
+          cd "$CLIENT_DIR"
+          
+          # Install Vercel CLI
+          npm install -g vercel@latest
+          
+          # Create .vercelignore
+          echo "node_modules" > .vercelignore
+          echo ".git" >> .vercelignore
+          echo ".env" >> .vercelignore
+          
+          # Deploy with client-specific project name and GitHub connection
+          npx vercel --token "$VERCEL_TOKEN" --yes --scope "tred-io" --name "${{ inputs.client_name }}-website"
+          
+          # Automatically connect to this GitHub repository
+          npx vercel git connect "${{ github.repository }}" --token "$VERCEL_TOKEN" --scope "tred-io" --yes
+          
+          # Set environment variables
+          npx vercel env add DATABASE_URL production --token "$VERCEL_TOKEN" --scope "tred-io" <<< "$DATABASE_URL"
+          npx vercel env add SESSION_SECRET production --token "$VERCEL_TOKEN" --scope "tred-io" <<< "$(openssl rand -base64 32)"
+          npx vercel env add CLIENT_NAME production --token "$VERCEL_TOKEN" --scope "tred-io" <<< "${{ inputs.client_name }}"
+          npx vercel env add OPENAI_API_KEY production --token "$VERCEL_TOKEN" --scope "tred-io" <<< "${{ secrets.OPENAI_API_KEY }}"
+          npx vercel env add DOMAIN production --token "$VERCEL_TOKEN" --scope "tred-io" <<< "${{ inputs.domain }}"
+          npx vercel env add NODE_ENV production --token "$VERCEL_TOKEN" --scope "tred-io" <<< "production"
+          
+          # Deploy to production
+          npx vercel --token "$VERCEL_TOKEN" --prod --scope "tred-io"
+
+      - name: Create deployment summary
+        run: |
+          cd deployments/${{ inputs.client_name }}
+          echo "## 🚀 Client Deployment Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Client:** ${{ inputs.client_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Domain:** ${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Repository:** https://github.com/tred-io/${{ inputs.client_name }}-website" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Set up database at [neon.tech](https://neon.tech)" >> $GITHUB_STEP_SUMMARY
+          echo "2. Update DATABASE_URL in Vercel environment variables" >> $GITHUB_STEP_SUMMARY
+          echo "3. Configure custom domain: ${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
+          echo "4. Access admin panel at: https://${{ inputs.domain }}/admin" >> $GITHUB_STEP_SUMMARY
