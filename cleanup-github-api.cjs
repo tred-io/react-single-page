@@ -101,11 +101,13 @@ async function cleanup() {
       name.includes('deploy')
     );
     
-    // Exclude main repository and important ones
+    // Exclude main repository and important ones - CRITICAL: DO NOT DELETE THESE
     const isMainRepo = name === 'sp-upholstery-template' || 
+                      name === 'react-single-page' ||  // MAIN REPOSITORY - DO NOT DELETE
                       name === 'main' || 
                       name === 'template' ||
-                      name === 'production';
+                      name === 'production' ||
+                      !name.includes('test') && !name.includes('brown-feed') && !/^b[0-9]+-website$/.test(name);
     
     return isOwnedByTredIo && isTestRepo && !isMainRepo;
   });
