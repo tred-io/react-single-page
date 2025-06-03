@@ -1,0 +1,47 @@
+[
+{"type":"stdout","created":1748987677730,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"Running build in Washington, D.C., USA (East) – iad1","id":"1748987677730346809690900000","date":1748987677730,"serial":"1748987677730346809690900000"}}
+,
+{"type":"stdout","created":1748987677730,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"Build machine configuration: 4 cores, 8 GB","id":"1748987677730346809690900001","date":1748987677730,"serial":"1748987677730346809690900001"}}
+,
+{"type":"stdout","created":1748987677759,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"Cloning github.com/tred-io/brown-feed-store-website (Branch: main, Commit: b525692)","id":"1748987677759346809690900000","date":1748987677759,"serial":"1748987677759346809690900000"}}
+,
+{"type":"stdout","created":1748987677903,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"Previous build caches not available","id":"1748987677903346809690900002","date":1748987677903,"serial":"1748987677903346809690900002"}}
+,
+{"type":"stdout","created":1748987677981,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"Cloning completed: 222.000ms","id":"1748987677981346809690900000","date":1748987677981,"serial":"1748987677981346809690900000"}}
+,
+{"type":"stdout","created":1748987678265,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"Running \"vercel build\"","id":"1748987678265477939271400001","date":1748987678265,"serial":"1748987678265477939271400001"}}
+,
+{"type":"stderr","created":1748987678727,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"Vercel CLI 42.2.0","id":"1748987678727477939271400000","date":1748987678727,"serial":"1748987678727477939271400000"}}
+,
+{"type":"stdout","created":1748987679275,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"Installing dependencies...","id":"1748987679275477939271400000","date":1748987679275,"serial":"1748987679275477939271400000"}}
+,
+{"type":"stdout","created":1748987690950,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"","id":"1748987690950477939271400000","date":1748987690950,"serial":"1748987690950477939271400000"}}
+,
+{"type":"stdout","created":1748987690950,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"added 186 packages in 11s","id":"1748987690950477939271400001","date":1748987690950,"serial":"1748987690950477939271400001"}}
+,
+{"type":"stdout","created":1748987690950,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"","id":"1748987690950477939271400002","date":1748987690950,"serial":"1748987690950477939271400002"}}
+,
+{"type":"stdout","created":1748987690950,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"40 packages are looking for funding","id":"1748987690950477939271400003","date":1748987690950,"serial":"1748987690950477939271400003"}}
+,
+{"type":"stdout","created":1748987690951,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"  run `npm fund` for details","id":"1748987690951477939271400000","date":1748987690951,"serial":"1748987690951477939271400000"}}
+,
+{"type":"stdout","created":1748987691123,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"","id":"1748987691123477939271400000","date":1748987691123,"serial":"1748987691123477939271400000"}}
+,
+{"type":"stdout","created":1748987691123,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"> brown-feed-store@1.0.0 build","id":"1748987691123477939271400001","date":1748987691123,"serial":"1748987691123477939271400001"}}
+,
+{"type":"stdout","created":1748987691123,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"> tsc && vite build","id":"1748987691123477939271400002","date":1748987691123,"serial":"1748987691123477939271400002"}}
+,
+{"type":"stdout","created":1748987691123,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"","id":"1748987691123477939271400003","date":1748987691123,"serial":"1748987691123477939271400003"}}
+,
+{"type":"stdout","created":1748987692486,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"client/src/App.tsx(3,18): error TS2307: Cannot find module './pages/Home' or its corresponding type declarations.","id":"1748987692486477939271400000","date":1748987692486,"serial":"1748987692486477939271400000"}}
+,
+{"type":"stdout","created":1748987692486,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"client/src/App.tsx(4,27): error TS2307: Cannot find module './pages/AdminEnhanced' or its corresponding type declarations.","id":"1748987692486477939271400001","date":1748987692486,"serial":"1748987692486477939271400001"}}
+,
+{"type":"stdout","created":1748987692486,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"client/src/App.tsx(5,32): error TS2307: Cannot find module './pages/ThemeGeneratorPage' or its corresponding type declarations.","id":"1748987692486477939271400002","date":1748987692486,"serial":"1748987692486477939271400002"}}
+,
+{"type":"stdout","created":1748987692486,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"client/src/App.tsx(6,22): error TS2307: Cannot find module './pages/NotFound' or its corresponding type declarations.","id":"1748987692486477939271400003","date":1748987692486,"serial":"1748987692486477939271400003"}}
+,
+{"type":"stderr","created":1748987692517,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"Error: Command \"npm run build\" exited with 2","id":"1748987692517477939271400000","date":1748987692517,"serial":"1748987692517477939271400000"}}
+,
+{"type":"stdout","created":1748987692696,"payload":{"deploymentId":"dpl_GheYvg9RdeuZEzDdLmYouvNJM6of","info":{"type":"build","name":"bld_myd0mf6ou","entrypoint":"."},"text":"","id":"1748987692696477939271400000","date":1748987692696,"serial":"1748987692696477939271400000"}}
+]
