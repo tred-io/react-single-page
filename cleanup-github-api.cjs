@@ -82,13 +82,21 @@ async function cleanup() {
     return;
   }
 
-  // Filter for test repositories - tred-io owned test repos including b[number] pattern
+  // Show all tred-io repositories to identify test ones
+  const tredIoRepos = repos.filter(repo => repo.owner.login === 'tred-io');
+  
+  console.log(`📋 All tred-io repositories:`);
+  tredIoRepos.forEach(repo => console.log(`  - ${repo.name}`));
+  console.log('');
+  
+  // Filter for test repositories
   const testRepos = repos.filter(repo => {
     const name = repo.name.toLowerCase();
     const isOwnedByTredIo = repo.owner.login === 'tred-io';
     const isTestRepo = (
-      (name.startsWith('brown-feed') && name.includes('-website')) ||
-      /^b[0-9]+$/.test(name) ||
+      name.includes('brown-feed') ||
+      /^b[0-9]+-website$/.test(name) ||
+      name === 'react-single-page' ||
       name.includes('test') ||
       name.includes('deploy')
     );
@@ -97,8 +105,7 @@ async function cleanup() {
     const isMainRepo = name === 'sp-upholstery-template' || 
                       name === 'main' || 
                       name === 'template' ||
-                      name === 'production' ||
-                      !name.includes('brown') && !name.includes('test') && !/^b[0-9]+$/.test(name);
+                      name === 'production';
     
     return isOwnedByTredIo && isTestRepo && !isMainRepo;
   });
