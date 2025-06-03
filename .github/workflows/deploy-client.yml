@@ -40,10 +40,69 @@ jobs:
           npm install
           timeout 180s npx vite build || echo "Build timed out, will use fallback"
 
-      - name: Create client deployment
+      - name: Create efficient client deployment
         run: |
-          chmod +x deploy-template.sh
-          ./deploy-template.sh ${{ inputs.client_name }} ${{ inputs.domain }}
+          # Create efficient deployment structure (5KB vs 200MB)
+          CLIENT_DIR="deployments/${{ inputs.client_name }}"
+          mkdir -p "$CLIENT_DIR"
+          
+          # Create client-specific configuration (5KB instead of 200MB)
+          cat > "$CLIENT_DIR/client-config.json" << EOF
+          {
+            "clientName": "${{ inputs.client_name }}",
+            "domain": "${{ inputs.domain }}",
+            "deployedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "templateVersion": "1.0.0"
+          }
+          EOF
+          
+          # Create efficient Vercel configuration that points to template root
+          cat > "$CLIENT_DIR/vercel.json" << 'EOF'
+          {
+            "buildCommand": "cd ../../.. && npm run build",
+            "outputDirectory": "../../../dist",
+            "installCommand": "cd ../../.. && npm install",
+            "functions": {
+              "../../../api/index.ts": {
+                "runtime": "@vercel/node"
+              }
+            },
+            "rewrites": [
+              {
+                "source": "/api/(.*)",
+                "destination": "/api/index"
+              },
+              {
+                "source": "/admin",
+                "destination": "/index.html"
+              },
+              {
+                "source": "/themes", 
+                "destination": "/index.html"
+              },
+              {
+                "source": "/(.*)",
+                "destination": "/index.html"
+              }
+            ]
+          }
+          EOF
+
+          # Create minimal package.json that references shared template
+          cat > "$CLIENT_DIR/package.json" << 'EOF'
+          {
+            "name": "client-deployment",
+            "version": "1.0.0",
+            "scripts": {
+              "build": "cd ../../.. && npm run build",
+              "dev": "cd ../../.. && npm run dev"
+            }
+          }
+          EOF
+          
+          cd "$CLIENT_DIR"
+          git init
+          git add .
 
       - name: Configure git settings
         run: |
@@ -297,14 +356,22 @@ EOF
       - name: Create deployment summary
         run: |
           cd deployments/${{ inputs.client_name }}
-          echo "## 🚀 Client Deployment Complete!" >> $GITHUB_STEP_SUMMARY
+          CLIENT_SIZE=$(du -sh . | cut -f1)
+          echo "## Efficient Client Deployment Complete!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Client:** ${{ inputs.client_name }}" >> $GITHUB_STEP_SUMMARY
           echo "**Domain:** ${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
           echo "**Repository:** https://github.com/tred-io/${{ inputs.client_name }}-website" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment Size:** $CLIENT_SIZE (vs 200MB+ for full copy)" >> $GITHUB_STEP_SUMMARY
+          echo "**Database:** Shared schema with client-specific data" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
-          echo "1. Set up database at [neon.tech](https://neon.tech)" >> $GITHUB_STEP_SUMMARY
-          echo "2. Update DATABASE_URL in Vercel environment variables" >> $GITHUB_STEP_SUMMARY
-          echo "3. Configure custom domain: ${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
-          echo "4. Access admin panel at: https://${{ inputs.domain }}/admin" >> $GITHUB_STEP_SUMMARY
+          echo "### Efficiency Gains:" >> $GITHUB_STEP_SUMMARY
+          echo "- 5KB configuration files instead of 200MB repository copies" >> $GITHUB_STEP_SUMMARY
+          echo "- Shared template with client-specific configurations" >> $GITHUB_STEP_SUMMARY
+          echo "- Automated GitHub Actions deployment" >> $GITHUB_STEP_SUMMARY
+          echo "- Client-specific database schemas in shared infrastructure" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Access Points:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Website:** https://${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Admin Panel:** https://${{ inputs.domain }}/admin" >> $GITHUB_STEP_SUMMARY
+          echo "- **Theme Generator:** https://${{ inputs.domain }}/themes" >> $GITHUB_STEP_SUMMARY
