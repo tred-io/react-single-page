@@ -1,0 +1,35 @@
+[
+{"type":"stdout","created":1748987324030,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"Running build in Washington, D.C., USA (East) – iad1","id":"1748987324030846156613300000","date":1748987324030,"serial":"1748987324030846156613300000"}}
+,
+{"type":"stdout","created":1748987324035,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"Build machine configuration: 4 cores, 8 GB","id":"1748987324035846156613300000","date":1748987324035,"serial":"1748987324035846156613300000"}}
+,
+{"type":"stdout","created":1748987324061,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"Cloning github.com/tred-io/brown-feed-store-website (Branch: main, Commit: 6fe9820)","id":"1748987324061846156613300000","date":1748987324061,"serial":"1748987324061846156613300000"}}
+,
+{"type":"stdout","created":1748987324425,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"Previous build caches not available","id":"1748987324425846156613300000","date":1748987324425,"serial":"1748987324425846156613300000"}}
+,
+{"type":"stdout","created":1748987324539,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"Cloning completed: 477.000ms","id":"1748987324539846156613300000","date":1748987324539,"serial":"1748987324539846156613300000"}}
+,
+{"type":"stdout","created":1748987325071,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"Running \"vercel build\"","id":"1748987325071404613571200001","date":1748987325071,"serial":"1748987325071404613571200001"}}
+,
+{"type":"stderr","created":1748987325533,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"Vercel CLI 42.2.0","id":"1748987325533404613571200000","date":1748987325533,"serial":"1748987325533404613571200000"}}
+,
+{"type":"stdout","created":1748987326092,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"Installing dependencies...","id":"1748987326092404613571200000","date":1748987326092,"serial":"1748987326092404613571200000"}}
+,
+{"type":"stdout","created":1748987337546,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"","id":"1748987337546404613571200000","date":1748987337546,"serial":"1748987337546404613571200000"}}
+,
+{"type":"stdout","created":1748987337546,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"added 184 packages in 11s","id":"1748987337546404613571200001","date":1748987337546,"serial":"1748987337546404613571200001"}}
+,
+{"type":"stdout","created":1748987337546,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"","id":"1748987337546404613571200002","date":1748987337546,"serial":"1748987337546404613571200002"}}
+,
+{"type":"stdout","created":1748987337546,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"40 packages are looking for funding","id":"1748987337546404613571200003","date":1748987337546,"serial":"1748987337546404613571200003"}}
+,
+{"type":"stdout","created":1748987337546,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"  run `npm fund` for details","id":"1748987337546404613571200004","date":1748987337546,"serial":"1748987337546404613571200004"}}
+,
+{"type":"stdout","created":1748987337710,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"","id":"1748987337710404613571200000","date":1748987337710,"serial":"1748987337710404613571200000"}}
+,
+{"type":"stdout","created":1748987337710,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"> brown-feed-store@1.0.0 build","id":"1748987337710404613571200001","date":1748987337710,"serial":"1748987337710404613571200001"}}
+,
+{"type":"stdout","created":1748987337710,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"> tsc && vite build","id":"1748987337710404613571200002","date":1748987337710,"serial":"1748987337710404613571200002"}}
+,
+{"type":"stdout","created":1748987337711,"payload":{"deploymentId":"dpl_2Pn2qzj82S8TWEL41ANBeJL57bME","info":{"type":"build","name":"bld_ct1vgkojh","entrypoint":"."},"text":"","id":"1748987337711404613571200000","date":1748987337711,"serial":"1748987337711404613571200000"}}
+]
