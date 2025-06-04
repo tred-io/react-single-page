@@ -349,7 +349,10 @@
     "zod-validation-error": "^3.4.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node simple-server.js",
+    "start": "node simple-server.js",
+    "build": "echo \"Build not needed for simplified server\"",
+    "preview": "node simple-server.js"
   },
   "keywords": [],
   "author": "",
