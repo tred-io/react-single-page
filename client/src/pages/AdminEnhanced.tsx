@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -53,7 +53,7 @@ export default function AdminEnhanced() {
 
   const form = useForm<InsertStoreSettings>({
     resolver: zodResolver(insertStoreSettingsSchema),
-    defaultValues: storeSettings || {
+    defaultValues: {
       storeName: "",
       tagline: "",
       address: "",
@@ -90,12 +90,17 @@ export default function AdminEnhanced() {
     },
   });
 
+  // Update form when storeSettings data is loaded
+  useEffect(() => {
+    if (storeSettings) {
+      form.reset(storeSettings);
+    }
+  }, [storeSettings, form]);
+
   const updateSettingsMutation = useMutation({
     mutationFn: async (data: InsertStoreSettings) => {
-      return await apiRequest("/api/store-settings", {
-        method: "PUT",
-        body: JSON.stringify(data),
-      });
+      const res = await apiRequest("PUT", "/api/store-settings", data);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/store-settings"] });
@@ -115,10 +120,8 @@ export default function AdminEnhanced() {
 
   const updateCategoryMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: InsertProductCategory }) => {
-      return await apiRequest(`/api/product-categories/${id}`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-      });
+      const res = await apiRequest("PUT", `/api/product-categories/${id}`, data);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/product-categories"] });
