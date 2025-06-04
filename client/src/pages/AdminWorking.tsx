@@ -45,10 +45,11 @@ export default function Admin() {
   });
 
   const [newCategory, setNewCategory] = useState<InsertProductCategory>({
-    title: "",
+    name: "",
     description: "",
-    items: [],
     imageUrl: "",
+    featured: false,
+    sortOrder: 0
   });
 
   const [editingCategory, setEditingCategory] = useState<ProductCategory | null>(null);
