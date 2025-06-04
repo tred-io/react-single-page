@@ -54,8 +54,8 @@ class ClientDeployer {
     });
   }
 
-  async createGitHubRepository(clientName, description) {
-    console.log(`Creating GitHub repository: ${clientName}`);
+  async createGitHubRepository(clientName, description, orgName = 'tred-io') {
+    console.log(`Creating GitHub repository: ${clientName} in ${orgName} organization`);
     
     const repoData = {
       name: clientName,
@@ -67,7 +67,7 @@ class ClientDeployer {
 
     const options = {
       hostname: 'api.github.com',
-      path: '/user/repos',
+      path: `/orgs/${orgName}/repos`,
       method: 'POST',
       headers: {
         'Authorization': `token ${this.githubToken}`,
@@ -84,7 +84,11 @@ class ClientDeployer {
     } catch (error) {
       if (error.message.includes('already exists')) {
         console.log(`Repository ${clientName} already exists, continuing...`);
-        return { html_url: `https://github.com/${clientName}`, clone_url: `https://github.com/${clientName}.git` };
+        return { 
+          html_url: `https://github.com/tred-io/${clientName}`, 
+          clone_url: `https://github.com/tred-io/${clientName}.git`,
+          full_name: `tred-io/${clientName}`
+        };
       }
       throw error;
     }
