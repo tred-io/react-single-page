@@ -10,13 +10,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { queryClient } from "@/lib/queryClient";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import { insertStoreSettingsSchema, insertProductCategorySchema, insertSpecialServiceSchema, insertFeaturedBrandSchema, type InsertStoreSettings, type StoreSettings, type ProductCategory, type InsertProductCategory, type SpecialService, type InsertSpecialService, type FeaturedBrand, type InsertFeaturedBrand } from "@shared/schema";
-import LogoUpload from "@/components/LogoUpload";
-import FileUpload from "@/components/FileUpload";
 
-import { Copy, Palette, Plus, Edit2, Trash2 } from "lucide-react";
+import { Copy, Palette, Plus, Edit2, Trash2, Save, X } from "lucide-react";
 
 const fontOptions = [
   { value: "Inter", label: "Inter (Modern Sans-serif)" },
@@ -33,13 +32,8 @@ export default function AdminEnhanced() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("basic");
   const [editingCategory, setEditingCategory] = useState<ProductCategory | null>(null);
-  const [newCategory, setNewCategory] = useState<InsertProductCategory>({
-    name: "",
-    description: "",
-    imageUrl: "",
-    featured: false,
-    sortOrder: 0
-  });
+  const [editingService, setEditingService] = useState<SpecialService | null>(null);
+  const [editingBrand, setEditingBrand] = useState<FeaturedBrand | null>(null);
 
   const { data: storeSettings, isLoading } = useQuery<StoreSettings>({
     queryKey: ["/api/store-settings"],
@@ -65,13 +59,15 @@ export default function AdminEnhanced() {
       address: "",
       phone: "",
       email: "",
-      mondayHours: "7:00 AM - 6:00 PM",
-      tuesdayHours: "7:00 AM - 6:00 PM",
-      wednesdayHours: "7:00 AM - 6:00 PM",
-      thursdayHours: "7:00 AM - 6:00 PM",
-      fridayHours: "7:00 AM - 6:00 PM",
-      saturdayHours: "7:00 AM - 6:00 PM",
-      sundayHours: "9:00 AM - 4:00 PM",
+      mondayHours: "8:00 AM - 6:00 PM",
+      tuesdayHours: "8:00 AM - 6:00 PM",
+      wednesdayHours: "8:00 AM - 6:00 PM",
+      thursdayHours: "8:00 AM - 6:00 PM",
+      fridayHours: "8:00 AM - 6:00 PM",
+      saturdayHours: "8:00 AM - 5:00 PM",
+      sundayHours: "Closed",
+      heroTitle: "",
+      heroSubtitle: "",
       aboutTitle: "",
       aboutDescription: "",
       aboutStory: "",
@@ -86,9 +82,8 @@ export default function AdminEnhanced() {
       fontFamily: "Inter",
       facebookUrl: "",
       instagramUrl: "",
-      xUrl: "",
-      googleUrl: "",
-      yelpUrl: "",
+      twitterUrl: "",
+      websiteUrl: "",
       seoTitle: "",
       seoDescription: "",
       seoKeywords: ""
@@ -97,13 +92,10 @@ export default function AdminEnhanced() {
 
   const updateSettingsMutation = useMutation({
     mutationFn: async (data: InsertStoreSettings) => {
-      const response = await fetch("/api/store-settings", {
+      return await apiRequest("/api/store-settings", {
         method: "PUT",
         body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
       });
-      if (!response.ok) throw new Error("Failed to update settings");
-      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/store-settings"] });
@@ -123,13 +115,10 @@ export default function AdminEnhanced() {
 
   const updateCategoryMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: InsertProductCategory }) => {
-      const response = await fetch(`/api/product-categories/${id}`, {
+      return await apiRequest(`/api/product-categories/${id}`, {
         method: "PUT",
         body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
       });
-      if (!response.ok) throw new Error("Failed to update category");
-      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/product-categories"] });
@@ -143,23 +132,13 @@ export default function AdminEnhanced() {
 
   const createCategoryMutation = useMutation({
     mutationFn: async (data: InsertProductCategory) => {
-      const response = await fetch("/api/product-categories", {
+      return await apiRequest("/api/product-categories", {
         method: "POST",
         body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
       });
-      if (!response.ok) throw new Error("Failed to create category");
-      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/product-categories"] });
-      setNewCategory({
-        name: "",
-        description: "",
-        imageUrl: "",
-        featured: false,
-        sortOrder: 0
-      });
       toast({
         title: "Category created",
         description: "New product category has been created successfully.",
@@ -169,17 +148,111 @@ export default function AdminEnhanced() {
 
   const deleteCategoryMutation = useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/product-categories/${id}`, {
+      return await apiRequest(`/api/product-categories/${id}`, {
         method: "DELETE",
       });
-      if (!response.ok) throw new Error("Failed to delete category");
-      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/product-categories"] });
       toast({
         title: "Category deleted",
         description: "Product category has been deleted successfully.",
+      });
+    },
+  });
+
+  const updateServiceMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: InsertSpecialService }) => {
+      return await apiRequest(`/api/special-services/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/special-services"] });
+      setEditingService(null);
+      toast({
+        title: "Service updated",
+        description: "Special service has been updated successfully.",
+      });
+    },
+  });
+
+  const createServiceMutation = useMutation({
+    mutationFn: async (data: InsertSpecialService) => {
+      return await apiRequest("/api/special-services", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/special-services"] });
+      toast({
+        title: "Service created",
+        description: "New special service has been created successfully.",
+      });
+    },
+  });
+
+  const deleteServiceMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return await apiRequest(`/api/special-services/${id}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/special-services"] });
+      toast({
+        title: "Service deleted",
+        description: "Special service has been deleted successfully.",
+      });
+    },
+  });
+
+  const updateBrandMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: InsertFeaturedBrand }) => {
+      return await apiRequest(`/api/featured-brands/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/featured-brands"] });
+      setEditingBrand(null);
+      toast({
+        title: "Brand updated",
+        description: "Featured brand has been updated successfully.",
+      });
+    },
+  });
+
+  const createBrandMutation = useMutation({
+    mutationFn: async (data: InsertFeaturedBrand) => {
+      return await apiRequest("/api/featured-brands", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/featured-brands"] });
+      toast({
+        title: "Brand created",
+        description: "New featured brand has been created successfully.",
+      });
+    },
+  });
+
+  const deleteBrandMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return await apiRequest(`/api/featured-brands/${id}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/featured-brands"] });
+      toast({
+        title: "Brand deleted",
+        description: "Featured brand has been deleted successfully.",
       });
     },
   });
@@ -224,15 +297,13 @@ export default function AdminEnhanced() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <TabsList className="grid w-full grid-cols-8 text-xs">
+              <TabsList className="grid w-full grid-cols-6 text-xs">
                 <TabsTrigger value="basic">Basic</TabsTrigger>
                 <TabsTrigger value="hours">Hours</TabsTrigger>
                 <TabsTrigger value="about">About</TabsTrigger>
                 <TabsTrigger value="categories">Categories</TabsTrigger>
                 <TabsTrigger value="services">Services</TabsTrigger>
                 <TabsTrigger value="brands">Brands</TabsTrigger>
-                <TabsTrigger value="branding">Design</TabsTrigger>
-                <TabsTrigger value="social">Social/SEO</TabsTrigger>
               </TabsList>
 
               <TabsContent value="basic" className="space-y-6">
@@ -311,6 +382,15 @@ export default function AdminEnhanced() {
                         )}
                       />
                     </div>
+                    <div className="flex justify-end">
+                      <Button 
+                        type="submit" 
+                        disabled={updateSettingsMutation.isPending}
+                        className="min-w-[120px]"
+                      >
+                        {updateSettingsMutation.isPending ? "Saving..." : "Save Changes"}
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -331,7 +411,7 @@ export default function AdminEnhanced() {
                             <FormItem className="flex-1">
                               <FormLabel>Monday</FormLabel>
                               <FormControl>
-                                <Input {...field} placeholder="7:00 AM - 6:00 PM" />
+                                <Input {...field} placeholder="8:00 AM - 6:00 PM" />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -350,85 +430,32 @@ export default function AdminEnhanced() {
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name="tuesdayHours"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Tuesday</FormLabel>
-                              <FormControl>
-                                <Input {...field} placeholder="7:00 AM - 6:00 PM" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="wednesdayHours"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Wednesday</FormLabel>
-                              <FormControl>
-                                <Input {...field} placeholder="7:00 AM - 6:00 PM" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="thursdayHours"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Thursday</FormLabel>
-                              <FormControl>
-                                <Input {...field} placeholder="7:00 AM - 6:00 PM" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="fridayHours"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Friday</FormLabel>
-                              <FormControl>
-                                <Input {...field} placeholder="7:00 AM - 6:00 PM" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="saturdayHours"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Saturday</FormLabel>
-                              <FormControl>
-                                <Input {...field} placeholder="7:00 AM - 6:00 PM" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="sundayHours"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Sunday</FormLabel>
-                              <FormControl>
-                                <Input {...field} placeholder="9:00 AM - 4:00 PM" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                        {['tuesdayHours', 'wednesdayHours', 'thursdayHours', 'fridayHours', 'saturdayHours', 'sundayHours'].map((day) => (
+                          <FormField
+                            key={day}
+                            control={form.control}
+                            name={day as any}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>{day.charAt(0).toUpperCase() + day.slice(1).replace('Hours', '')}</FormLabel>
+                                <FormControl>
+                                  <Input {...field} placeholder="8:00 AM - 6:00 PM or Closed" />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        ))}
                       </div>
+                    </div>
+                    <div className="flex justify-end">
+                      <Button 
+                        type="submit" 
+                        disabled={updateSettingsMutation.isPending}
+                        className="min-w-[120px]"
+                      >
+                        {updateSettingsMutation.isPending ? "Saving..." : "Save Changes"}
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -438,9 +465,50 @@ export default function AdminEnhanced() {
                 <Card>
                   <CardHeader>
                     <CardTitle>About Section</CardTitle>
-                    <CardDescription>Tell your story and showcase what makes your business special</CardDescription>
+                    <CardDescription>Tell your story and showcase your business</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="heroTitle"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Hero Title</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="Main headline" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="foundedYear"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Founded Year</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="1967" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name="heroSubtitle"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Hero Subtitle</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Supporting headline" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                     <FormField
                       control={form.control}
                       name="aboutTitle"
@@ -448,7 +516,7 @@ export default function AdminEnhanced() {
                         <FormItem>
                           <FormLabel>About Title</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="About Our Business" />
+                            <Input {...field} placeholder="About [Store Name]" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -459,13 +527,9 @@ export default function AdminEnhanced() {
                       name="aboutDescription"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Short Description</FormLabel>
+                          <FormLabel>About Description</FormLabel>
                           <FormControl>
-                            <Textarea 
-                              {...field} 
-                              placeholder="A brief overview of your business..."
-                              className="min-h-[80px]"
-                            />
+                            <Textarea {...field} placeholder="Brief description of your business" className="min-h-[100px]" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -476,31 +540,23 @@ export default function AdminEnhanced() {
                       name="aboutStory"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Your Story</FormLabel>
+                          <FormLabel>About Story</FormLabel>
                           <FormControl>
-                            <Textarea 
-                              {...field} 
-                              placeholder="Tell the story of your business, its history, values, and what sets you apart..."
-                              className="min-h-[120px]"
-                            />
+                            <Textarea {...field} placeholder="Your detailed business story" className="min-h-[150px]" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={form.control}
-                      name="foundedYear"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Founded Year</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="1985" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="flex justify-end">
+                      <Button 
+                        type="submit" 
+                        disabled={updateSettingsMutation.isPending}
+                        className="min-w-[120px]"
+                      >
+                        {updateSettingsMutation.isPending ? "Saving..." : "Save Changes"}
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -509,32 +565,90 @@ export default function AdminEnhanced() {
                 <Card>
                   <CardHeader>
                     <CardTitle>Product Categories</CardTitle>
-                    <CardDescription>Manage your product categories and their details</CardDescription>
+                    <CardDescription>Manage your product categories and their display</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
+                    {/* Add New Category */}
+                    <div className="border rounded-lg p-4 bg-gray-50">
+                      <h4 className="font-medium mb-4">Add New Category</h4>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="new-category-name">Name</Label>
+                            <Input
+                              id="new-category-name"
+                              placeholder="Category name"
+                              onChange={(e) => {
+                                // Handle new category creation
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="new-category-image">Image URL</Label>
+                            <Input
+                              id="new-category-image"
+                              placeholder="https://example.com/image.jpg"
+                              onChange={(e) => {
+                                // Handle new category creation
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <Label htmlFor="new-category-description">Description</Label>
+                          <Textarea
+                            id="new-category-description"
+                            placeholder="Category description"
+                            className="min-h-[80px]"
+                            onChange={(e) => {
+                              // Handle new category creation
+                            }}
+                          />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="new-category-featured" />
+                          <Label htmlFor="new-category-featured">Featured category</Label>
+                        </div>
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            createCategoryMutation.mutate({
+                              name: "",
+                              description: "",
+                              imageUrl: "",
+                              featured: false,
+                              sortOrder: categories.length
+                            });
+                          }}
+                          disabled={createCategoryMutation.isPending}
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          {createCategoryMutation.isPending ? "Adding..." : "Add Category"}
+                        </Button>
+                      </div>
+                    </div>
+
                     {/* Existing Categories */}
                     <div className="space-y-4">
-                      <h4 className="font-medium text-gray-900">Current Categories</h4>
                       {categories.map((category) => (
                         <div key={category.id} className="border rounded-lg p-4">
                           {editingCategory?.id === category.id ? (
                             <div className="space-y-4">
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                  <Label htmlFor={`edit-title-${category.id}`}>Title</Label>
+                                  <Label htmlFor={`edit-name-${category.id}`}>Name</Label>
                                   <Input
-                                    id={`edit-title-${category.id}`}
-                                    value={editingCategory.title}
-                                    onChange={(e) => setEditingCategory({ ...editingCategory, title: e.target.value })}
+                                    id={`edit-name-${category.id}`}
+                                    value={editingCategory.name}
+                                    onChange={(e) => setEditingCategory({ ...editingCategory, name: e.target.value })}
                                   />
                                 </div>
                                 <div>
-                                  <Label htmlFor={`edit-icon-${category.id}`}>Icon Name</Label>
+                                  <Label htmlFor={`edit-image-${category.id}`}>Image URL</Label>
                                   <Input
-                                    id={`edit-icon-${category.id}`}
-                                    value={editingCategory.iconName}
-                                    onChange={(e) => setEditingCategory({ ...editingCategory, iconName: e.target.value })}
-                                    placeholder="Heart, Wrench, Beef, etc."
+                                    id={`edit-image-${category.id}`}
+                                    value={editingCategory.imageUrl}
+                                    onChange={(e) => setEditingCategory({ ...editingCategory, imageUrl: e.target.value })}
                                   />
                                 </div>
                               </div>
@@ -547,30 +661,21 @@ export default function AdminEnhanced() {
                                   className="min-h-[80px]"
                                 />
                               </div>
-                              <div>
-                                <Label htmlFor={`edit-items-${category.id}`}>Items (one per line)</Label>
-                                <Textarea
-                                  id={`edit-items-${category.id}`}
-                                  value={editingCategory.items.join('\n')}
-                                  onChange={(e) => setEditingCategory({ 
-                                    ...editingCategory, 
-                                    items: e.target.value.split('\n').filter(item => item.trim()) 
-                                  })}
-                                  className="min-h-[100px]"
+                              <div className="flex items-center space-x-2">
+                                <Checkbox 
+                                  id={`edit-featured-${category.id}`}
+                                  checked={editingCategory.featured}
+                                  onCheckedChange={(checked) => setEditingCategory({ ...editingCategory, featured: !!checked })}
                                 />
+                                <Label htmlFor={`edit-featured-${category.id}`}>Featured category</Label>
                               </div>
-                              <FileUpload
-                                onUpload={(url) => setEditingCategory({ ...editingCategory, imageUrl: url })}
-                                currentUrl={editingCategory.imageUrl}
-                                label="Category Image"
-                                accept="image/*"
-                              />
                               <div className="flex gap-2">
                                 <Button
                                   type="button"
                                   onClick={() => updateCategoryMutation.mutate({ id: category.id, data: editingCategory })}
                                   disabled={updateCategoryMutation.isPending}
                                 >
+                                  <Save className="h-4 w-4 mr-2" />
                                   {updateCategoryMutation.isPending ? "Saving..." : "Save"}
                                 </Button>
                                 <Button
@@ -578,6 +683,7 @@ export default function AdminEnhanced() {
                                   variant="outline"
                                   onClick={() => setEditingCategory(null)}
                                 >
+                                  <X className="h-4 w-4 mr-2" />
                                   Cancel
                                 </Button>
                               </div>
@@ -585,11 +691,13 @@ export default function AdminEnhanced() {
                           ) : (
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
-                                <h5 className="font-medium">{category.title}</h5>
+                                <h5 className="font-medium">{category.name}</h5>
                                 <p className="text-sm text-gray-600 mt-1">{category.description}</p>
-                                <p className="text-xs text-gray-500 mt-2">
-                                  {category.items.length} items • Icon: {category.iconName}
-                                </p>
+                                {category.featured && (
+                                  <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mt-2">
+                                    Featured
+                                  </span>
+                                )}
                               </div>
                               <div className="flex gap-2 ml-4">
                                 <Button
@@ -615,232 +723,6 @@ export default function AdminEnhanced() {
                         </div>
                       ))}
                     </div>
-
-                    {/* Add New Category */}
-                    <div className="border-t pt-6">
-                      <h4 className="font-medium text-gray-900 mb-4">Add New Category</h4>
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <Label htmlFor="new-title">Title</Label>
-                            <Input
-                              id="new-title"
-                              value={newCategory.title}
-                              onChange={(e) => setNewCategory({ ...newCategory, title: e.target.value })}
-                              placeholder="Category name"
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor="new-icon">Icon Name</Label>
-                            <Input
-                              id="new-icon"
-                              value={newCategory.iconName}
-                              onChange={(e) => setNewCategory({ ...newCategory, iconName: e.target.value })}
-                              placeholder="Heart, Wrench, Beef, etc."
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <Label htmlFor="new-description">Description</Label>
-                          <Textarea
-                            id="new-description"
-                            value={newCategory.description}
-                            onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
-                            placeholder="Describe this category..."
-                            className="min-h-[80px]"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="new-items">Items (one per line)</Label>
-                          <Textarea
-                            id="new-items"
-                            value={newCategory.items.join('\n')}
-                            onChange={(e) => setNewCategory({ 
-                              ...newCategory, 
-                              items: e.target.value.split('\n').filter(item => item.trim()) 
-                            })}
-                            placeholder="Item 1&#10;Item 2&#10;Item 3"
-                            className="min-h-[100px]"
-                          />
-                        </div>
-                        <FileUpload
-                          onUpload={(url) => setNewCategory({ ...newCategory, imageUrl: url })}
-                          currentUrl={newCategory.imageUrl}
-                          label="Category Image"
-                          accept="image/*"
-                        />
-                        <Button
-                          type="button"
-                          onClick={() => createCategoryMutation.mutate({
-                            ...newCategory,
-                            displayOrder: categories.length + 1
-                          })}
-                          disabled={createCategoryMutation.isPending}
-                          className="bg-chocolate-brown hover:bg-chocolate-brown/90"
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          {createCategoryMutation.isPending ? "Adding..." : "Add Category"}
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="branding" className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Palette className="h-5 w-5" />
-                      Branding & Design
-                    </CardTitle>
-                    <CardDescription>Customize your brand colors, fonts, and visual identity</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <h4 className="font-medium text-gray-900">Images & Branding</h4>
-                        <div className="space-y-4">
-                          <div>
-                            <FileUpload
-                              currentUrl={form.watch("logoUrl")}
-                              onUpload={(url) => form.setValue("logoUrl", url)}
-                              label="Business Logo"
-                              accept=".jpg,.jpeg,.png,.svg,.webp"
-                              maxSize={2}
-                            />
-                            <p className="text-xs text-gray-500 mt-1">Recommended: 200x80px, appears in navigation</p>
-                          </div>
-                          
-                          <div>
-                            <FileUpload
-                              currentUrl={form.watch("faviconUrl")}
-                              onUpload={(url) => form.setValue("faviconUrl", url)}
-                              label="Favicon"
-                              accept=".ico,.png,.svg"
-                              maxSize={1}
-                            />
-                            <p className="text-xs text-gray-500 mt-1">Recommended: 32x32px or 16x16px, appears in browser tab</p>
-                          </div>
-                          
-                          <div>
-                            <FileUpload
-                              currentUrl={form.watch("heroImageUrl")}
-                              onUpload={(url) => form.setValue("heroImageUrl", url)}
-                              label="Hero Background Image"
-                              accept=".jpg,.jpeg,.png,.webp"
-                              maxSize={5}
-                            />
-                            <p className="text-xs text-gray-500 mt-1">Recommended: 1920x600px, appears behind main hero text</p>
-                          </div>
-                          
-                          <div>
-                            <FileUpload
-                              currentUrl={form.watch("aboutImageUrl")}
-                              onUpload={(url) => form.setValue("aboutImageUrl", url)}
-                              label="About Section Image"
-                              accept=".jpg,.jpeg,.png,.webp"
-                              maxSize={5}
-                            />
-                            <p className="text-xs text-gray-500 mt-1">Recommended: 600x400px, appears in about section</p>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-4">
-                        <h4 className="font-medium text-gray-900">Colors</h4>
-                        <div className="grid grid-cols-1 gap-4">
-                          <FormField
-                            control={form.control}
-                            name="primaryColor"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Primary Color</FormLabel>
-                                <div className="flex items-center gap-2">
-                                  <FormControl>
-                                    <Input {...field} type="color" className="w-16 h-10 p-1" />
-                                  </FormControl>
-                                  <Input 
-                                    value={field.value} 
-                                    onChange={field.onChange}
-                                    placeholder="#8B4513"
-                                    className="flex-1"
-                                  />
-                                </div>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="secondaryColor"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Secondary Color</FormLabel>
-                                <div className="flex items-center gap-2">
-                                  <FormControl>
-                                    <Input {...field} type="color" className="w-16 h-10 p-1" />
-                                  </FormControl>
-                                  <Input 
-                                    value={field.value} 
-                                    onChange={field.onChange}
-                                    placeholder="#2F4F4F"
-                                    className="flex-1"
-                                  />
-                                </div>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="accentColor"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Accent Color</FormLabel>
-                                <div className="flex items-center gap-2">
-                                  <FormControl>
-                                    <Input {...field} type="color" className="w-16 h-10 p-1" />
-                                  </FormControl>
-                                  <Input 
-                                    value={field.value} 
-                                    onChange={field.onChange}
-                                    placeholder="#CD853F"
-                                    className="flex-1"
-                                  />
-                                </div>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <FormField
-                      control={form.control}
-                      name="fontFamily"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Font Family</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a font" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {fontOptions.map((font) => (
-                                <SelectItem key={font.value} value={font.value}>
-                                  {font.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -849,68 +731,154 @@ export default function AdminEnhanced() {
                 <Card>
                   <CardHeader>
                     <CardTitle>Special Services</CardTitle>
-                    <CardDescription>Showcase the extra services that set your business apart (max 3 recommended)</CardDescription>
+                    <CardDescription>Manage your special services and offerings</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    {/* Current Services */}
-                    <div className="space-y-4">
-                      <h4 className="font-medium text-gray-900">Current Services</h4>
-                      {services.map((service) => (
-                        <div key={service.id} className="border rounded-lg p-4 flex items-start justify-between">
-                          <div className="flex-1">
-                            <h5 className="font-medium">{service.title}</h5>
-                            <p className="text-sm text-gray-600 mt-1">{service.description}</p>
-                            <p className="text-xs text-gray-500 mt-2">Icon: {service.iconName}</p>
-                          </div>
-                          <div className="flex gap-2 ml-4">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                // Set editing state for services
-                              }}
-                            >
-                              <Edit2 className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                // Delete service
-                              }}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
                     {/* Add New Service */}
-                    <div className="border-t pt-6">
-                      <h4 className="font-medium text-gray-900 mb-4">Add New Service</h4>
+                    <div className="border rounded-lg p-4 bg-gray-50">
+                      <h4 className="font-medium mb-4">Add New Service</h4>
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label>Service Title</Label>
-                            <Input placeholder="Expert Consultation" />
+                            <Label htmlFor="new-service-name">Name</Label>
+                            <Input
+                              id="new-service-name"
+                              placeholder="Service name"
+                            />
                           </div>
                           <div>
-                            <Label>Icon Name</Label>
-                            <Input placeholder="Users, Truck, Settings, etc." />
+                            <Label htmlFor="new-service-image">Image URL</Label>
+                            <Input
+                              id="new-service-image"
+                              placeholder="https://example.com/image.jpg"
+                            />
                           </div>
                         </div>
                         <div>
-                          <Label>Description</Label>
-                          <Textarea placeholder="Describe this service..." className="min-h-[80px]" />
+                          <Label htmlFor="new-service-description">Description</Label>
+                          <Textarea
+                            id="new-service-description"
+                            placeholder="Service description"
+                            className="min-h-[80px]"
+                          />
                         </div>
-                        <Button type="button" className="bg-chocolate-brown hover:bg-chocolate-brown/90">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="new-service-featured" />
+                          <Label htmlFor="new-service-featured">Featured service</Label>
+                        </div>
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            createServiceMutation.mutate({
+                              name: "",
+                              description: "",
+                              imageUrl: "",
+                              featured: false,
+                              sortOrder: services.length
+                            });
+                          }}
+                          disabled={createServiceMutation.isPending}
+                        >
                           <Plus className="h-4 w-4 mr-2" />
-                          Add Service
+                          {createServiceMutation.isPending ? "Adding..." : "Add Service"}
                         </Button>
                       </div>
+                    </div>
+
+                    {/* Existing Services */}
+                    <div className="space-y-4">
+                      {services.map((service) => (
+                        <div key={service.id} className="border rounded-lg p-4">
+                          {editingService?.id === service.id ? (
+                            <div className="space-y-4">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                  <Label htmlFor={`edit-service-name-${service.id}`}>Name</Label>
+                                  <Input
+                                    id={`edit-service-name-${service.id}`}
+                                    value={editingService.name}
+                                    onChange={(e) => setEditingService({ ...editingService, name: e.target.value })}
+                                  />
+                                </div>
+                                <div>
+                                  <Label htmlFor={`edit-service-image-${service.id}`}>Image URL</Label>
+                                  <Input
+                                    id={`edit-service-image-${service.id}`}
+                                    value={editingService.imageUrl}
+                                    onChange={(e) => setEditingService({ ...editingService, imageUrl: e.target.value })}
+                                  />
+                                </div>
+                              </div>
+                              <div>
+                                <Label htmlFor={`edit-service-description-${service.id}`}>Description</Label>
+                                <Textarea
+                                  id={`edit-service-description-${service.id}`}
+                                  value={editingService.description}
+                                  onChange={(e) => setEditingService({ ...editingService, description: e.target.value })}
+                                  className="min-h-[80px]"
+                                />
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <Checkbox 
+                                  id={`edit-service-featured-${service.id}`}
+                                  checked={editingService.featured}
+                                  onCheckedChange={(checked) => setEditingService({ ...editingService, featured: !!checked })}
+                                />
+                                <Label htmlFor={`edit-service-featured-${service.id}`}>Featured service</Label>
+                              </div>
+                              <div className="flex gap-2">
+                                <Button
+                                  type="button"
+                                  onClick={() => updateServiceMutation.mutate({ id: service.id, data: editingService })}
+                                  disabled={updateServiceMutation.isPending}
+                                >
+                                  <Save className="h-4 w-4 mr-2" />
+                                  {updateServiceMutation.isPending ? "Saving..." : "Save"}
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  onClick={() => setEditingService(null)}
+                                >
+                                  <X className="h-4 w-4 mr-2" />
+                                  Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <h5 className="font-medium">{service.name}</h5>
+                                <p className="text-sm text-gray-600 mt-1">{service.description}</p>
+                                {service.featured && (
+                                  <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mt-2">
+                                    Featured
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex gap-2 ml-4">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setEditingService(service)}
+                                >
+                                  <Edit2 className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => deleteServiceMutation.mutate(service.id)}
+                                  disabled={deleteServiceMutation.isPending}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
@@ -920,208 +888,159 @@ export default function AdminEnhanced() {
                 <Card>
                   <CardHeader>
                     <CardTitle>Featured Brands</CardTitle>
-                    <CardDescription>Showcase the trusted brands you carry</CardDescription>
+                    <CardDescription>Manage your featured brands and partnerships</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    {/* Current Brands */}
+                    {/* Add New Brand */}
+                    <div className="border rounded-lg p-4 bg-gray-50">
+                      <h4 className="font-medium mb-4">Add New Brand</h4>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="new-brand-name">Name</Label>
+                            <Input
+                              id="new-brand-name"
+                              placeholder="Brand name"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="new-brand-image">Image URL</Label>
+                            <Input
+                              id="new-brand-image"
+                              placeholder="https://example.com/logo.jpg"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <Label htmlFor="new-brand-description">Description</Label>
+                          <Textarea
+                            id="new-brand-description"
+                            placeholder="Brand description"
+                            className="min-h-[80px]"
+                          />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="new-brand-featured" />
+                          <Label htmlFor="new-brand-featured">Featured brand</Label>
+                        </div>
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            createBrandMutation.mutate({
+                              name: "",
+                              description: "",
+                              imageUrl: "",
+                              featured: false,
+                              sortOrder: brands.length
+                            });
+                          }}
+                          disabled={createBrandMutation.isPending}
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          {createBrandMutation.isPending ? "Adding..." : "Add Brand"}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Existing Brands */}
                     <div className="space-y-4">
-                      <h4 className="font-medium text-gray-900">Current Brands</h4>
-                      {brands.length === 0 ? (
-                        <p className="text-gray-500 text-center py-8">No brands added yet</p>
-                      ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                          {brands.map((brand) => (
-                            <div key={brand.id} className="border rounded-lg p-4 text-center">
-                              <img 
-                                src={brand.logoUrl} 
-                                alt={brand.name}
-                                className="max-h-12 w-auto mx-auto mb-2"
-                                onError={(e) => {
-                                  const target = e.target as HTMLImageElement;
-                                  target.style.display = 'none';
-                                }}
-                              />
-                              <p className="text-sm font-medium">{brand.name}</p>
-                              <div className="flex gap-1 mt-2 justify-center">
-                                <Button variant="outline" size="sm">
-                                  <Edit2 className="h-3 w-3" />
+                      {brands.map((brand) => (
+                        <div key={brand.id} className="border rounded-lg p-4">
+                          {editingBrand?.id === brand.id ? (
+                            <div className="space-y-4">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                  <Label htmlFor={`edit-brand-name-${brand.id}`}>Name</Label>
+                                  <Input
+                                    id={`edit-brand-name-${brand.id}`}
+                                    value={editingBrand.name}
+                                    onChange={(e) => setEditingBrand({ ...editingBrand, name: e.target.value })}
+                                  />
+                                </div>
+                                <div>
+                                  <Label htmlFor={`edit-brand-image-${brand.id}`}>Image URL</Label>
+                                  <Input
+                                    id={`edit-brand-image-${brand.id}`}
+                                    value={editingBrand.imageUrl}
+                                    onChange={(e) => setEditingBrand({ ...editingBrand, imageUrl: e.target.value })}
+                                  />
+                                </div>
+                              </div>
+                              <div>
+                                <Label htmlFor={`edit-brand-description-${brand.id}`}>Description</Label>
+                                <Textarea
+                                  id={`edit-brand-description-${brand.id}`}
+                                  value={editingBrand.description}
+                                  onChange={(e) => setEditingBrand({ ...editingBrand, description: e.target.value })}
+                                  className="min-h-[80px]"
+                                />
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <Checkbox 
+                                  id={`edit-brand-featured-${brand.id}`}
+                                  checked={editingBrand.featured}
+                                  onCheckedChange={(checked) => setEditingBrand({ ...editingBrand, featured: !!checked })}
+                                />
+                                <Label htmlFor={`edit-brand-featured-${brand.id}`}>Featured brand</Label>
+                              </div>
+                              <div className="flex gap-2">
+                                <Button
+                                  type="button"
+                                  onClick={() => updateBrandMutation.mutate({ id: brand.id, data: editingBrand })}
+                                  disabled={updateBrandMutation.isPending}
+                                >
+                                  <Save className="h-4 w-4 mr-2" />
+                                  {updateBrandMutation.isPending ? "Saving..." : "Save"}
                                 </Button>
-                                <Button variant="outline" size="sm">
-                                  <Trash2 className="h-3 w-3" />
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  onClick={() => setEditingBrand(null)}
+                                >
+                                  <X className="h-4 w-4 mr-2" />
+                                  Cancel
                                 </Button>
                               </div>
                             </div>
-                          ))}
+                          ) : (
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <h5 className="font-medium">{brand.name}</h5>
+                                <p className="text-sm text-gray-600 mt-1">{brand.description}</p>
+                                {brand.featured && (
+                                  <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mt-2">
+                                    Featured
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex gap-2 ml-4">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setEditingBrand(brand)}
+                                >
+                                  <Edit2 className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => deleteBrandMutation.mutate(brand.id)}
+                                  disabled={deleteBrandMutation.isPending}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-
-                    {/* Add New Brand */}
-                    <div className="border-t pt-6">
-                      <h4 className="font-medium text-gray-900 mb-4">Add New Brand</h4>
-                      <div className="space-y-4">
-                        <div>
-                          <Label>Brand Name</Label>
-                          <Input placeholder="Brand Name" />
-                        </div>
-                        <FileUpload
-                          onUpload={(url) => {}}
-                          currentUrl=""
-                          label="Brand Logo"
-                          accept="image/*"
-                        />
-                        <Button type="button" className="bg-chocolate-brown hover:bg-chocolate-brown/90">
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Brand
-                        </Button>
-                      </div>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
               </TabsContent>
-
-
-
-              <TabsContent value="social" className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Social Media</CardTitle>
-                      <CardDescription>Add your social media profiles (leave empty to hide)</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="facebookUrl"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Facebook URL</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="https://facebook.com/yourbusiness" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="instagramUrl"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Instagram URL</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="https://instagram.com/yourbusiness" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="xUrl"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>X (Twitter) URL</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="https://x.com/yourbusiness" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="googleUrl"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Google Business URL</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="https://maps.google.com/your-business" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="yelpUrl"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Yelp URL</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="https://yelp.com/biz/your-business" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>SEO Settings</CardTitle>
-                      <CardDescription>Optimize your website for search engines</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="seoTitle"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Page Title</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="Your Business - Quality Products in Your City" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="seoDescription"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Meta Description</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                {...field} 
-                                placeholder="A compelling description of your business for search results..."
-                                className="min-h-[80px]"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="seoKeywords"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Keywords</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="keyword1, keyword2, keyword3" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
             </Tabs>
-
-            <div className="flex justify-end mt-8">
-              <Button 
-                type="submit" 
-                className="bg-forest-green hover:bg-green-700 text-white font-semibold px-8 py-3 text-base shadow-lg"
-                disabled={updateSettingsMutation.isPending}
-              >
-                {updateSettingsMutation.isPending ? "Saving..." : "Save All Settings"}
-              </Button>
-            </div>
           </form>
         </Form>
       </div>
