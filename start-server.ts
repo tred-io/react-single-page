@@ -9,7 +9,15 @@ const port = process.env.PORT || 5000;
 
 // Basic middleware
 app.use(express.json());
-app.use(express.static('client'));
+app.use(express.urlencoded({ extended: false }));
+
+// MIME type fix for JavaScript modules
+app.use((req, res, next) => {
+  if (req.url.endsWith('.js') || req.url.endsWith('.jsx') || req.url.endsWith('.ts') || req.url.endsWith('.tsx')) {
+    res.setHeader('Content-Type', 'application/javascript');
+  }
+  next();
+});
 
 // Health check
 app.get("/api/health", (req, res) => {
@@ -24,13 +32,28 @@ app.get("/api/store-settings", async (req, res) => {
       return res.json({
         id: 1,
         storeName: "Brown Feed Store",
-        tagline: "Your Agricultural Supply Partner",
-        address: "123 Main St, Lampasas, TX",
-        phone: "(512) 555-0123",
-        primaryColor: "#2563eb",
-        secondaryColor: "#64748b", 
-        accentColor: "#f59e0b",
-        fontFamily: "Inter"
+        tagline: "Your Agricultural Supply Partner Since 1967",
+        address: "123 Main Street, Lampasas, TX 76550",
+        phone: "(512) 556-3467",
+        email: "info@brownfeedstore.com",
+        mondayHours: "8:00 AM - 6:00 PM",
+        tuesdayHours: "8:00 AM - 6:00 PM",
+        wednesdayHours: "8:00 AM - 6:00 PM",
+        thursdayHours: "8:00 AM - 6:00 PM",
+        fridayHours: "8:00 AM - 6:00 PM",
+        saturdayHours: "8:00 AM - 5:00 PM",
+        sundayHours: "Closed",
+        aboutTitle: "About Brown Feed Store",
+        aboutDescription: "Family-owned and operated since 1967, Brown Feed Store has been the trusted partner for farmers and ranchers throughout Central Texas.",
+        aboutStory: "What started as a small family operation has grown into a trusted resource for farmers, ranchers, and pet owners throughout Central Texas.",
+        foundedYear: "1967",
+        primaryColor: "#8B4513",
+        secondaryColor: "#D2691E",
+        accentColor: "#228B22",
+        fontFamily: "Inter, sans-serif",
+        seoTitle: "Brown Feed Store - Agricultural Supply in Lampasas, TX",
+        seoDescription: "Family-owned feed store serving Central Texas since 1967. Quality livestock feed, pet supplies, and farm equipment.",
+        seoKeywords: "feed store, livestock feed, pet supplies, farm equipment, Lampasas Texas"
       });
     }
     res.json(settings);
@@ -95,9 +118,12 @@ app.get("/api/featured-brands", async (req, res) => {
   }
 });
 
+// Serve static files from client directory
+app.use(express.static('client'));
+
 // Serve React app for all other routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'index.html'));
+  res.sendFile(path.resolve(__dirname, 'client', 'index.html'));
 });
 
 const server = createServer(app);
