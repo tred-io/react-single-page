@@ -1,0 +1,265 @@
+{
+  "sha": "6fe982002affc7af287955dce36d381de7ba8c1c",
+  "node_id": "C_kwDOO1YnfdoAKDZmZTk4MjAwMmFmZmM3YWYyODc5NTVkY2UzNmQzODFkZTdiYThjMWM",
+  "commit": {
+    "author": {
+      "name": "Travis Purdy",
+      "email": "tspurdy@protonmail.com",
+      "date": "2025-06-03T21:48:25Z"
+    },
+    "committer": {
+      "name": "Travis Purdy",
+      "email": "tspurdy@protonmail.com",
+      "date": "2025-06-03T21:48:25Z"
+    },
+    "message": "Minimal working Brown Feed Store deployment",
+    "tree": {
+      "sha": "653bb84f0280d8dd5a64c962b33419c9756c35f2",
+      "url": "https://api.github.com/repos/tred-io/brown-feed-store-website/git/trees/653bb84f0280d8dd5a64c962b33419c9756c35f2"
+    },
+    "url": "https://api.github.com/repos/tred-io/brown-feed-store-website/git/commits/6fe982002affc7af287955dce36d381de7ba8c1c",
+    "comment_count": 0,
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  "url": "https://api.github.com/repos/tred-io/brown-feed-store-website/commits/6fe982002affc7af287955dce36d381de7ba8c1c",
+  "html_url": "https://github.com/tred-io/brown-feed-store-website/commit/6fe982002affc7af287955dce36d381de7ba8c1c",
+  "comments_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/commits/6fe982002affc7af287955dce36d381de7ba8c1c/comments",
+  "author": {
+    "login": "trascopur",
+    "id": 844750,
+    "node_id": "MDQ6VXNlcjg0NDc1MA==",
+    "avatar_url": "https://avatars.githubusercontent.com/u/844750?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/trascopur",
+    "html_url": "https://github.com/trascopur",
+    "followers_url": "https://api.github.com/users/trascopur/followers",
+    "following_url": "https://api.github.com/users/trascopur/following{/other_user}",
+    "gists_url": "https://api.github.com/users/trascopur/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/trascopur/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/trascopur/subscriptions",
+    "organizations_url": "https://api.github.com/users/trascopur/orgs",
+    "repos_url": "https://api.github.com/users/trascopur/repos",
+    "events_url": "https://api.github.com/users/trascopur/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/trascopur/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "committer": {
+    "login": "trascopur",
+    "id": 844750,
+    "node_id": "MDQ6VXNlcjg0NDc1MA==",
+    "avatar_url": "https://avatars.githubusercontent.com/u/844750?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/trascopur",
+    "html_url": "https://github.com/trascopur",
+    "followers_url": "https://api.github.com/users/trascopur/followers",
+    "following_url": "https://api.github.com/users/trascopur/following{/other_user}",
+    "gists_url": "https://api.github.com/users/trascopur/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/trascopur/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/trascopur/subscriptions",
+    "organizations_url": "https://api.github.com/users/trascopur/orgs",
+    "repos_url": "https://api.github.com/users/trascopur/repos",
+    "events_url": "https://api.github.com/users/trascopur/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/trascopur/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "parents": [
+
+  ],
+  "stats": {
+    "total": 349,
+    "additions": 349,
+    "deletions": 0
+  },
+  "files": [
+    {
+      "sha": "1d7a045508d76ac0abddd762214a376b38d6a250",
+      "filename": "client/index.html",
+      "status": "added",
+      "additions": 13,
+      "deletions": 0,
+      "changes": 13,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Findex.html",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Findex.html",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/client%2Findex.html?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,13 @@\n+<!doctype html>\n+<html lang=\"en\">\n+  <head>\n+    <meta charset=\"UTF-8\" />\n+    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/vite.svg\" />\n+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n+    <title>Brown Feed Store</title>\n+  </head>\n+  <body>\n+    <div id=\"root\"></div>\n+    <script type=\"module\" src=\"/src/main.tsx\"></script>\n+  </body>\n+</html>"
+    },
+    {
+      "sha": "226519c374a2ea4fc2639a799403caccd78892ff",
+      "filename": "client/src/App.tsx",
+      "status": "added",
+      "additions": 41,
+      "deletions": 0,
+      "changes": 41,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Fsrc%2FApp.tsx",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Fsrc%2FApp.tsx",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/client%2Fsrc%2FApp.tsx?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,41 @@\n+import { Switch, Route } from \"wouter\";\n+import { QueryClient, QueryClientProvider } from \"@tanstack/react-query\";\n+import Home from \"./pages/Home\";\n+import AdminEnhanced from \"./pages/AdminEnhanced\";\n+import ThemeGeneratorPage from \"./pages/ThemeGeneratorPage\";\n+import NotFound from \"./pages/NotFound\";\n+\n+const queryClient = new QueryClient({\n+  defaultOptions: {\n+    queries: {\n+      queryFn: async ({ queryKey }) => {\n+        const response = await fetch(queryKey[0] as string);\n+        if (!response.ok) {\n+          throw new Error(`${response.status}: ${response.statusText}`);\n+        }\n+        return response.json();\n+      },\n+    },\n+  },\n+});\n+\n+function Router() {\n+  return (\n+    <Switch>\n+      <Route path=\"/\" component={Home} />\n+      <Route path=\"/admin\" component={AdminEnhanced} />\n+      <Route path=\"/themes\" component={ThemeGeneratorPage} />\n+      <Route component={NotFound} />\n+    </Switch>\n+  );\n+}\n+\n+function App() {\n+  return (\n+    <QueryClientProvider client={queryClient}>\n+      <Router />\n+    </QueryClientProvider>\n+  );\n+}\n+\n+export default App;"
+    },
+    {
+      "sha": "2ba5a6357759cf0242e817064c9cbdc065ed5251",
+      "filename": "client/src/index.css",
+      "status": "added",
+      "additions": 12,
+      "deletions": 0,
+      "changes": 12,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Fsrc%2Findex.css",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Fsrc%2Findex.css",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/client%2Fsrc%2Findex.css?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,12 @@\n+@tailwind base;\n+@tailwind components;\n+@tailwind utilities;\n+\n+@layer base {\n+  :root {\n+    --background: 0 0% 100%;\n+    --foreground: 222.2 84% 4.9%;\n+    --primary: 142 76% 36%;\n+    --primary-foreground: 210 40% 98%;\n+  }\n+}"
+    },
+    {
+      "sha": "964aeb4c7e319369c436eee8b594c40cceab10fc",
+      "filename": "client/src/main.tsx",
+      "status": "added",
+      "additions": 10,
+      "deletions": 0,
+      "changes": 10,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Fsrc%2Fmain.tsx",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Fsrc%2Fmain.tsx",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/client%2Fsrc%2Fmain.tsx?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,10 @@\n+import React from 'react'\n+import ReactDOM from 'react-dom/client'\n+import App from './App'\n+import './index.css'\n+\n+ReactDOM.createRoot(document.getElementById('root')!).render(\n+  <React.StrictMode>\n+    <App />\n+  </React.StrictMode>,\n+)"
+    },
+    {
+      "sha": "86aaeffe137e5211e72f86e5648e06a63f147536",
+      "filename": "client/src/pages/AdminEnhanced.tsx",
+      "status": "added",
+      "additions": 19,
+      "deletions": 0,
+      "changes": 19,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Fsrc%2Fpages%2FAdminEnhanced.tsx",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Fsrc%2Fpages%2FAdminEnhanced.tsx",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/client%2Fsrc%2Fpages%2FAdminEnhanced.tsx?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,19 @@\n+export default function AdminEnhanced() {\n+  return (\n+    <div className=\"min-h-screen bg-gray-50\">\n+      <header className=\"bg-white shadow\">\n+        <div className=\"max-w-7xl mx-auto py-6 px-4\">\n+          <h1 className=\"text-3xl font-bold text-gray-900\">Store Admin</h1>\n+        </div>\n+      </header>\n+      <main className=\"max-w-7xl mx-auto py-6 px-4\">\n+        <div className=\"bg-white shadow rounded-lg p-6\">\n+          <h2 className=\"text-xl font-semibold mb-4\">Brown Feed Store Administration</h2>\n+          <p className=\"text-gray-600\">\n+            Admin panel for managing store settings, products, and content.\n+          </p>\n+        </div>\n+      </main>\n+    </div>\n+  );\n+}"
+    },
+    {
+      "sha": "128da58ca705b62729b03b49e3cf8289f2c1a750",
+      "filename": "client/src/pages/Home.tsx",
+      "status": "added",
+      "additions": 26,
+      "deletions": 0,
+      "changes": 26,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Fsrc%2Fpages%2FHome.tsx",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Fsrc%2Fpages%2FHome.tsx",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/client%2Fsrc%2Fpages%2FHome.tsx?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,26 @@\n+export default function Home() {\n+  return (\n+    <div className=\"min-h-screen bg-white\">\n+      <header className=\"bg-green-800 text-white p-6\">\n+        <h1 className=\"text-3xl font-bold\">Brown Feed Store</h1>\n+        <p className=\"text-green-100\">Your Trusted Agricultural Partner in Lampasas, Texas</p>\n+      </header>\n+      <main className=\"p-6\">\n+        <div className=\"max-w-4xl mx-auto\">\n+          <h2 className=\"text-2xl font-bold mb-4\">Welcome to Brown Feed Store</h2>\n+          <p className=\"text-gray-600 mb-6\">\n+            Family-owned business serving Lampasas County since 1985\n+          </p>\n+          <div className=\"space-y-4\">\n+            <a href=\"/admin\" className=\"inline-block bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700\">\n+              Admin Panel\n+            </a>\n+            <a href=\"/themes\" className=\"inline-block bg-purple-600 text-white px-6 py-3 rounded hover:bg-purple-700 ml-4\">\n+              Theme Generator\n+            </a>\n+          </div>\n+        </div>\n+      </main>\n+    </div>\n+  );\n+}"
+    },
+    {
+      "sha": "ee4ec5abd1c2d4239e8c561be47c9c526eed9bf5",
+      "filename": "client/src/pages/NotFound.tsx",
+      "status": "added",
+      "additions": 11,
+      "deletions": 0,
+      "changes": 11,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Fsrc%2Fpages%2FNotFound.tsx",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Fsrc%2Fpages%2FNotFound.tsx",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/client%2Fsrc%2Fpages%2FNotFound.tsx?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,11 @@\n+export default function NotFound() {\n+  return (\n+    <div className=\"min-h-screen bg-white flex items-center justify-center\">\n+      <div className=\"text-center\">\n+        <h1 className=\"text-4xl font-bold text-gray-900\">404</h1>\n+        <p className=\"text-gray-600\">Page not found</p>\n+        <a href=\"/\" className=\"text-blue-600 hover:underline\">Go home</a>\n+      </div>\n+    </div>\n+  );\n+}"
+    },
+    {
+      "sha": "c754ab5a13e3bc1deabc56d9494f89d31b6319ac",
+      "filename": "client/src/pages/ThemeGeneratorPage.tsx",
+      "status": "added",
+      "additions": 19,
+      "deletions": 0,
+      "changes": 19,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Fsrc%2Fpages%2FThemeGeneratorPage.tsx",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/client%2Fsrc%2Fpages%2FThemeGeneratorPage.tsx",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/client%2Fsrc%2Fpages%2FThemeGeneratorPage.tsx?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,19 @@\n+export default function ThemeGeneratorPage() {\n+  return (\n+    <div className=\"min-h-screen bg-gray-50\">\n+      <header className=\"bg-white shadow\">\n+        <div className=\"max-w-7xl mx-auto py-6 px-4\">\n+          <h1 className=\"text-3xl font-bold text-gray-900\">Theme Generator</h1>\n+        </div>\n+      </header>\n+      <main className=\"max-w-7xl mx-auto py-6 px-4\">\n+        <div className=\"bg-white shadow rounded-lg p-6\">\n+          <h2 className=\"text-xl font-semibold mb-4\">Customize Your Store</h2>\n+          <p className=\"text-gray-600\">\n+            Generate and customize themes for your Brown Feed Store website.\n+          </p>\n+        </div>\n+      </main>\n+    </div>\n+  );\n+}"
+    },
+    {
+      "sha": "555a5cda7e21ec24077d548f7835b4f256ffac96",
+      "filename": "package.json",
+      "status": "added",
+      "additions": 26,
+      "deletions": 0,
+      "changes": 26,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/package.json",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/package.json",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/package.json?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,26 @@\n+{\n+  \"name\": \"brown-feed-store\",\n+  \"version\": \"1.0.0\",\n+  \"type\": \"module\",\n+  \"scripts\": {\n+    \"dev\": \"vite\",\n+    \"build\": \"tsc && vite build\",\n+    \"preview\": \"vite preview\"\n+  },\n+  \"dependencies\": {\n+    \"@tanstack/react-query\": \"^5.62.7\",\n+    \"react\": \"^18.3.1\",\n+    \"react-dom\": \"^18.3.1\",\n+    \"wouter\": \"^3.3.6\"\n+  },\n+  \"devDependencies\": {\n+    \"@types/react\": \"^18.3.17\",\n+    \"@types/react-dom\": \"^18.3.5\",\n+    \"@vitejs/plugin-react\": \"^4.3.4\",\n+    \"autoprefixer\": \"^10.4.20\",\n+    \"postcss\": \"^8.5.3\",\n+    \"tailwindcss\": \"^3.4.17\",\n+    \"typescript\": \"~5.6.3\",\n+    \"vite\": \"^6.0.3\"\n+  }\n+}"
+    },
+    {
+      "sha": "2e7af2b7f1a6f391da1631d93968a9d487ba977d",
+      "filename": "postcss.config.js",
+      "status": "added",
+      "additions": 6,
+      "deletions": 0,
+      "changes": 6,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/postcss.config.js",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/postcss.config.js",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/postcss.config.js?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,6 @@\n+export default {\n+  plugins: {\n+    tailwindcss: {},\n+    autoprefixer: {},\n+  },\n+}"
+    },
+    {
+      "sha": "a9eb65ab5bbac51dfff3ef506bae8c02bdcf2757",
+      "filename": "shared/schema.ts",
+      "status": "added",
+      "additions": 7,
+      "deletions": 0,
+      "changes": 7,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/shared%2Fschema.ts",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/shared%2Fschema.ts",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/shared%2Fschema.ts?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,7 @@\n+export interface StoreSettings {\n+  id: number;\n+  storeName: string;\n+  tagline: string;\n+  address: string;\n+  phone: string;\n+}"
+    },
+    {
+      "sha": "22ccd6cbe43a2d802f5b9b99d7069896127dc37a",
+      "filename": "tailwind.config.ts",
+      "status": "added",
+      "additions": 90,
+      "deletions": 0,
+      "changes": 90,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/tailwind.config.ts",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/tailwind.config.ts",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/tailwind.config.ts?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,90 @@\n+import type { Config } from \"tailwindcss\";\n+\n+export default {\n+  darkMode: [\"class\"],\n+  content: [\"./client/index.html\", \"./client/src/**/*.{js,jsx,ts,tsx}\"],\n+  theme: {\n+    extend: {\n+      borderRadius: {\n+        lg: \"var(--radius)\",\n+        md: \"calc(var(--radius) - 2px)\",\n+        sm: \"calc(var(--radius) - 4px)\",\n+      },\n+      colors: {\n+        background: \"hsl(var(--background))\",\n+        foreground: \"hsl(var(--foreground))\",\n+        card: {\n+          DEFAULT: \"hsl(var(--card))\",\n+          foreground: \"hsl(var(--card-foreground))\",\n+        },\n+        popover: {\n+          DEFAULT: \"hsl(var(--popover))\",\n+          foreground: \"hsl(var(--popover-foreground))\",\n+        },\n+        primary: {\n+          DEFAULT: \"hsl(var(--primary))\",\n+          foreground: \"hsl(var(--primary-foreground))\",\n+        },\n+        secondary: {\n+          DEFAULT: \"hsl(var(--secondary))\",\n+          foreground: \"hsl(var(--secondary-foreground))\",\n+        },\n+        muted: {\n+          DEFAULT: \"hsl(var(--muted))\",\n+          foreground: \"hsl(var(--muted-foreground))\",\n+        },\n+        accent: {\n+          DEFAULT: \"hsl(var(--accent))\",\n+          foreground: \"hsl(var(--accent-foreground))\",\n+        },\n+        destructive: {\n+          DEFAULT: \"hsl(var(--destructive))\",\n+          foreground: \"hsl(var(--destructive-foreground))\",\n+        },\n+        border: \"hsl(var(--border))\",\n+        input: \"hsl(var(--input))\",\n+        ring: \"hsl(var(--ring))\",\n+        chart: {\n+          \"1\": \"hsl(var(--chart-1))\",\n+          \"2\": \"hsl(var(--chart-2))\",\n+          \"3\": \"hsl(var(--chart-3))\",\n+          \"4\": \"hsl(var(--chart-4))\",\n+          \"5\": \"hsl(var(--chart-5))\",\n+        },\n+        sidebar: {\n+          DEFAULT: \"hsl(var(--sidebar-background))\",\n+          foreground: \"hsl(var(--sidebar-foreground))\",\n+          primary: \"hsl(var(--sidebar-primary))\",\n+          \"primary-foreground\": \"hsl(var(--sidebar-primary-foreground))\",\n+          accent: \"hsl(var(--sidebar-accent))\",\n+          \"accent-foreground\": \"hsl(var(--sidebar-accent-foreground))\",\n+          border: \"hsl(var(--sidebar-border))\",\n+          ring: \"hsl(var(--sidebar-ring))\",\n+        },\n+      },\n+      keyframes: {\n+        \"accordion-down\": {\n+          from: {\n+            height: \"0\",\n+          },\n+          to: {\n+            height: \"var(--radix-accordion-content-height)\",\n+          },\n+        },\n+        \"accordion-up\": {\n+          from: {\n+            height: \"var(--radix-accordion-content-height)\",\n+          },\n+          to: {\n+            height: \"0\",\n+          },\n+        },\n+      },\n+      animation: {\n+        \"accordion-down\": \"accordion-down 0.2s ease-out\",\n+        \"accordion-up\": \"accordion-up 0.2s ease-out\",\n+      },\n+    },\n+  },\n+  plugins: [require(\"tailwindcss-animate\"), require(\"@tailwindcss/typography\")],\n+} satisfies Config;"
+    },
+    {
+      "sha": "08b4c673350ed9b304137b9f25dffdc05923fbc8",
+      "filename": "tsconfig.json",
+      "status": "added",
+      "additions": 22,
+      "deletions": 0,
+      "changes": 22,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/tsconfig.json",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/tsconfig.json",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/tsconfig.json?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,22 @@\n+{\n+  \"include\": [\"client/src/**/*\", \"shared/**/*\"],\n+  \"exclude\": [\"node_modules\", \"build\", \"dist\"],\n+  \"compilerOptions\": {\n+    \"target\": \"ES2020\",\n+    \"lib\": [\"ES2020\", \"DOM\", \"DOM.Iterable\"],\n+    \"module\": \"ESNext\",\n+    \"skipLibCheck\": true,\n+    \"moduleResolution\": \"bundler\",\n+    \"allowImportingTsExtensions\": true,\n+    \"resolveJsonModule\": true,\n+    \"isolatedModules\": true,\n+    \"noEmit\": true,\n+    \"jsx\": \"react-jsx\",\n+    \"strict\": false,\n+    \"baseUrl\": \".\",\n+    \"paths\": {\n+      \"@/*\": [\"./client/src/*\"],\n+      \"@shared/*\": [\"./shared/*\"]\n+    }\n+  }\n+}"
+    },
+    {
+      "sha": "9027e377c769e60823946a849c6c0476a1979d00",
+      "filename": "vercel.json",
+      "status": "added",
+      "additions": 16,
+      "deletions": 0,
+      "changes": 16,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/vercel.json",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/vercel.json",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/vercel.json?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,16 @@\n+{\n+  \"rewrites\": [\n+    {\n+      \"source\": \"/admin\",\n+      \"destination\": \"/index.html\"\n+    },\n+    {\n+      \"source\": \"/themes\", \n+      \"destination\": \"/index.html\"\n+    },\n+    {\n+      \"source\": \"/(.*)\",\n+      \"destination\": \"/index.html\"\n+    }\n+  ]\n+}\n\\ No newline at end of file"
+    },
+    {
+      "sha": "d56b0ec9a7b8f1250f1729d78daf3bb65f16013c",
+      "filename": "vite.config.ts",
+      "status": "added",
+      "additions": 31,
+      "deletions": 0,
+      "changes": 31,
+      "blob_url": "https://github.com/tred-io/brown-feed-store-website/blob/6fe982002affc7af287955dce36d381de7ba8c1c/vite.config.ts",
+      "raw_url": "https://github.com/tred-io/brown-feed-store-website/raw/6fe982002affc7af287955dce36d381de7ba8c1c/vite.config.ts",
+      "contents_url": "https://api.github.com/repos/tred-io/brown-feed-store-website/contents/vite.config.ts?ref=6fe982002affc7af287955dce36d381de7ba8c1c",
+      "patch": "@@ -0,0 +1,31 @@\n+import { defineConfig } from \"vite\";\n+import react from \"@vitejs/plugin-react\";\n+import path from \"path\";\n+import runtimeErrorOverlay from \"@replit/vite-plugin-runtime-error-modal\";\n+\n+export default defineConfig({\n+  plugins: [\n+    react(),\n+    runtimeErrorOverlay(),\n+    ...(process.env.NODE_ENV !== \"production\" &&\n+    process.env.REPL_ID !== undefined\n+      ? [\n+          await import(\"@replit/vite-plugin-cartographer\").then((m) =>\n+            m.cartographer(),\n+          ),\n+        ]\n+      : []),\n+  ],\n+  resolve: {\n+    alias: {\n+      \"@\": path.resolve(import.meta.dirname, \"client\", \"src\"),\n+      \"@shared\": path.resolve(import.meta.dirname, \"shared\"),\n+      \"@assets\": path.resolve(import.meta.dirname, \"attached_assets\"),\n+    },\n+  },\n+  root: path.resolve(import.meta.dirname, \"client\"),\n+  build: {\n+    outDir: path.resolve(import.meta.dirname, \"dist/public\"),\n+    emptyOutDir: true,\n+  },\n+});"
+    }
+  ]
+}
