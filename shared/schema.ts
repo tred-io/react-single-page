@@ -61,20 +61,24 @@ export function getClientTables(clientName: string) {
     
     productCategories: schema.table("product_categories", {
       id: serial("id").primaryKey(),
-      title: varchar("title", { length: 255 }).notNull(),
+      name: varchar("name", { length: 255 }).notNull(),
       description: text("description").notNull(),
       imageUrl: text("image_url").notNull(),
-      iconName: varchar("icon_name", { length: 100 }).notNull(),
-      items: jsonb("items").$type<string[]>().notNull(),
-      displayOrder: integer("display_order").notNull(),
+      featured: integer("featured").notNull().default(0),
+      sortOrder: integer("sort_order").notNull().default(0),
+      createdAt: timestamp("created_at").defaultNow(),
+      updatedAt: timestamp("updated_at").defaultNow(),
     }),
     
     specialServices: schema.table("special_services", {
       id: serial("id").primaryKey(),
-      title: varchar("title", { length: 255 }).notNull(),
+      name: varchar("name", { length: 255 }).notNull(),
       description: text("description").notNull(),
-      iconName: varchar("icon_name", { length: 100 }).notNull(),
-      displayOrder: integer("display_order").notNull(),
+      icon: varchar("icon", { length: 100 }).notNull(),
+      featured: integer("featured").notNull().default(0),
+      sortOrder: integer("sort_order").notNull().default(0),
+      createdAt: timestamp("created_at").defaultNow(),
+      updatedAt: timestamp("updated_at").defaultNow(),
     }),
     
     featuredBrands: schema.table("featured_brands", {
@@ -134,27 +138,30 @@ export interface StoreSettings {
 
 export interface ProductCategory {
   id: number;
-  title: string;
+  name: string;
   description: string;
   imageUrl: string;
-  iconName: string;
-  items: string[];
-  displayOrder: number;
+  featured: boolean;
+  sortOrder: number;
 }
 
 export interface SpecialService {
   id: number;
-  title: string;
+  name: string;
   description: string;
-  iconName: string;
-  displayOrder: number;
+  icon: string;
+  featured: boolean;
+  sortOrder: number;
 }
 
 export interface FeaturedBrand {
   id: number;
   name: string;
+  description: string;
   logoUrl: string;
-  displayOrder: number;
+  websiteUrl: string;
+  featured: boolean;
+  sortOrder: number;
 }
 
 export interface CustomPage {
@@ -212,25 +219,28 @@ export const insertStoreSettingsSchema = z.object({
 });
 
 export const insertProductCategorySchema = z.object({
-  title: z.string().min(1, "Title is required"),
+  name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
   imageUrl: z.string().min(1, "Image URL is required"),
-  iconName: z.string().min(1, "Icon name is required"),
-  items: z.array(z.string()).min(1, "At least one item is required"),
-  displayOrder: z.number().default(0),
+  featured: z.boolean().default(false),
+  sortOrder: z.number().default(0),
 });
 
 export const insertSpecialServiceSchema = z.object({
-  title: z.string().min(1, "Title is required"),
+  name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
-  iconName: z.string().min(1, "Icon name is required"),
-  displayOrder: z.number().min(0).default(0),
+  icon: z.string().min(1, "Icon is required"),
+  featured: z.boolean().default(false),
+  sortOrder: z.number().min(0).default(0),
 });
 
 export const insertFeaturedBrandSchema = z.object({
   name: z.string().min(1, "Brand name is required"),
+  description: z.string().min(1, "Description is required"),
   logoUrl: z.string().min(1, "Logo URL is required"),
-  displayOrder: z.number().min(0).default(0),
+  websiteUrl: z.string().min(1, "Website URL is required"),
+  featured: z.boolean().default(false),
+  sortOrder: z.number().min(0).default(0),
 });
 
 export const insertCustomPageSchema = z.object({
