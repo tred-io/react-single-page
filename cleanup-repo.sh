@@ -44,10 +44,6 @@ safe_delete "complete-deployment-demo.sh" "file"
 safe_delete "deploy-client-efficient.sh" "file"
 safe_delete "deploy-template.sh" "file"
 
-# Cleanup JavaScript files
-safe_delete "cleanup-github-api.cjs" "file"
-safe_delete "cleanup-vercel-api.cjs" "file"
-
 # JSON deployment/commit files
 safe_delete "all_deployments.json" "file"
 safe_delete "authentic_commit.json" "file"
