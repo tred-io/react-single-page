@@ -2,9 +2,8 @@ import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertStoreSettingsSchema, insertProductCategorySchema } from "@shared/schema";
-import { healthCheckHandler, quickHealthCheck } from "./health";
-import { generateThemes, applyThemeToStoreSettings } from "./theme-generator";
+import { insertStoreSettingsSchema, insertProductCategorySchema } from "../shared/schema";
+
 import { z } from "zod";
 import multer from "multer";
 import path from "path";
@@ -65,9 +64,10 @@ const handleDatabaseError = (error: any, req: any, res: any, next: any) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Health check endpoints (must be first to avoid conflicts)
-  app.get("/api/health", healthCheckHandler);
-  app.get("/api/health/quick", quickHealthCheck);
+  // Simple health check
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "healthy", timestamp: new Date().toISOString() });
+  });
   // Serve uploaded files statically
   app.use('/uploads', express.static(uploadDir));
   
