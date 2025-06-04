@@ -1,347 +1,345 @@
-import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Settings, Package, Save, Plus, Trash2, Edit } from "lucide-react";
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
-import { useAuth } from "@/hooks/useAuth";
-import AdminLogin from "@/components/AdminLogin";
-import type { StoreSettings, ProductCategory, InsertStoreSettings, InsertProductCategory } from "@shared/schema";
+import { queryClient } from "@/lib/queryClient";
+import type { StoreSettings, ProductCategory, SpecialService, FeaturedBrand } from "@shared/schema";
 
-export default function Admin() {
+export default function AdminSimple() {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const { isAuthenticated, isLoading } = useAuth();
 
-  // Store Settings
-  const { data: settings } = useQuery<StoreSettings>({
+  // Queries
+  const { data: settings, isLoading } = useQuery<StoreSettings>({
     queryKey: ["/api/store-settings"],
   });
 
-  // Product Categories
   const { data: categories = [] } = useQuery<ProductCategory[]>({
     queryKey: ["/api/product-categories"],
   });
 
-  const [storeForm, setStoreForm] = useState<InsertStoreSettings>({
+  const { data: services = [] } = useQuery<SpecialService[]>({
+    queryKey: ["/api/special-services"],
+  });
+
+  const { data: brands = [] } = useQuery<FeaturedBrand[]>({
+    queryKey: ["/api/featured-brands"],
+  });
+
+  // Simple form state
+  const [formData, setFormData] = useState({
     storeName: "",
     tagline: "",
     address: "",
     phone: "",
-    email: "",
-    mondayFridayHours: "",
-    saturdayHours: "",
-    sundayHours: "",
-    aboutTitle: "",
-    aboutDescription: "",
-    aboutStory: "",
-    foundedYear: "",
-    logoUrl: "",
-    faviconUrl: "",
+    aboutDescription: ""
   });
 
-  // Update form when settings load
-  useEffect(() => {
-    if (settings) {
-      setStoreForm({
-        storeName: settings.storeName || "",
-        tagline: settings.tagline || "",
-        address: settings.address || "",
-        phone: settings.phone || "",
-        email: settings.email || "",
-        mondayFridayHours: settings.mondayFridayHours || "",
-        saturdayHours: settings.saturdayHours || "",
-        sundayHours: settings.sundayHours || "",
-        aboutTitle: settings.aboutTitle || "",
-        aboutDescription: settings.aboutDescription || "",
-        aboutStory: settings.aboutStory || "",
-        foundedYear: settings.foundedYear || "",
-        logoUrl: settings.logoUrl || "",
-        faviconUrl: settings.faviconUrl || "",
-      });
-    }
-  }, [settings]);
+  const [newCategoryData, setNewCategoryData] = useState({
+    name: "",
+    description: "",
+    imageUrl: ""
+  });
 
+  // Update store settings mutation
   const updateSettingsMutation = useMutation({
-    mutationFn: async (data: InsertStoreSettings) => {
-      const response = await apiRequest("/api/store-settings", {
-        method: "POST",
+    mutationFn: async (data: any) => {
+      const response = await fetch("/api/store-settings", {
+        method: "PUT",
         body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" },
       });
-      return response;
+      if (!response.ok) throw new Error("Failed to update settings");
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/store-settings"] });
       toast({
-        title: "Settings Updated",
-        description: "Store settings including logo have been saved successfully!",
+        title: "Settings updated",
+        description: "Store settings have been updated successfully.",
       });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to save settings. Please try again.",
+        description: "Failed to update settings.",
         variant: "destructive",
       });
     },
   });
 
-  // Show login screen if not authenticated
-  if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  // Create category mutation
+  const createCategoryMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await fetch("/api/product-categories", {
+        method: "POST",
+        body: JSON.stringify({
+          name: data.name,
+          description: data.description,
+          imageUrl: data.imageUrl,
+          featured: false,
+          sortOrder: 0
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error("Failed to create category");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/product-categories"] });
+      setNewCategoryData({ name: "", description: "", imageUrl: "" });
+      toast({
+        title: "Category created",
+        description: "New product category has been created successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to create category.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete category mutation
+  const deleteCategoryMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/product-categories/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Failed to delete category");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/product-categories"] });
+      toast({
+        title: "Category deleted",
+        description: "Product category has been deleted successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete category.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Initialize form data when settings load
+  if (settings && formData.storeName === "") {
+    setFormData({
+      storeName: settings.storeName || "",
+      tagline: settings.tagline || "",
+      address: settings.address || "",
+      phone: settings.phone || "",
+      aboutDescription: settings.aboutDescription || ""
+    });
   }
 
-  if (!isAuthenticated) {
-    return <AdminLogin onLogin={() => window.location.reload()} />;
+  const handleSettingsSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateSettingsMutation.mutate(formData);
+  };
+
+  const handleCategorySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newCategoryData.name.trim()) {
+      createCategoryMutation.mutate(newCategoryData);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center">Loading admin panel...</div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-serif font-bold text-saddle-brown mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Manage your store information and product categories</p>
-        </div>
+    <div className="container mx-auto p-6 space-y-8">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold">Admin Panel</h1>
+        <p className="text-muted-foreground">Manage your store settings and content</p>
+      </div>
 
-        <Tabs defaultValue="store" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="store" className="flex items-center space-x-2">
-              <Settings className="h-4 w-4" />
-              <span>Store Settings</span>
-            </TabsTrigger>
-            <TabsTrigger value="products" className="flex items-center space-x-2">
-              <Package className="h-4 w-4" />
-              <span>Product Categories</span>
-            </TabsTrigger>
-          </TabsList>
+      {/* Store Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Store Settings</CardTitle>
+          <CardDescription>Basic information about your store</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSettingsSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="storeName">Store Name</Label>
+                <Input
+                  id="storeName"
+                  value={formData.storeName}
+                  onChange={(e) => setFormData({ ...formData, storeName: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="tagline">Tagline</Label>
+                <Input
+                  id="tagline"
+                  value={formData.tagline}
+                  onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="address">Address</Label>
+                <Input
+                  id="address"
+                  value={formData.address}
+                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="aboutDescription">About Description</Label>
+              <Textarea
+                id="aboutDescription"
+                value={formData.aboutDescription}
+                onChange={(e) => setFormData({ ...formData, aboutDescription: e.target.value })}
+                rows={4}
+              />
+            </div>
+            <Button 
+              type="submit" 
+              disabled={updateSettingsMutation.isPending}
+            >
+              {updateSettingsMutation.isPending ? "Updating..." : "Update Settings"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
-          <TabsContent value="store">
-            <Card>
-              <CardHeader>
-                <CardTitle>Store Information</CardTitle>
-                <p className="text-gray-600">Update your store details and branding</p>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Store Name</label>
-                      <Input
-                        value={storeForm.storeName}
-                        onChange={(e) => setStoreForm({ ...storeForm, storeName: e.target.value })}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Tagline</label>
-                      <Input
-                        value={storeForm.tagline}
-                        onChange={(e) => setStoreForm({ ...storeForm, tagline: e.target.value })}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  {/* Logo and Favicon Upload */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-blue-50 rounded-lg">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">🎨 Business Logo URL</label>
-                      <Input
-                        type="url"
-                        value={storeForm.logoUrl || ""}
-                        onChange={(e) => setStoreForm({ ...storeForm, logoUrl: e.target.value })}
-                        placeholder="https://example.com/logo.png"
-                      />
-                      {storeForm.logoUrl && (
-                        <img src={storeForm.logoUrl} alt="Logo preview" className="mt-2 w-16 h-16 object-contain border rounded" />
-                      )}
-                      <p className="text-xs text-gray-500 mt-1">Displays in navigation bar</p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">🔷 Favicon URL</label>
-                      <Input
-                        type="url"
-                        value={storeForm.faviconUrl || ""}
-                        onChange={(e) => setStoreForm({ ...storeForm, faviconUrl: e.target.value })}
-                        placeholder="https://example.com/favicon.ico"
-                      />
-                      {storeForm.faviconUrl && (
-                        <img src={storeForm.faviconUrl} alt="Favicon preview" className="mt-2 w-8 h-8 object-contain border rounded" />
-                      )}
-                      <p className="text-xs text-gray-500 mt-1">Shows in browser tab</p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Address</label>
-                      <Input
-                        value={storeForm.address}
-                        onChange={(e) => setStoreForm({ ...storeForm, address: e.target.value })}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Phone</label>
-                      <Input
-                        value={storeForm.phone}
-                        onChange={(e) => setStoreForm({ ...storeForm, phone: e.target.value })}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Email (Optional)</label>
-                      <Input
-                        type="email"
-                        value={storeForm.email || ""}
-                        onChange={(e) => setStoreForm({ ...storeForm, email: e.target.value })}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Founded Year</label>
-                      <Input
-                        value={storeForm.foundedYear}
-                        onChange={(e) => setStoreForm({ ...storeForm, foundedYear: e.target.value })}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Monday-Friday Hours</label>
-                      <Input
-                        value={storeForm.mondayFridayHours}
-                        onChange={(e) => setStoreForm({ ...storeForm, mondayFridayHours: e.target.value })}
-                        placeholder="7:00 AM - 6:00 PM"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Saturday Hours</label>
-                      <Input
-                        value={storeForm.saturdayHours}
-                        onChange={(e) => setStoreForm({ ...storeForm, saturdayHours: e.target.value })}
-                        placeholder="7:00 AM - 6:00 PM"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Sunday Hours</label>
-                      <Input
-                        value={storeForm.sundayHours}
-                        onChange={(e) => setStoreForm({ ...storeForm, sundayHours: e.target.value })}
-                        placeholder="9:00 AM - 4:00 PM"
-                        required
-                      />
-                    </div>
-                  </div>
-
+      {/* Product Categories */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Product Categories</CardTitle>
+          <CardDescription>Manage your product categories</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            {/* Add New Category */}
+            <div className="border-b pb-4">
+              <h3 className="text-lg font-semibold mb-4">Add New Category</h3>
+              <form onSubmit={handleCategorySubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">About Section Title</label>
+                    <Label htmlFor="categoryName">Category Name</Label>
                     <Input
-                      value={storeForm.aboutTitle}
-                      onChange={(e) => setStoreForm({ ...storeForm, aboutTitle: e.target.value })}
+                      id="categoryName"
+                      value={newCategoryData.name}
+                      onChange={(e) => setNewCategoryData({ ...newCategoryData, name: e.target.value })}
                       required
                     />
                   </div>
-
                   <div>
-                    <label className="block text-sm font-medium mb-2">About Description</label>
-                    <Textarea
-                      value={storeForm.aboutDescription}
-                      onChange={(e) => setStoreForm({ ...storeForm, aboutDescription: e.target.value })}
-                      rows={3}
-                      required
+                    <Label htmlFor="categoryImage">Image URL</Label>
+                    <Input
+                      id="categoryImage"
+                      value={newCategoryData.imageUrl}
+                      onChange={(e) => setNewCategoryData({ ...newCategoryData, imageUrl: e.target.value })}
                     />
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">About Story</label>
-                    <Textarea
-                      value={storeForm.aboutStory}
-                      onChange={(e) => setStoreForm({ ...storeForm, aboutStory: e.target.value })}
-                      rows={5}
-                      required
-                    />
-                  </div>
-
-                  <Button
-                    onClick={() => {
-                      // Save logic here
-                      toast({
-                        title: "Settings Updated",
-                        description: "Store settings including logo have been saved successfully!",
-                      });
-                    }}
-                    className="bg-chocolate-orange hover:bg-orange-600"
-                  >
-                    <Save className="mr-2 h-4 w-4" />
-                    Save Store Settings
-                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="products">
-            <Card>
-              <CardHeader>
-                <CardTitle>Product Categories</CardTitle>
-                <p className="text-gray-600">Your current product categories and services</p>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {categories.map((category) => (
-                    <Card key={category.id} className="border-l-4 border-l-chocolate-orange">
-                      <CardHeader>
-                        <CardTitle className="text-lg">{category.title}</CardTitle>
-                        <p className="text-gray-600">{category.description}</p>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2">
-                          <h4 className="font-medium text-sm">Items:</h4>
-                          <ul className="text-sm text-gray-600 space-y-1">
-                            {category.items.map((item, index) => (
-                              <li key={index} className="flex items-center">
-                                <span className="w-2 h-2 bg-chocolate-orange rounded-full mr-2"></span>
-                                {item}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div className="mt-4 pt-4 border-t">
-                          <Button variant="outline" size="sm" className="mr-2">
-                            <Edit className="w-3 h-3 mr-1" />
-                            Edit
-                          </Button>
-                          <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
-                            <Trash2 className="w-3 h-3 mr-1" />
-                            Delete
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                <div>
+                  <Label htmlFor="categoryDescription">Description</Label>
+                  <Textarea
+                    id="categoryDescription"
+                    value={newCategoryData.description}
+                    onChange={(e) => setNewCategoryData({ ...newCategoryData, description: e.target.value })}
+                    rows={3}
+                  />
                 </div>
-                
-                {categories.length === 0 && (
-                  <div className="text-center py-8">
-                    <p className="text-gray-500">No product categories found. Create some in your store settings!</p>
+                <Button 
+                  type="submit" 
+                  disabled={createCategoryMutation.isPending}
+                >
+                  {createCategoryMutation.isPending ? "Creating..." : "Create Category"}
+                </Button>
+              </form>
+            </div>
+
+            {/* Existing Categories */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Existing Categories</h3>
+              <div className="grid gap-4">
+                {categories.map((category) => (
+                  <div key={category.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div>
+                      <h4 className="font-medium">{category.name}</h4>
+                      <p className="text-sm text-muted-foreground">{category.description}</p>
+                      {category.featured && (
+                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded mt-1 inline-block">
+                          Featured
+                        </span>
+                      )}
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => deleteCategoryMutation.mutate(category.id)}
+                      disabled={deleteCategoryMutation.isPending}
+                    >
+                      Delete
+                    </Button>
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+                ))}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Categories</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{categories.length}</div>
+            <p className="text-muted-foreground">Product categories</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Services</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{services.length}</div>
+            <p className="text-muted-foreground">Special services</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Brands</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{brands.length}</div>
+            <p className="text-muted-foreground">Featured brands</p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
