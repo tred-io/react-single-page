@@ -52,25 +52,25 @@ export default function Products() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {productCategories.map((category, index) => {
-            const IconComponent = iconMap[category.title] || ServerCog;
+            const IconComponent = iconMap[category.name] || ServerCog;
             return (
-              <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+              <div key={category.id || index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                 <img 
-                  src={category.imageUrl} 
-                  alt={category.title} 
+                  src={category.imageUrl || "/images/placeholder.jpg"} 
+                  alt={category.name} 
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-6">
                   <div className="flex items-center mb-3">
                     <IconComponent className="text-chocolate-orange h-6 w-6 mr-3" />
-                    <h3 className="text-xl font-serif font-bold text-saddle-brown">{category.title}</h3>
+                    <h3 className="text-xl font-serif font-bold text-saddle-brown">{category.name}</h3>
                   </div>
                   <p className="text-gray-600 mb-4">{category.description}</p>
-                  <ul className="text-sm text-gray-500 space-y-1">
-                    {category.items.map((item, itemIndex) => (
-                      <li key={itemIndex}>• {item}</li>
-                    ))}
-                  </ul>
+                  {category.featured && (
+                    <div className="inline-block bg-forest-green text-white text-xs px-2 py-1 rounded">
+                      Featured
+                    </div>
+                  )}
                 </div>
               </div>
             );
