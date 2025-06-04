@@ -34,12 +34,11 @@ export default function AdminEnhanced() {
   const [activeTab, setActiveTab] = useState("basic");
   const [editingCategory, setEditingCategory] = useState<ProductCategory | null>(null);
   const [newCategory, setNewCategory] = useState<InsertProductCategory>({
-    title: "",
+    name: "",
     description: "",
     imageUrl: "",
-    iconName: "",
-    items: [],
-    displayOrder: 0
+    featured: false,
+    sortOrder: 0
   });
 
   const { data: storeSettings, isLoading } = useQuery<StoreSettings>({
@@ -155,12 +154,11 @@ export default function AdminEnhanced() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/product-categories"] });
       setNewCategory({
-        title: "",
+        name: "",
         description: "",
         imageUrl: "",
-        iconName: "",
-        items: [],
-        displayOrder: 0
+        featured: false,
+        sortOrder: 0
       });
       toast({
         title: "Category created",
