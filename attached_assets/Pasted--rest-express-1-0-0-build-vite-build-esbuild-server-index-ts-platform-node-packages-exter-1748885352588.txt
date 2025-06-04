@@ -1,0 +1,33 @@
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+vite v5.4.14 building for production...
+transforming...
+✓ 1841 modules transformed.
+rendering chunks...
+computing gzip size...
+../dist/public/index.html                    11.28 kB │ gzip:   2.64 kB
+../dist/public/assets/index-D00uOTLk.css     68.16 kB │ gzip:  11.96 kB
+../dist/public/assets/index-S0Euyv6N.js   1,293.64 kB │ gzip: 291.61 kB
+✓ built in 6.74s
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+  dist/index.js  45.9kb
+⚡ Done in 6ms
+Error during client initialization: Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/runner/work/react-single-page/react-single-page/server/init-client-schema.js' imported from /home/runner/work/react-single-page/react-single-page/scripts/init-client.js
+    at finalizeResolution (node:internal/modules/esm/resolve:283:11)
+    at moduleResolve (node:internal/modules/esm/resolve:952:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1188:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:642:12)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:591:25)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:574:38)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:236:38)
+    at ModuleLoader.import (node:internal/modules/esm/loader:539:34)
+    at defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:215:31)
+    at importModuleDynamicallyCallback (node:internal/modules/esm/utils:254:12) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///home/runner/work/react-single-page/react-single-page/server/init-client-schema.js'
+}
+Error: Process completed with exit code 1.

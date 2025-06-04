@@ -1,0 +1,40 @@
+5:40:44 PM [express] Initializing schema for client: brown-feed4
+Initialized schema for client: brown-feed4
+Failed to initialize data for brown-feed4: DrizzleQueryError: Failed query: select "id", "store_name", "tagline", "address", "phone", "email", "monday_hours", "tuesday_hours", "wednesday_hours", "thursday_hours", "friday_hours", "saturday_hours", "sunday_hours", "about_title", "about_description", "about_story", "founded_year", "logo_url", "favicon_url", "hero_image_url", "about_image_url", "primary_color", "secondary_color", "accent_color", "font_family", "facebook_url", "instagram_url", "x_url", "google_url", "yelp_url", "seo_title", "seo_description", "seo_keywords", "created_at", "updated_at" from "brown_feed4"."store_settings" limit $1
+params: 1
+    at NeonPreparedQuery.queryWithCache (file:///home/runner/work/react-single-page/react-single-page/node_modules/drizzle-orm/pg-core/session.js:42:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async NeonPreparedQuery.execute (file:///home/runner/work/react-single-page/react-single-page/node_modules/drizzle-orm/neon-serverless/session.js:109:20)
+    ... 2 lines matching cause stack trace ...
+    at async file:///home/runner/work/react-single-page/react-single-page/dist/index.js:1295:3 {
+  query: 'select "id", "store_name", "tagline", "address", "phone", "email", "monday_hours", "tuesday_hours", "wednesday_hours", "thursday_hours", "friday_hours", "saturday_hours", "sunday_hours", "about_title", "about_description", "about_story", "founded_year", "logo_url", "favicon_url", "hero_image_url", "about_image_url", "primary_color", "secondary_color", "accent_color", "font_family", "facebook_url", "instagram_url", "x_url", "google_url", "yelp_url", "seo_title", "seo_description", "seo_keywords", "created_at", "updated_at" from "brown_feed4"."store_settings" limit $1',
+  params: [ 1 ],
+  cause: error: column "created_at" does not exist
+      at file:///home/runner/work/react-single-page/react-single-page/node_modules/@neondatabase/serverless/index.mjs:1081:33
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async file:///home/runner/work/react-single-page/react-single-page/node_modules/drizzle-orm/neon-serverless/session.js:110:14
+      at async NeonPreparedQuery.queryWithCache (file:///home/runner/work/react-single-page/react-single-page/node_modules/drizzle-orm/pg-core/session.js:40:16)
+      at async NeonPreparedQuery.execute (file:///home/runner/work/react-single-page/react-single-page/node_modules/drizzle-orm/neon-serverless/session.js:109:20)
+      at async initializeClientData (file:///home/runner/work/react-single-page/react-single-page/dist/index.js:1219:30)
+      at async initializeApp (file:///home/runner/work/react-single-page/react-single-page/dist/index.js:1266:7)
+      at async file:///home/runner/work/react-single-page/react-single-page/dist/index.js:1295:3 {
+    length: 111,
+    severity: 'ERROR',
+    code: '42703',
+    detail: undefined,
+    hint: undefined,
+    position: '502',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '3716',
+    routine: 'errorMissingColumn'
+  }
+}
+5:40:44 PM [express] serving on port 5000
