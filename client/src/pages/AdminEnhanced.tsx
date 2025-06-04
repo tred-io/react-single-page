@@ -66,7 +66,7 @@ export default function AdminEnhanced() {
       fridayHours: "8:00 AM - 6:00 PM",
       saturdayHours: "8:00 AM - 5:00 PM",
       sundayHours: "Closed",
-      heroTitle: "",
+
       heroSubtitle: "",
       aboutTitle: "",
       aboutDescription: "",
@@ -235,9 +235,8 @@ export default function AdminEnhanced() {
 
   const deleteBrandMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest(`/api/featured-brands/${id}`, {
-        method: "DELETE",
-      });
+      const res = await apiRequest("DELETE", `/api/featured-brands/${id}`);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/featured-brands"] });
