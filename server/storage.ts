@@ -23,22 +23,34 @@ export interface IStorage {
   deleteFeaturedBrand(id: number): Promise<boolean>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private storeSettings: StoreSettings | undefined;
-  private productCategories: Map<number, ProductCategory>;
-  private specialServices: Map<number, SpecialService>;
-  private featuredBrands: Map<number, FeaturedBrand>;
-  private currentUserId: number;
-  private currentCategoryId: number;
-  private currentServiceId: number;
-  private currentBrandId: number;
+import { Pool } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import { eq } from 'drizzle-orm';
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const db = drizzle({ client: pool });
+
+export class DatabaseStorage implements IStorage {
+  private tables = getClientTables('brown_feed');
 
   constructor() {
-    this.users = new Map();
-    this.productCategories = new Map();
-    this.currentUserId = 1;
-    this.currentCategoryId = 1;
+    // Initialize database tables if needed
+    this.initializeTables();
+  }
+
+  private async initializeTables() {
+    try {
+      // Check if store settings exist, if not create default
+      const [settings] = await db.select().from(this.tables.storeSettings).limit(1);
+      if (!settings) {
+        await this.createDefaultData();
+      }
+    } catch (error) {
+      console.error('Database initialization error:', error);
+    }
+  }
+
+  private async createDefaultData() {
     
     // Initialize with default store settings
     this.storeSettings = {
@@ -263,39 +275,7 @@ export class MemStorage implements IStorage {
   }
 }
 
-// Database storage implementation
-import { db } from "./db";
-import { eq } from "drizzle-orm";
-
-export class DatabaseStorage implements IStorage {
-  private clientName: string;
-  private tables: ReturnType<typeof getClientTables>;
-
-  constructor(clientName: string = 'brown_feed') {
-    this.clientName = clientName;
-    this.tables = getClientTables(clientName);
-  }
-
-  async getUser(id: number): Promise<User | undefined> {
-    // For now, return undefined as user system is not needed for basic store
-    return undefined;
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return undefined;
-  }
-
-  async createUser(user: InsertUser): Promise<User> {
-    throw new Error("User creation not implemented");
-  }
-
-  async getStoreSettings(): Promise<StoreSettings | undefined> {
-    const [settings] = await db.select().from(this.tables.storeSettings).limit(1);
-    return settings;
-  }
-
-  async updateStoreSettings(settings: InsertStoreSettings): Promise<StoreSettings> {
-    const [updated] = await db
+export const storage = new MemStorage();
       .update(this.tables.storeSettings)
       .set(settings)
       .where(eq(this.tables.storeSettings.id, 1))
