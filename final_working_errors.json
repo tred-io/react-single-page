@@ -1,0 +1,75 @@
+[
+{"type":"stdout","created":1748988863918,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"Running build in Washington, D.C., USA (East) – iad1","id":"1748988863918699140033000000","date":1748988863918,"serial":"1748988863918699140033000000"}}
+,
+{"type":"stdout","created":1748988863918,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"Build machine configuration: 4 cores, 8 GB","id":"1748988863918699140033000001","date":1748988863918,"serial":"1748988863918699140033000001"}}
+,
+{"type":"stdout","created":1748988863938,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"Cloning github.com/tred-io/brown-feed-store-website (Branch: main, Commit: 73eb38f)","id":"1748988863938699140033000000","date":1748988863938,"serial":"1748988863938699140033000000"}}
+,
+{"type":"stdout","created":1748988864195,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"Cloning completed: 257.000ms","id":"1748988864195699140033000000","date":1748988864195,"serial":"1748988864195699140033000000"}}
+,
+{"type":"stdout","created":1748988865050,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"Restored build cache from previous deployment (5oGJzeXB3LGZ6oQer4JHCFSF1hvi)","id":"1748988865050699140033000000","date":1748988865050,"serial":"1748988865050699140033000000"}}
+,
+{"type":"stdout","created":1748988865624,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"Running \"vercel build\"","id":"1748988865624642849584800001","date":1748988865624,"serial":"1748988865624642849584800001"}}
+,
+{"type":"stderr","created":1748988866084,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"Vercel CLI 42.2.0","id":"1748988866084642849584800000","date":1748988866084,"serial":"1748988866084642849584800000"}}
+,
+{"type":"stdout","created":1748988866639,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"Installing dependencies...","id":"1748988866639642849584800000","date":1748988866639,"serial":"1748988866639642849584800000"}}
+,
+{"type":"stdout","created":1748988867963,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"","id":"1748988867963642849584800000","date":1748988867963,"serial":"1748988867963642849584800000"}}
+,
+{"type":"stdout","created":1748988867963,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"up to date in 1s","id":"1748988867963642849584800001","date":1748988867963,"serial":"1748988867963642849584800001"}}
+,
+{"type":"stdout","created":1748988867964,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"","id":"1748988867964642849584800000","date":1748988867964,"serial":"1748988867964642849584800000"}}
+,
+{"type":"stdout","created":1748988867964,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"69 packages are looking for funding","id":"1748988867964642849584800001","date":1748988867964,"serial":"1748988867964642849584800001"}}
+,
+{"type":"stdout","created":1748988867964,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"  run `npm fund` for details","id":"1748988867964642849584800002","date":1748988867964,"serial":"1748988867964642849584800002"}}
+,
+{"type":"stdout","created":1748988868121,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"","id":"1748988868121642849584800000","date":1748988868121,"serial":"1748988868121642849584800000"}}
+,
+{"type":"stdout","created":1748988868121,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"> rest-express@1.0.0 build","id":"1748988868121642849584800001","date":1748988868121,"serial":"1748988868121642849584800001"}}
+,
+{"type":"stdout","created":1748988868121,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist","id":"1748988868121642849584800002","date":1748988868121,"serial":"1748988868121642849584800002"}}
+,
+{"type":"stdout","created":1748988868121,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"","id":"1748988868121642849584800003","date":1748988868121,"serial":"1748988868121642849584800003"}}
+,
+{"type":"stdout","created":1748988868422,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"\u001b[36mvite v5.4.19 \u001b[32mbuilding for production...\u001b[36m\u001b[39m","id":"1748988868422642849584800000","date":1748988868422,"serial":"1748988868422642849584800000"}}
+,
+{"type":"stdout","created":1748988868795,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"transforming...","id":"1748988868795642849584800000","date":1748988868795,"serial":"1748988868795642849584800000"}}
+,
+{"type":"stdout","created":1748988873982,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"\u001b[32m✓\u001b[39m 1846 modules transformed.","id":"1748988873982642849584800000","date":1748988873982,"serial":"1748988873982642849584800000"}}
+,
+{"type":"stdout","created":1748988874652,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"rendering chunks...","id":"1748988874652642849584800000","date":1748988874652,"serial":"1748988874652642849584800000"}}
+,
+{"type":"stdout","created":1748988874670,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"computing gzip size...","id":"1748988874670642849584800000","date":1748988874670,"serial":"1748988874670642849584800000"}}
+,
+{"type":"stdout","created":1748988874700,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"\u001b[2m../dist/\u001b[22m\u001b[32mindex.html                 \u001b[39m\u001b[1m\u001b[2m   11.28 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:   2.64 kB\u001b[22m","id":"1748988874700642849584800000","date":1748988874700,"serial":"1748988874700642849584800000"}}
+,
+{"type":"stdout","created":1748988874700,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"\u001b[2m../dist/\u001b[22m\u001b[2massets/\u001b[22m\u001b[35mindex-8XFHFEdT.css  \u001b[39m\u001b[1m\u001b[2m   67.03 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:  11.78 kB\u001b[22m","id":"1748988874700642849584800001","date":1748988874700,"serial":"1748988874700642849584800001"}}
+,
+{"type":"stdout","created":1748988874700,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"\u001b[2m../dist/\u001b[22m\u001b[2massets/\u001b[22m\u001b[36mindex-CYWvGBqf.js   \u001b[39m\u001b[1m\u001b[33m1,268.32 kB\u001b[39m\u001b[22m\u001b[2m │ gzip: 284.25 kB\u001b[22m","id":"1748988874700642849584800002","date":1748988874700,"serial":"1748988874700642849584800002"}}
+,
+{"type":"stderr","created":1748988874701,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"\u001b[33m","id":"1748988874701642849584800000","date":1748988874701,"serial":"1748988874701642849584800000"}}
+,
+{"type":"stderr","created":1748988874701,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"(!) Some chunks are larger than 500 kB after minification. Consider:","id":"1748988874701642849584800001","date":1748988874701,"serial":"1748988874701642849584800001"}}
+,
+{"type":"stderr","created":1748988874701,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"- Using dynamic import() to code-split the application","id":"1748988874701642849584800002","date":1748988874701,"serial":"1748988874701642849584800002"}}
+,
+{"type":"stderr","created":1748988874701,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks","id":"1748988874701642849584800003","date":1748988874701,"serial":"1748988874701642849584800003"}}
+,
+{"type":"stderr","created":1748988874701,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\u001b[39m","id":"1748988874701642849584800004","date":1748988874701,"serial":"1748988874701642849584800004"}}
+,
+{"type":"stdout","created":1748988874701,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"\u001b[32m✓ built in 5.96s\u001b[39m","id":"1748988874701642849584800005","date":1748988874701,"serial":"1748988874701642849584800005"}}
+,
+{"type":"stderr","created":1748988874774,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"✘ [ERROR] The entry point \"server/index.ts\" cannot be marked as external","id":"1748988874774642849584800000","date":1748988874774,"serial":"1748988874774642849584800000"}}
+,
+{"type":"stderr","created":1748988874774,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"","id":"1748988874774642849584800001","date":1748988874774,"serial":"1748988874774642849584800001"}}
+,
+{"type":"stderr","created":1748988874776,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"1 error","id":"1748988874776642849584800000","date":1748988874776,"serial":"1748988874776642849584800000"}}
+,
+{"type":"stderr","created":1748988874786,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"Error: Command \"npm run build\" exited with 1","id":"1748988874786642849584800000","date":1748988874786,"serial":"1748988874786642849584800000"}}
+,
+{"type":"stdout","created":1748988875097,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"","id":"1748988875097642849584800000","date":1748988875097,"serial":"1748988875097642849584800000"}}
+,
+{"type":"stdout","created":1748988878032,"payload":{"deploymentId":"dpl_5mYY1Zmf72YYfURBpuoZFHa4FUkn","info":{"type":"build","name":"bld_62h1hb7x4","entrypoint":"."},"text":"Exiting build container","id":"1748988878032699140033000000","date":1748988878032,"serial":"1748988878032699140033000000"}}
+]
