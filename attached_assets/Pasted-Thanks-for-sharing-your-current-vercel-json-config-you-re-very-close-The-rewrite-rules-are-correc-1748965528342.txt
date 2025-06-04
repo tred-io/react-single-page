@@ -1,0 +1,86 @@
+Thanks for sharing your current vercel.json config — you're very close! The rewrite rules are correct in theory, but if you're still getting 404s for /admin and /themes on Vercel, here are a few likely causes and fixes:
+
+✅ 1. Ensure Correct output Directory
+If you're using Vite (as it seems), it outputs the static build to dist/ by default. Vercel needs to know this explicitly.
+
+➤ Vercel Dashboard Settings:
+Framework Preset: Vite
+
+Build Command: npm run build (or vite build)
+
+Output Directory: dist
+
+If your app is inside /client, set:
+
+Root Directory: client/
+
+Output Directory: client/dist
+
+✅ 2. Ensure the vercel.json is in the correct place
+Place the vercel.json in the project root (same level as client/, not inside client/).
+
+If the app lives in client/, you can simplify routing with:
+
+json
+Copy
+Edit
+{
+  "rewrites": [
+    { "source": "/admin", "destination": "/index.html" },
+    { "source": "/themes", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
+But you also need to make sure that client/dist/index.html is what gets served — Vercel doesn't serve it unless the output path is configured properly.
+
+✅ 3. Confirm Static Build is Being Used (Not SSR)
+You're using this:
+
+json
+Copy
+Edit
+"functions": {
+  "api/index.ts": {
+    "runtime": "@vercel/node@3.0.11"
+  }
+}
+That’s fine if you're only using API routes. But make sure your front-end isn't mistakenly treated as a serverless function. Double-check that Vercel is recognizing your static assets and not trying to run your front-end as a function.
+
+✅ 4. Final Working Example (client/ app structure)
+If your app is in client/, use this vercel.json in the project root:
+
+json
+Copy
+Edit
+{
+  "functions": {
+    "api/index.ts": {
+      "runtime": "@vercel/node@3.0.11"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/admin",
+      "destination": "/client/index.html"
+    },
+    {
+      "source": "/themes", 
+      "destination": "/client/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/client/index.html"
+    }
+  ]
+}
+Make sure:
+
+Vercel root = project root (contains vercel.json, client/, api/)
+
+Vite app is inside client/ and builds to client/dist/
+
+Your build output directory is set to client/dist in the Vercel dashboard
