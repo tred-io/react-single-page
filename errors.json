@@ -1,0 +1,55 @@
+[
+{"type":"stdout","created":1748987219278,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"Running build in Washington, D.C., USA (East) – iad1","id":"1748987219278974422428100000","date":1748987219278,"serial":"1748987219278974422428100000"}}
+,
+{"type":"stdout","created":1748987219279,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"Build machine configuration: 4 cores, 8 GB","id":"1748987219279974422428100000","date":1748987219279,"serial":"1748987219279974422428100000"}}
+,
+{"type":"stdout","created":1748987219296,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"Cloning github.com/tred-io/brown-feed-store-website (Branch: main, Commit: 85c8f7f)","id":"1748987219296974422428100000","date":1748987219296,"serial":"1748987219296974422428100000"}}
+,
+{"type":"stdout","created":1748987219435,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"Previous build caches not available","id":"1748987219435974422428100002","date":1748987219435,"serial":"1748987219435974422428100002"}}
+,
+{"type":"stdout","created":1748987219530,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"Cloning completed: 234.000ms","id":"1748987219530974422428100000","date":1748987219530,"serial":"1748987219530974422428100000"}}
+,
+{"type":"stdout","created":1748987219832,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"Running \"vercel build\"","id":"1748987219832806501591700001","date":1748987219832,"serial":"1748987219832806501591700001"}}
+,
+{"type":"stderr","created":1748987220278,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"Vercel CLI 42.2.0","id":"1748987220278806501591700000","date":1748987220278,"serial":"1748987220278806501591700000"}}
+,
+{"type":"stdout","created":1748987220803,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"Installing dependencies...","id":"1748987220803806501591700000","date":1748987220803,"serial":"1748987220803806501591700000"}}
+,
+{"type":"stdout","created":1748987238314,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"","id":"1748987238314806501591700000","date":1748987238314,"serial":"1748987238314806501591700000"}}
+,
+{"type":"stdout","created":1748987238315,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"added 305 packages in 17s","id":"1748987238315806501591700000","date":1748987238315,"serial":"1748987238315806501591700000"}}
+,
+{"type":"stdout","created":1748987238315,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"","id":"1748987238315806501591700001","date":1748987238315,"serial":"1748987238315806501591700001"}}
+,
+{"type":"stdout","created":1748987238315,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"44 packages are looking for funding","id":"1748987238315806501591700002","date":1748987238315,"serial":"1748987238315806501591700002"}}
+,
+{"type":"stdout","created":1748987238315,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"  run `npm fund` for details","id":"1748987238315806501591700003","date":1748987238315,"serial":"1748987238315806501591700003"}}
+,
+{"type":"stdout","created":1748987238485,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"","id":"1748987238485806501591700000","date":1748987238485,"serial":"1748987238485806501591700000"}}
+,
+{"type":"stdout","created":1748987238485,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"> brown-feed-store@1.0.0 build","id":"1748987238485806501591700001","date":1748987238485,"serial":"1748987238485806501591700001"}}
+,
+{"type":"stdout","created":1748987238486,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"> tsc && vite build","id":"1748987238486806501591700000","date":1748987238486,"serial":"1748987238486806501591700000"}}
+,
+{"type":"stdout","created":1748987238486,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"","id":"1748987238486806501591700001","date":1748987238486,"serial":"1748987238486806501591700001"}}
+,
+{"type":"stdout","created":1748987244393,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"client/src/components/AdminLogin.tsx(9,10): error TS2305: Module '\"@shared/schema\"' has no exported member 'adminLoginSchema'.","id":"1748987244393806501591700000","date":1748987244393,"serial":"1748987244393806501591700000"}}
+,
+{"type":"stdout","created":1748987244393,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"client/src/components/AdminLogin.tsx(9,33): error TS2305: Module '\"@shared/schema\"' has no exported member 'AdminLogin'.","id":"1748987244393806501591700001","date":1748987244393,"serial":"1748987244393806501591700001"}}
+,
+{"type":"stdout","created":1748987244393,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"client/src/components/ThemeGenerator.tsx(119,35): error TS2345: Argument of type '{ description?: string; }' is not assignable to parameter of type '{ description: string; }'.","id":"1748987244393806501591700002","date":1748987244393,"serial":"1748987244393806501591700002"}}
+,
+{"type":"stdout","created":1748987244393,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"  Property 'description' is optional in type '{ description?: string; }' but required in type '{ description: string; }'.","id":"1748987244393806501591700003","date":1748987244393,"serial":"1748987244393806501591700003"}}
+,
+{"type":"stdout","created":1748987244393,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"client/src/components/ThemeGeneratorSimple.tsx(124,35): error TS2345: Argument of type '{ description?: string; }' is not assignable to parameter of type '{ description: string; }'.","id":"1748987244393806501591700004","date":1748987244393,"serial":"1748987244393806501591700004"}}
+,
+{"type":"stdout","created":1748987244393,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"  Property 'description' is optional in type '{ description?: string; }' but required in type '{ description: string; }'.","id":"1748987244393806501591700005","date":1748987244393,"serial":"1748987244393806501591700005"}}
+,
+{"type":"stdout","created":1748987244394,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"client/src/components/ui/carousel.tsx(4,8): error TS2307: Cannot find module 'embla-carousel-react' or its corresponding type declarations.","id":"1748987244394806501591700000","date":1748987244394,"serial":"1748987244394806501591700000"}}
+,
+{"type":"stderr","created":1748987244422,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"Error: Command \"npm run build\" exited with 2","id":"1748987244422806501591700000","date":1748987244422,"serial":"1748987244422806501591700000"}}
+,
+{"type":"stdout","created":1748987244677,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"","id":"1748987244677806501591700000","date":1748987244677,"serial":"1748987244677806501591700000"}}
+,
+{"type":"stdout","created":1748987247804,"payload":{"deploymentId":"dpl_3FfzaZKeAARH15LaQSpN2HxDdC1J","info":{"type":"build","name":"bld_p0yqyhbw2","entrypoint":"."},"text":"Exiting build container","id":"1748987247804974422428100000","date":1748987247804,"serial":"1748987247804974422428100000"}}
+]

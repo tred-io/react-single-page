@@ -1,0 +1,114 @@
+{
+  "storeSettings": {
+    "storeName": "SP Upholstery",
+    "tagline": "Custom upholstery for your everyday needs",
+    "address": "2121 Rebild Dr, Solvang, CA 93463",
+    "phone": "(805) 688-0089",
+    "email": "info@spupholstery.com",
+    "mondayHours": "10:00 AM - 4:00 PM",
+    "tuesdayHours": "10:00 AM - 4:00 PM",
+    "wednesdayHours": "10:00 AM - 4:00 PM",
+    "thursdayHours": "10:00 AM - 4:00 PM",
+    "fridayHours": "10:00 AM - 4:00 PM",
+    "saturdayHours": "Closed",
+    "sundayHours": "Closed",
+    "aboutTitle": "About SP Upholstery",
+    "aboutDescription": "Custom upholstery shop crafting quality fabric furniture in California's scenic Central Coast.",
+    "aboutStory": "Located in the heart of California's scenic Central Coast, our small upholstery shop specializes in custom fabric and furniture restoration. We blend traditional craftsmanship with modern design to breathe new life into sofas, chairs, cushions, and more. Whether you're updating a family heirloom or designing a brand-new piece, we offer personalized service, high-quality materials, and attention to detail that sets us apart.",
+    "foundedYear": "2010",
+    "seoTitle": "SP Upholstery - Custom Furniture Reupholstery | Solvang, CA",
+    "seoDescription": "Professional upholstery services in Solvang, CA. Custom furniture reupholstery, fabric selection, and furniture restoration. Quality craftsmanship since 2010.",
+    "seoKeywords": "upholstery, furniture restoration, custom fabric, Solvang CA, Central Coast, furniture repair"
+  },
+  "productCategories": [
+    {
+      "title": "Furniture Reupholstery",
+      "description": "Complete reupholstery services for sofas, chairs, ottomans, and more",
+      "iconName": "Armchair",
+      "items": [
+        "Sofas & Sectionals",
+        "Dining Room Chairs",
+        "Accent Chairs & Recliners",
+        "Ottomans & Benches",
+        "Antique Furniture Restoration",
+        "Commercial Seating"
+      ],
+      "displayOrder": 1
+    },
+    {
+      "title": "Custom Cushions",
+      "description": "Handcrafted cushions and pillows for indoor and outdoor use",
+      "iconName": "Package",
+      "items": [
+        "Window Seat Cushions",
+        "Outdoor Patio Cushions",
+        "Boat & RV Cushions",
+        "Decorative Throw Pillows",
+        "Bench Cushions",
+        "Custom Shaped Cushions"
+      ],
+      "displayOrder": 2
+    },
+    {
+      "title": "Fabric & Materials",
+      "description": "Premium fabrics and materials for any upholstery project",
+      "iconName": "Palette",
+      "items": [
+        "Designer Fabrics",
+        "Outdoor & Marine Fabrics",
+        "Leather & Vinyl",
+        "Foam & Batting",
+        "Trim & Welting",
+        "Hardware & Supplies"
+      ],
+      "displayOrder": 3
+    },
+    {
+      "title": "Automotive Upholstery",
+      "description": "Custom automotive and marine upholstery services",
+      "iconName": "Car",
+      "items": [
+        "Car Seat Reupholstery",
+        "Convertible Tops",
+        "Boat Seating",
+        "RV & Camper Interiors",
+        "Motorcycle Seats",
+        "Custom Auto Interiors"
+      ],
+      "displayOrder": 4
+    }
+  ],
+  "specialServices": [
+    {
+      "title": "Free Estimates",
+      "description": "Get a detailed quote for your upholstery project with no obligation",
+      "iconName": "Calculator",
+      "displayOrder": 1
+    },
+    {
+      "title": "In-Home Consultation",
+      "description": "We'll come to you to assess your furniture and discuss options",
+      "iconName": "Home",
+      "displayOrder": 2
+    },
+    {
+      "title": "Pickup & Delivery",
+      "description": "Convenient pickup and delivery service for larger furniture pieces",
+      "iconName": "Truck",
+      "displayOrder": 3
+    },
+    {
+      "title": "Rush Service Available",
+      "description": "Need it fast? Ask about our expedited service options",
+      "iconName": "Clock",
+      "displayOrder": 4
+    }
+  ],
+  "socialMedia": {
+    "facebookUrl": "",
+    "instagramUrl": "",
+    "yelpUrl": "",
+    "googleUrl": "",
+    "xUrl": ""
+  }
+}
