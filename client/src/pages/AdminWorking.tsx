@@ -27,21 +27,25 @@ export default function Admin() {
     queryKey: ["/api/product-categories"],
   });
 
-  const [storeForm, setStoreForm] = useState<InsertStoreSettings>({
-    storeName: settings?.storeName || "",
-    tagline: settings?.tagline || "",
-    address: settings?.address || "",
-    phone: settings?.phone || "",
-    email: settings?.email || "",
-    mondayFridayHours: settings?.mondayFridayHours || "",
-    saturdayHours: settings?.saturdayHours || "",
-    sundayHours: settings?.sundayHours || "",
-    aboutTitle: settings?.aboutTitle || "",
-    aboutDescription: settings?.aboutDescription || "",
-    aboutStory: settings?.aboutStory || "",
-    foundedYear: settings?.foundedYear || "",
-    logoUrl: settings?.logoUrl || "",
-    faviconUrl: settings?.faviconUrl || "",
+  const [storeForm, setStoreForm] = useState({
+    storeName: "",
+    tagline: "",
+    address: "",
+    phone: "",
+    email: "",
+    mondayHours: "",
+    tuesdayHours: "",
+    wednesdayHours: "",
+    thursdayHours: "",
+    fridayHours: "",
+    saturdayHours: "",
+    sundayHours: "",
+    aboutTitle: "",
+    aboutDescription: "",
+    aboutStory: "",
+    foundedYear: "",
+    logoUrl: "",
+    faviconUrl: "",
   });
 
   const [newCategory, setNewCategory] = useState<InsertProductCategory>({
