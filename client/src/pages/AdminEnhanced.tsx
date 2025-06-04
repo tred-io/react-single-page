@@ -135,10 +135,8 @@ export default function AdminEnhanced() {
 
   const createCategoryMutation = useMutation({
     mutationFn: async (data: InsertProductCategory) => {
-      return await apiRequest("/api/product-categories", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+      const res = await apiRequest("POST", "/api/product-categories", data);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/product-categories"] });
@@ -151,9 +149,8 @@ export default function AdminEnhanced() {
 
   const deleteCategoryMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest(`/api/product-categories/${id}`, {
-        method: "DELETE",
-      });
+      const res = await apiRequest("DELETE", `/api/product-categories/${id}`);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/product-categories"] });
@@ -166,10 +163,8 @@ export default function AdminEnhanced() {
 
   const updateServiceMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: InsertSpecialService }) => {
-      return await apiRequest(`/api/special-services/${id}`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-      });
+      const res = await apiRequest("PUT", `/api/special-services/${id}`, data);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/special-services"] });
@@ -183,10 +178,8 @@ export default function AdminEnhanced() {
 
   const createServiceMutation = useMutation({
     mutationFn: async (data: InsertSpecialService) => {
-      return await apiRequest("/api/special-services", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+      const res = await apiRequest("POST", "/api/special-services", data);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/special-services"] });
@@ -199,9 +192,8 @@ export default function AdminEnhanced() {
 
   const deleteServiceMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest(`/api/special-services/${id}`, {
-        method: "DELETE",
-      });
+      const res = await apiRequest("DELETE", `/api/special-services/${id}`);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/special-services"] });
@@ -214,10 +206,8 @@ export default function AdminEnhanced() {
 
   const updateBrandMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: InsertFeaturedBrand }) => {
-      return await apiRequest(`/api/featured-brands/${id}`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-      });
+      const res = await apiRequest("PUT", `/api/featured-brands/${id}`, data);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/featured-brands"] });
@@ -231,10 +221,8 @@ export default function AdminEnhanced() {
 
   const createBrandMutation = useMutation({
     mutationFn: async (data: InsertFeaturedBrand) => {
-      return await apiRequest("/api/featured-brands", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+      const res = await apiRequest("POST", "/api/featured-brands", data);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/featured-brands"] });
