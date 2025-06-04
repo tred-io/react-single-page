@@ -215,8 +215,9 @@ async function main() {
   }
 }
 
-if (require.main === module) {
+// Run if called directly
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
 
-module.exports = { DatabaseManager };
+export { DatabaseManager };
