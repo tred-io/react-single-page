@@ -333,8 +333,11 @@ export const specialServices = pgTable("special_services", {
 export const featuredBrands = pgTable("featured_brands", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
+  description: text("description").notNull(),
   logoUrl: text("logo_url").notNull(),
-  displayOrder: integer("display_order").default(0),
+  websiteUrl: text("website_url").notNull(),
+  featured: boolean("featured").notNull().default(false),
+  sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
