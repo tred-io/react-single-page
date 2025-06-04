@@ -8,6 +8,7 @@ import {
   index,
   integer,
   serial,
+  boolean,
   pgSchema,
 } from "drizzle-orm/pg-core";
 
@@ -64,7 +65,7 @@ export function getClientTables(clientName: string) {
       name: varchar("name", { length: 255 }).notNull(),
       description: text("description").notNull(),
       imageUrl: text("image_url").notNull(),
-      featured: integer("featured").notNull().default(0),
+      featured: boolean("featured").notNull().default(false),
       sortOrder: integer("sort_order").notNull().default(0),
       createdAt: timestamp("created_at").defaultNow(),
       updatedAt: timestamp("updated_at").defaultNow(),
@@ -75,7 +76,7 @@ export function getClientTables(clientName: string) {
       name: varchar("name", { length: 255 }).notNull(),
       description: text("description").notNull(),
       icon: varchar("icon", { length: 100 }).notNull(),
-      featured: integer("featured").notNull().default(0),
+      featured: boolean("featured").notNull().default(false),
       sortOrder: integer("sort_order").notNull().default(0),
       createdAt: timestamp("created_at").defaultNow(),
       updatedAt: timestamp("updated_at").defaultNow(),
@@ -84,8 +85,13 @@ export function getClientTables(clientName: string) {
     featuredBrands: schema.table("featured_brands", {
       id: serial("id").primaryKey(),
       name: varchar("name", { length: 255 }).notNull(),
+      description: text("description").notNull(),
       logoUrl: text("logo_url").notNull(),
-      displayOrder: integer("display_order").notNull(),
+      websiteUrl: text("website_url").notNull(),
+      featured: boolean("featured").notNull().default(false),
+      sortOrder: integer("sort_order").notNull().default(0),
+      createdAt: timestamp("created_at").defaultNow(),
+      updatedAt: timestamp("updated_at").defaultNow(),
     }),
   };
 }
@@ -304,22 +310,22 @@ export const storeSettings = pgTable("store_settings", {
 
 export const productCategories = pgTable("product_categories", {
   id: serial("id").primaryKey(),
-  title: varchar("title", { length: 255 }).notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
   description: text("description").notNull(),
   imageUrl: text("image_url").notNull(),
-  iconName: varchar("icon_name", { length: 100 }).notNull(),
-  items: jsonb("items").$type<string[]>().notNull(),
-  displayOrder: integer("display_order").default(0),
+  featured: boolean("featured").notNull().default(false),
+  sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const specialServices = pgTable("special_services", {
   id: serial("id").primaryKey(),
-  title: varchar("title", { length: 255 }).notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
   description: text("description").notNull(),
-  iconName: varchar("icon_name", { length: 100 }).notNull(),
-  displayOrder: integer("display_order").default(0),
+  icon: varchar("icon", { length: 100 }).notNull(),
+  featured: boolean("featured").notNull().default(false),
+  sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
