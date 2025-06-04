@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/Home";
 import AdminEnhanced from "@/pages/AdminEnhanced";
-import ThemeGeneratorPage from "@/pages/ThemeGeneratorPage";
 import NotFound from "@/pages/not-found";
 import { useThemeUpdater } from "@/hooks/useThemeUpdater";
 
@@ -16,7 +15,6 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/admin" component={AdminEnhanced} />
-      <Route path="/themes" component={ThemeGeneratorPage} />
       <Route component={NotFound} />
     </Switch>
   );

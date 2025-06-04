@@ -1,8 +1,0 @@
-{
-  "name": "client-deployment",
-  "version": "1.0.0",
-  "scripts": {
-    "build": "cd ../../.. && npm run build",
-    "dev": "cd ../../.. && npm run dev"
-  }
-}
