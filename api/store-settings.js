@@ -1,6 +1,47 @@
-import { Pool } from '@neondatabase/serverless';
+import pg from 'pg';
+const { Pool } = pg;
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
+// Define Brown Feed Store settings table
+const brownFeedSettings = pgTable('brown_feed_store_settings', {
+  id: integer("id").primaryKey(),
+  storeName: varchar("store_name", { length: 255 }),
+  tagline: text("tagline"),
+  address: text("address"),
+  phone: varchar("phone", { length: 50 }),
+  email: varchar("email", { length: 255 }),
+  mondayHours: varchar("monday_hours", { length: 100 }),
+  tuesdayHours: varchar("tuesday_hours", { length: 100 }),
+  wednesdayHours: varchar("wednesday_hours", { length: 100 }),
+  thursdayHours: varchar("thursday_hours", { length: 100 }),
+  fridayHours: varchar("friday_hours", { length: 100 }),
+  saturdayHours: varchar("saturday_hours", { length: 100 }),
+  sundayHours: varchar("sunday_hours", { length: 100 }),
+  aboutTitle: varchar("about_title", { length: 255 }),
+  aboutDescription: text("about_description"),
+  aboutStory: text("about_story"),
+  foundedYear: varchar("founded_year", { length: 10 }),
+  logoUrl: text("logo_url"),
+  faviconUrl: text("favicon_url"),
+  heroImageUrl: text("hero_image_url"),
+  aboutImageUrl: text("about_image_url"),
+  primaryColor: varchar("primary_color", { length: 10 }),
+  secondaryColor: varchar("secondary_color", { length: 10 }),
+  accentColor: varchar("accent_color", { length: 10 }),
+  fontFamily: varchar("font_family", { length: 100 }),
+  facebookUrl: text("facebook_url"),
+  instagramUrl: text("instagram_url"),
+  xUrl: text("x_url"),
+  googleUrl: text("google_url"),
+  yelpUrl: text("yelp_url"),
+  seoTitle: text("seo_title"),
+  seoDescription: text("seo_description"),
+  seoKeywords: text("seo_keywords"),
+});
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -15,7 +56,15 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
-      // Return default Brown Feed Store data
+      // Try to get data from database first
+      const [settings] = await db.select().from(brownFeedSettings).limit(1);
+      
+      if (settings) {
+        res.status(200).json(settings);
+        return;
+      }
+      
+      // If no data in database, insert default Brown Feed Store data
       const defaultSettings = {
         id: 1,
         storeName: "Brown Feed Store",
@@ -45,10 +94,30 @@ export default async function handler(req, res) {
         seoKeywords: "feed store, livestock feed, pet food, farm supplies, Lampasas Texas"
       };
       
-      res.status(200).json(defaultSettings);
+      // Insert default data into database
+      try {
+        const [inserted] = await db
+          .insert(brownFeedSettings)
+          .values(defaultSettings)
+          .returning();
+        res.status(200).json(inserted);
+      } catch (error) {
+        // If table doesn't exist or insert fails, return default data
+        res.status(200).json(defaultSettings);
+      }
+      
     } else if (req.method === 'PUT') {
-      // For now, just return the updated data
-      res.status(200).json(req.body);
+      // Save admin changes to database
+      const [updated] = await db
+        .insert(brownFeedSettings)
+        .values({ id: 1, ...req.body })
+        .onConflictDoUpdate({
+          target: brownFeedSettings.id,
+          set: req.body
+        })
+        .returning();
+      
+      res.status(200).json(updated);
     } else {
       res.status(405).json({ message: 'Method not allowed' });
     }

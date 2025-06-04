@@ -1,3 +1,21 @@
+import { Pool } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import { pgTable, integer, varchar, text, jsonb } from 'drizzle-orm/pg-core';
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const db = drizzle({ client: pool });
+
+// Define Brown Feed Store product categories table
+const brownFeedCategories = pgTable('brown_feed_product_categories', {
+  id: integer("id").primaryKey(),
+  title: varchar("title", { length: 255 }),
+  description: text("description"),
+  imageUrl: text("image_url"),
+  iconName: varchar("icon_name", { length: 100 }),
+  items: jsonb("items"),
+  displayOrder: integer("display_order"),
+});
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -10,6 +28,15 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
+      // Try to get data from database first
+      const categories = await db.select().from(brownFeedCategories).orderBy(brownFeedCategories.displayOrder);
+      
+      if (categories.length > 0) {
+        res.status(200).json(categories);
+        return;
+      }
+      
+      // If no data in database, insert default categories
       const defaultCategories = [
         {
           id: 1,
@@ -40,7 +67,15 @@ export default async function handler(req, res) {
         }
       ];
       
-      res.status(200).json(defaultCategories);
+      // Insert default categories into database
+      try {
+        await db.insert(brownFeedCategories).values(defaultCategories);
+        res.status(200).json(defaultCategories);
+      } catch (error) {
+        // If table doesn't exist or insert fails, return default data
+        res.status(200).json(defaultCategories);
+      }
+      
     } else {
       res.status(405).json({ message: 'Method not allowed' });
     }
