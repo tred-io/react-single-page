@@ -1,0 +1,1 @@
+{"error":{"code":"bad_request","message":"Invalid request: `env.DATABASE_URL` should be string.","action":"View Documentation","link":"https://vercel.com/docs/configuration#project/env","keyword":"type","dataPath":"/env/DATABASE_URL","params":{"type":"string"}}}

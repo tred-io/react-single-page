@@ -1,0 +1,47 @@
+[
+{"type":"stdout","created":1748989097369,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"Running build in Washington, D.C., USA (East) – iad1","id":"1748989097369131265477500000","date":1748989097369,"serial":"1748989097369131265477500000"}}
+,
+{"type":"stdout","created":1748989097370,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"Build machine configuration: 4 cores, 8 GB","id":"1748989097370131265477500000","date":1748989097370,"serial":"1748989097370131265477500000"}}
+,
+{"type":"stdout","created":1748989097382,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"Cloning github.com/tred-io/brown-feed-store-website (Branch: main, Commit: 3074a69)","id":"1748989097382131265477500001","date":1748989097382,"serial":"1748989097382131265477500001"}}
+,
+{"type":"stdout","created":1748989097692,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"Cloning completed: 310.000ms","id":"1748989097692131265477500000","date":1748989097692,"serial":"1748989097692131265477500000"}}
+,
+{"type":"stdout","created":1748989100427,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"Restored build cache from previous deployment (5oGJzeXB3LGZ6oQer4JHCFSF1hvi)","id":"1748989100427131265477500000","date":1748989100427,"serial":"1748989100427131265477500000"}}
+,
+{"type":"stdout","created":1748989101021,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"Running \"vercel build\"","id":"1748989101021987430327000001","date":1748989101021,"serial":"1748989101021987430327000001"}}
+,
+{"type":"stderr","created":1748989101473,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"Vercel CLI 42.2.0","id":"1748989101473987430327000000","date":1748989101473,"serial":"1748989101473987430327000000"}}
+,
+{"type":"stdout","created":1748989102026,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"Installing dependencies...","id":"1748989102026987430327000000","date":1748989102026,"serial":"1748989102026987430327000000"}}
+,
+{"type":"stdout","created":1748989107251,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"","id":"1748989107251987430327000000","date":1748989107251,"serial":"1748989107251987430327000000"}}
+,
+{"type":"stdout","created":1748989107251,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"added 5 packages, removed 271 packages, and changed 2 packages in 5s","id":"1748989107251987430327000001","date":1748989107251,"serial":"1748989107251987430327000001"}}
+,
+{"type":"stdout","created":1748989107252,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"","id":"1748989107252987430327000000","date":1748989107252,"serial":"1748989107252987430327000000"}}
+,
+{"type":"stdout","created":1748989107252,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"48 packages are looking for funding","id":"1748989107252987430327000001","date":1748989107252,"serial":"1748989107252987430327000001"}}
+,
+{"type":"stdout","created":1748989107252,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"  run `npm fund` for details","id":"1748989107252987430327000002","date":1748989107252,"serial":"1748989107252987430327000002"}}
+,
+{"type":"stdout","created":1748989107415,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"","id":"1748989107415987430327000000","date":1748989107415,"serial":"1748989107415987430327000000"}}
+,
+{"type":"stdout","created":1748989107415,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"> brown-feed-store@1.0.0 build","id":"1748989107415987430327000001","date":1748989107415,"serial":"1748989107415987430327000001"}}
+,
+{"type":"stdout","created":1748989107415,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"> tsc && vite build","id":"1748989107415987430327000002","date":1748989107415,"serial":"1748989107415987430327000002"}}
+,
+{"type":"stdout","created":1748989107415,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"","id":"1748989107415987430327000003","date":1748989107415,"serial":"1748989107415987430327000003"}}
+,
+{"type":"stdout","created":1748989108727,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"client/src/pages/Admin.tsx(604,11): error TS17002: Expected corresponding JSX closing tag for 'div'.","id":"1748989108727987430327000000","date":1748989108727,"serial":"1748989108727987430327000000"}}
+,
+{"type":"stdout","created":1748989108727,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"client/src/pages/Admin.tsx(606,5): error TS1005: ')' expected.","id":"1748989108727987430327000001","date":1748989108727,"serial":"1748989108727987430327000001"}}
+,
+{"type":"stdout","created":1748989108727,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"client/src/pages/Admin.tsx(607,3): error TS1109: Expression expected.","id":"1748989108727987430327000002","date":1748989108727,"serial":"1748989108727987430327000002"}}
+,
+{"type":"stderr","created":1748989108751,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"Error: Command \"npm run build\" exited with 2","id":"1748989108751987430327000000","date":1748989108751,"serial":"1748989108751987430327000000"}}
+,
+{"type":"stdout","created":1748989109944,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"","id":"1748989109944987430327000000","date":1748989109944,"serial":"1748989109944987430327000000"}}
+,
+{"type":"stdout","created":1748989112924,"payload":{"deploymentId":"dpl_5sUsVreEVVfNkW6QsLndawm2hLkz","info":{"type":"build","name":"bld_jsoxg86jm","entrypoint":"."},"text":"Exiting build container","id":"1748989112924131265477500000","date":1748989112924,"serial":"1748989112924131265477500000"}}
+]
