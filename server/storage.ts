@@ -1,6 +1,15 @@
-import { type SimpleUser as User, type StoreSettings, type InsertStoreSettings, type ProductCategory, type InsertProductCategory, type SpecialService, type InsertSpecialService, type FeaturedBrand, type InsertFeaturedBrand, getClientTables } from "@shared/schema";
+import {
+  type User,
+  type StoreSettings,
+  type ProductCategory,
+  type SpecialService,
+  type FeaturedBrand,
+  type InsertStoreSettings,
+  type InsertProductCategory,
+  type InsertSpecialService,
+  type InsertFeaturedBrand,
+} from "@shared/schema";
 
-// Create InsertUser type based on SimpleUser
 export type InsertUser = Omit<User, 'id'>;
 
 export interface IStorage {
@@ -23,180 +32,189 @@ export interface IStorage {
   deleteFeaturedBrand(id: number): Promise<boolean>;
 }
 
-import { Pool } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import { eq } from 'drizzle-orm';
+class SimpleMap<T> {
+  private items = new Map<number, T>();
+  private nextId = 1;
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const db = drizzle({ client: pool });
+  create(item: Omit<T, 'id'>): T {
+    const id = this.nextId++;
+    const newItem = { ...item, id } as T;
+    this.items.set(id, newItem);
+    return newItem;
+  }
 
-export class DatabaseStorage implements IStorage {
-  private tables = getClientTables('brown_feed');
+  getAll(): T[] {
+    return Array.from(this.items.values());
+  }
+
+  get(id: number): T | undefined {
+    return this.items.get(id);
+  }
+
+  update(id: number, updates: Partial<T>): T | undefined {
+    const existing = this.items.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...updates };
+    this.items.set(id, updated);
+    return updated;
+  }
+
+  delete(id: number): boolean {
+    return this.items.delete(id);
+  }
+}
+
+export class MemStorage implements IStorage {
+  private storeSettings: StoreSettings = {
+    id: 1,
+    storeName: "Brown Feed Store",
+    tagline: "Your Agricultural Supply Partner Since 1967",
+    address: "123 Main Street, Lampasas, TX 76550",
+    phone: "(512) 556-3467",
+    email: "info@brownfeedstore.com",
+    mondayHours: "8:00 AM - 6:00 PM",
+    tuesdayHours: "8:00 AM - 6:00 PM",
+    wednesdayHours: "8:00 AM - 6:00 PM",
+    thursdayHours: "8:00 AM - 6:00 PM",
+    fridayHours: "8:00 AM - 6:00 PM",
+    saturdayHours: "8:00 AM - 5:00 PM",
+    sundayHours: "Closed",
+    facebookUrl: "https://facebook.com/brownfeedstore",
+    instagramUrl: "https://instagram.com/brownfeedstore",
+    twitterUrl: "https://twitter.com/brownfeedstore",
+    websiteUrl: "https://brownfeedstore.com",
+    heroTitle: "Quality Feed & Farm Supplies",
+    heroSubtitle: "Serving Central Texas farmers and ranchers for over 50 years",
+    aboutTitle: "About Brown Feed Store",
+    aboutDescription: "Family-owned and operated since 1967, Brown Feed Store has been the trusted partner for farmers and ranchers throughout Central Texas. We provide high-quality feed, farm supplies, and expert advice to help your operation thrive.",
+    footerText: "© 2024 Brown Feed Store. All rights reserved.",
+    primaryColor: "#8B4513",
+    secondaryColor: "#D2691E",
+    accentColor: "#228B22",
+    backgroundColor: "#F5F5DC",
+    textColor: "#2F2F2F",
+    headingFont: "Georgia",
+    bodyFont: "Arial",
+    buttonStyle: "rounded",
+    layoutStyle: "traditional",
+    showTestimonials: true,
+    showNewsletter: true,
+    showSocialMedia: true,
+    metaTitle: "Brown Feed Store - Quality Feed & Farm Supplies in Lampasas, TX",
+    metaDescription: "Brown Feed Store provides premium feed, farm supplies, and expert service to Central Texas farmers and ranchers. Family-owned since 1967.",
+    metaKeywords: "feed store, farm supplies, livestock feed, Lampasas Texas, agricultural supplies"
+  };
+
+  private productCategories = new SimpleMap<ProductCategory>();
+  private specialServices = new SimpleMap<SpecialService>();
+  private featuredBrands = new SimpleMap<FeaturedBrand>();
+  private currentCategoryId = 1;
+  private currentServiceId = 1;
+  private currentBrandId = 1;
 
   constructor() {
-    // Initialize database tables if needed
-    this.initializeTables();
+    this.initializeData();
   }
 
-  private async initializeTables() {
-    try {
-      // Check if store settings exist, if not create default
-      const [settings] = await db.select().from(this.tables.storeSettings).limit(1);
-      if (!settings) {
-        await this.createDefaultData();
-      }
-    } catch (error) {
-      console.error('Database initialization error:', error);
-    }
-  }
-
-  private async createDefaultData() {
-    
-    // Initialize with default store settings
-    this.storeSettings = {
-      id: 1,
-      storeName: "Brown Feed Store",
-      tagline: "Your Trusted Agricultural Partner in Lampasas, Texas",
-      address: "1234 Highway 281, Lampasas, TX 76550",
-      phone: "(512) 555-1234",
-      email: "info@brownfeedstore.com",
-      mondayHours: "7:00 AM - 6:00 PM",
-      tuesdayHours: "7:00 AM - 6:00 PM",
-      wednesdayHours: "7:00 AM - 6:00 PM",
-      thursdayHours: "7:00 AM - 6:00 PM",
-      fridayHours: "7:00 AM - 6:00 PM",
-      saturdayHours: "7:00 AM - 6:00 PM",
-      sundayHours: "9:00 AM - 4:00 PM",
-      aboutTitle: "About Brown Feed Store",
-      aboutDescription: "A family-owned business proudly serving Lampasas County and surrounding areas for nearly four decades",
-      aboutStory: "Founded in 1985 by the Brown family, our feed store has been the cornerstone of agricultural supply in Lampasas County. What started as a small family operation has grown into a trusted resource for farmers, ranchers, and pet owners throughout Central Texas. We believe in supporting our local community with quality products, fair prices, and the kind of personal service that only comes from knowing our customers and their unique needs.",
-      foundedYear: "1985",
-      logoUrl: "",
-      faviconUrl: "",
-      heroImageUrl: "",
-      aboutImageUrl: "",
-      // Theme & Branding
-      primaryColor: "#8B4513",
-      secondaryColor: "#2F4F4F", 
-      accentColor: "#CD853F",
-      fontFamily: "Inter",
-      // Social URLs
-      facebookUrl: "",
-      instagramUrl: "",
-      xUrl: "",
-      googleUrl: "",
-      yelpUrl: "",
-      // SEO
-      seoTitle: "Brown Feed Store - Quality Agricultural Supplies in Lampasas, TX",
-      seoDescription: "Your trusted agricultural partner since 1985. Premium livestock feed, farming equipment, and expert advice in Lampasas County, Texas.",
-      seoKeywords: "feed store, livestock feed, agricultural supplies, farming equipment, Lampasas Texas, cattle feed, horse feed"
-    };
-    
-    // Initialize with default product categories
-    const defaultCategories = [
-      {
-        title: "Livestock Feed",
-        description: "Premium quality feed for cattle, horses, pigs, goats, and sheep. Custom mixes available.",
-        imageUrl: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        iconName: "Beef",
-        items: ["Range Cubes & Pellets", "Sweet Feed & Grain", "Mineral Supplements", "Custom Blends"],
-        displayOrder: 1
-      },
-      {
-        title: "Pet Supplies",
-        description: "Complete line of pet food, treats, toys, and care products for dogs, cats, and small animals.",
-        imageUrl: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        iconName: "Heart",
-        items: ["Premium Dog & Cat Food", "Treats & Supplements", "Toys & Accessories", "Grooming Supplies"],
-        displayOrder: 2
-      },
-      {
-        title: "Farm Equipment",
-        description: "Essential tools and equipment for farming, ranching, and property maintenance.",
-        imageUrl: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        iconName: "Wrench",
-        items: ["Hand Tools & Hardware", "Fencing Materials", "Water Systems", "Safety Equipment"],
-        displayOrder: 3
-      },
-      {
-        title: "Poultry Supplies",
-        description: "Complete poultry care including feed, supplements, and housing solutions.",
-        imageUrl: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        iconName: "Bird",
-        items: ["Layer & Broiler Feed", "Poultry Vitamins", "Feeders & Waterers", "Coop Supplies"],
-        displayOrder: 4
-      },
-      {
-        title: "Seeds & Garden",
-        description: "Quality seeds, fertilizers, and gardening supplies for your growing needs.",
-        imageUrl: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        iconName: "Sprout",
-        items: ["Vegetable & Flower Seeds", "Grass & Pasture Seed", "Fertilizers & Soil", "Garden Tools"],
-        displayOrder: 5
-      },
-      {
-        title: "Animal Health",
-        description: "Veterinary supplies, medications, and health products for livestock and pets.",
-        imageUrl: "https://images.unsplash.com/photo-1559190394-df5a28aab5c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250",
-        iconName: "Stethoscope",
-        items: ["Vaccines & Medications", "Dewormers & Treatments", "First Aid Supplies", "Grooming Products"],
-        displayOrder: 6
-      }
-    ];
-    
-    defaultCategories.forEach(category => {
-      const id = this.currentCategoryId++;
-      this.productCategories.set(id, { ...category, id });
+  private initializeData() {
+    // Initialize product categories
+    this.productCategories.create({
+      name: "Livestock Feed",
+      description: "Premium feed for cattle, horses, goats, and other livestock",
+      imageUrl: "/images/livestock-feed.jpg",
+      featured: true,
+      sortOrder: 1
     });
 
-    // Initialize special services and featured brands storage
-    this.specialServices = new Map();
-    this.featuredBrands = new Map();
-    this.currentServiceId = 1;
-    this.currentBrandId = 1;
+    this.productCategories.create({
+      name: "Pet Food & Supplies",
+      description: "Quality nutrition and supplies for dogs, cats, and small animals",
+      imageUrl: "/images/pet-food.jpg",
+      featured: true,
+      sortOrder: 2
+    });
 
-    // Initialize with default special services
-    const defaultServices = [
-      {
-        title: "Expert Consultation",
-        description: "Get personalized advice from our agricultural specialists",
-        iconName: "Users",
-        displayOrder: 1
-      },
-      {
-        title: "Local Delivery",
-        description: "Free delivery for orders over $100 within 20 miles",
-        iconName: "Truck",
-        displayOrder: 2
-      },
-      {
-        title: "Custom Feed Mixing",
-        description: "Tailored nutrition solutions for your livestock",
-        iconName: "Settings",
-        displayOrder: 3
-      }
-    ];
+    this.productCategories.create({
+      name: "Farm Equipment",
+      description: "Tools and equipment for efficient farm operations",
+      imageUrl: "/images/farm-equipment.jpg",
+      featured: false,
+      sortOrder: 3
+    });
 
-    defaultServices.forEach(service => {
-      const id = this.currentServiceId++;
-      this.specialServices.set(id, { ...service, id });
+    this.productCategories.create({
+      name: "Seeds & Plants",
+      description: "High-quality seeds and plants for crops and gardens",
+      imageUrl: "/images/seeds.jpg",
+      featured: true,
+      sortOrder: 4
+    });
+
+    // Initialize special services
+    this.specialServices.create({
+      name: "Custom Feed Mixing",
+      description: "We'll create custom feed blends tailored to your livestock's specific nutritional needs",
+      icon: "mix",
+      featured: true,
+      sortOrder: 1
+    });
+
+    this.specialServices.create({
+      name: "Delivery Service",
+      description: "Free delivery on orders over $500 within 25 miles of our store",
+      icon: "truck",
+      featured: true,
+      sortOrder: 2
+    });
+
+    this.specialServices.create({
+      name: "Agricultural Consulting",
+      description: "Expert advice on feed programs, livestock management, and farm optimization",
+      icon: "consulting",
+      featured: true,
+      sortOrder: 3
+    });
+
+    // Initialize featured brands
+    this.featuredBrands.create({
+      name: "Purina",
+      description: "Trusted nutrition for livestock and pets",
+      logoUrl: "/images/purina-logo.jpg",
+      websiteUrl: "https://purina.com",
+      featured: true,
+      sortOrder: 1
+    });
+
+    this.featuredBrands.create({
+      name: "Blue Buffalo",
+      description: "Natural pet food made with real meat and wholesome ingredients",
+      logoUrl: "/images/blue-buffalo-logo.jpg",
+      websiteUrl: "https://bluebuffalo.com",
+      featured: true,
+      sortOrder: 2
+    });
+
+    this.featuredBrands.create({
+      name: "Tractor Supply Co.",
+      description: "Farm and ranch supplies for every need",
+      logoUrl: "/images/tsc-logo.jpg",
+      websiteUrl: "https://tractorsupply.com",
+      featured: false,
+      sortOrder: 3
     });
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    return undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    return undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
+    const id = Math.floor(Math.random() * 1000000);
     const user: User = { ...insertUser, id };
-    this.users.set(id, user);
     return user;
   }
 
@@ -205,69 +223,58 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateStoreSettings(settings: InsertStoreSettings): Promise<StoreSettings> {
-    this.storeSettings = { ...settings, id: 1, email: settings.email || undefined };
-    return this.storeSettings!;
+    this.storeSettings = { ...this.storeSettings, ...settings };
+    return this.storeSettings;
   }
 
   async getProductCategories(): Promise<ProductCategory[]> {
-    return Array.from(this.productCategories.values()).sort((a, b) => a.displayOrder - b.displayOrder);
+    return this.productCategories.getAll().sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
   async updateProductCategory(id: number, category: InsertProductCategory): Promise<ProductCategory> {
-    const updated: ProductCategory = { ...category, id };
-    this.productCategories.set(id, updated);
+    const updated = this.productCategories.update(id, category);
+    if (!updated) throw new Error("Category not found");
     return updated;
   }
 
   async createProductCategory(category: InsertProductCategory): Promise<ProductCategory> {
-    const id = this.currentCategoryId++;
-    const newCategory: ProductCategory = { ...category, id };
-    this.productCategories.set(id, newCategory);
-    return newCategory;
+    return this.productCategories.create(category);
   }
 
   async deleteProductCategory(id: number): Promise<boolean> {
     return this.productCategories.delete(id);
   }
 
-  // Special Services methods
   async getSpecialServices(): Promise<SpecialService[]> {
-    return Array.from(this.specialServices.values()).sort((a, b) => a.displayOrder - b.displayOrder);
+    return this.specialServices.getAll().sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
   async updateSpecialService(id: number, service: InsertSpecialService): Promise<SpecialService> {
-    const updated: SpecialService = { ...service, id };
-    this.specialServices.set(id, updated);
+    const updated = this.specialServices.update(id, service);
+    if (!updated) throw new Error("Service not found");
     return updated;
   }
 
   async createSpecialService(service: InsertSpecialService): Promise<SpecialService> {
-    const id = this.currentServiceId++;
-    const newService: SpecialService = { ...service, id };
-    this.specialServices.set(id, newService);
-    return newService;
+    return this.specialServices.create(service);
   }
 
   async deleteSpecialService(id: number): Promise<boolean> {
     return this.specialServices.delete(id);
   }
 
-  // Featured Brands methods
   async getFeaturedBrands(): Promise<FeaturedBrand[]> {
-    return Array.from(this.featuredBrands.values()).sort((a, b) => a.displayOrder - b.displayOrder);
+    return this.featuredBrands.getAll().sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
   async updateFeaturedBrand(id: number, brand: InsertFeaturedBrand): Promise<FeaturedBrand> {
-    const updated: FeaturedBrand = { ...brand, id };
-    this.featuredBrands.set(id, updated);
+    const updated = this.featuredBrands.update(id, brand);
+    if (!updated) throw new Error("Brand not found");
     return updated;
   }
 
   async createFeaturedBrand(brand: InsertFeaturedBrand): Promise<FeaturedBrand> {
-    const id = this.currentBrandId++;
-    const newBrand: FeaturedBrand = { ...brand, id };
-    this.featuredBrands.set(id, newBrand);
-    return newBrand;
+    return this.featuredBrands.create(brand);
   }
 
   async deleteFeaturedBrand(id: number): Promise<boolean> {
@@ -276,99 +283,3 @@ export class DatabaseStorage implements IStorage {
 }
 
 export const storage = new MemStorage();
-      .update(this.tables.storeSettings)
-      .set(settings)
-      .where(eq(this.tables.storeSettings.id, 1))
-      .returning();
-    return updated;
-  }
-
-  async getProductCategories(): Promise<ProductCategory[]> {
-    return await db.select().from(this.tables.productCategories).orderBy(this.tables.productCategories.displayOrder);
-  }
-
-  async updateProductCategory(id: number, category: InsertProductCategory): Promise<ProductCategory> {
-    const [updated] = await db
-      .update(this.tables.productCategories)
-      .set(category)
-      .where(eq(this.tables.productCategories.id, id))
-      .returning();
-    return updated;
-  }
-
-  async createProductCategory(category: InsertProductCategory): Promise<ProductCategory> {
-    const [created] = await db
-      .insert(this.tables.productCategories)
-      .values(category)
-      .returning();
-    return created;
-  }
-
-  async deleteProductCategory(id: number): Promise<boolean> {
-    const result = await db
-      .delete(this.tables.productCategories)
-      .where(eq(this.tables.productCategories.id, id));
-    return result.rowCount > 0;
-  }
-
-  async getSpecialServices(): Promise<SpecialService[]> {
-    return await db.select().from(this.tables.specialServices).orderBy(this.tables.specialServices.displayOrder);
-  }
-
-  async updateSpecialService(id: number, service: InsertSpecialService): Promise<SpecialService> {
-    const [updated] = await db
-      .update(this.tables.specialServices)
-      .set(service)
-      .where(eq(this.tables.specialServices.id, id))
-      .returning();
-    return updated;
-  }
-
-  async createSpecialService(service: InsertSpecialService): Promise<SpecialService> {
-    const [created] = await db
-      .insert(this.tables.specialServices)
-      .values(service)
-      .returning();
-    return created;
-  }
-
-  async deleteSpecialService(id: number): Promise<boolean> {
-    const result = await db
-      .delete(this.tables.specialServices)
-      .where(eq(this.tables.specialServices.id, id));
-    return result.rowCount > 0;
-  }
-
-  async getFeaturedBrands(): Promise<FeaturedBrand[]> {
-    return await db.select().from(this.tables.featuredBrands).orderBy(this.tables.featuredBrands.displayOrder);
-  }
-
-  async updateFeaturedBrand(id: number, brand: InsertFeaturedBrand): Promise<FeaturedBrand> {
-    const [updated] = await db
-      .update(this.tables.featuredBrands)
-      .set(brand)
-      .where(eq(this.tables.featuredBrands.id, id))
-      .returning();
-    return updated;
-  }
-
-  async createFeaturedBrand(brand: InsertFeaturedBrand): Promise<FeaturedBrand> {
-    const [created] = await db
-      .insert(this.tables.featuredBrands)
-      .values(brand)
-      .returning();
-    return created;
-  }
-
-  async deleteFeaturedBrand(id: number): Promise<boolean> {
-    const result = await db
-      .delete(this.tables.featuredBrands)
-      .where(eq(this.tables.featuredBrands.id, id));
-    return result.rowCount > 0;
-  }
-}
-
-// Use database storage with client name from environment or default
-export const storage = process.env.CLIENT_NAME 
-  ? new DatabaseStorage(process.env.CLIENT_NAME)
-  : new MemStorage();
