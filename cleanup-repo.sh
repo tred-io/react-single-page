@@ -1,0 +1,227 @@
+#!/bin/bash
+
+# Repository Cleanup Script
+# This script removes unused files and directories to reduce repository size
+# Run with: bash cleanup-repo.sh
+
+set -e  # Exit on any error
+
+echo "🧹 Starting repository cleanup..."
+echo "This will delete approximately 85 files and 9 directories"
+echo ""
+
+# Function to safely delete files/directories
+safe_delete() {
+    local path="$1"
+    local type="$2"
+    
+    if [ -e "$path" ]; then
+        if [ "$type" = "dir" ]; then
+            echo "Removing directory: $path"
+            rm -rf "$path"
+        else
+            echo "Removing file: $path"
+            rm -f "$path"
+        fi
+    else
+        echo "Skipping (not found): $path"
+    fi
+}
+
+echo "📄 Deleting documentation and deployment files..."
+
+# Documentation files (keep README.md)
+safe_delete "DEPLOYMENT_OPTIMIZATION.md" "file"
+safe_delete "DEPLOYMENT_SYSTEM_COMPLETE.md" "file"
+safe_delete "LIVE_DEPLOYMENT.md" "file"
+safe_delete "deploy-sp-upholstery.md" "file"
+
+# Shell scripts
+safe_delete "canary-demo.sh" "file"
+safe_delete "cleanup-github-repos.sh" "file"
+safe_delete "cleanup-vercel-projects.sh" "file"
+safe_delete "complete-deployment-demo.sh" "file"
+safe_delete "deploy-client-efficient.sh" "file"
+safe_delete "deploy-template.sh" "file"
+
+# Cleanup JavaScript files
+safe_delete "cleanup-github-api.cjs" "file"
+safe_delete "cleanup-vercel-api.cjs" "file"
+
+# JSON deployment/commit files
+safe_delete "all_deployments.json" "file"
+safe_delete "authentic_commit.json" "file"
+safe_delete "authentic_deployment.json" "file"
+safe_delete "build-static.ts" "file"
+safe_delete "build_corrected_commit.json" "file"
+safe_delete "build_corrected_deployment.json" "file"
+safe_delete "build_errors.json" "file"
+safe_delete "build_logs.json" "file"
+safe_delete "brown_feed_repo.json" "file"
+safe_delete "check_deployments.json" "file"
+safe_delete "clean_commit.json" "file"
+safe_delete "clean_deployment.json" "file"
+safe_delete "clean_final_deployment.json" "file"
+safe_delete "clean_frontend_commit.json" "file"
+safe_delete "clean_frontend_deployment.json" "file"
+safe_delete "clean_vite_deployment.json" "file"
+safe_delete "clients.json" "file"
+safe_delete "complete_commit.json" "file"
+safe_delete "complete_deployment.json" "file"
+safe_delete "complete_final_deployment.json" "file"
+safe_delete "corrected_commit.json" "file"
+safe_delete "corrected_deployment.json" "file"
+safe_delete "corrected_final_status.json" "file"
+safe_delete "corrected_runtime_deployment.json" "file"
+safe_delete "current_build_errors.json" "file"
+safe_delete "current_commit.json" "file"
+safe_delete "current_deployment.json" "file"
+safe_delete "current_deployment_status.json" "file"
+safe_delete "current_deployments.json" "file"
+safe_delete "current_error_status.json" "file"
+safe_delete "current_errors.json" "file"
+safe_delete "current_main.json" "file"
+safe_delete "current_status.json" "file"
+safe_delete "database_commit.json" "file"
+safe_delete "database_deployment.json" "file"
+safe_delete "deploy_commit.json" "file"
+safe_delete "deploy_hook.json" "file"
+safe_delete "deploy_result.json" "file"
+safe_delete "deployment_check.json" "file"
+safe_delete "deployment_payload.json" "file"
+safe_delete "deployment_payload_fixed.json" "file"
+safe_delete "deployment_result.json" "file"
+safe_delete "deployment_status.json" "file"
+safe_delete "deployment_status_final.json" "file"
+safe_delete "deployment_trigger.json" "file"
+safe_delete "deployments.json" "file"
+safe_delete "detailed_errors.json" "file"
+safe_delete "env_check.json" "file"
+safe_delete "error_check.json" "file"
+safe_delete "error_details.json" "file"
+safe_delete "error_final.json" "file"
+safe_delete "error_logs.json" "file"
+safe_delete "error_logs_final.json" "file"
+safe_delete "errors.json" "file"
+safe_delete "existing_repo.json" "file"
+safe_delete "final_authentic_status.json" "file"
+safe_delete "final_clean_deployment.json" "file"
+safe_delete "final_clean_errors.json" "file"
+safe_delete "final_clean_status.json" "file"
+safe_delete "final_commit.json" "file"
+safe_delete "final_corrected_deployment.json" "file"
+safe_delete "final_corrected_status.json" "file"
+safe_delete "final_database_status.json" "file"
+safe_delete "final_deploy.json" "file"
+safe_delete "final_deployment.json" "file"
+safe_delete "final_deployment_check.json" "file"
+safe_delete "final_deployment_errors.json" "file"
+safe_delete "final_deployment_status.json" "file"
+safe_delete "final_errors.json" "file"
+safe_delete "final_no_server_errors.json" "file"
+safe_delete "final_no_server_status.json" "file"
+safe_delete "final_public_deployment.json" "file"
+safe_delete "final_status.json" "file"
+safe_delete "final_status_check.json" "file"
+safe_delete "final_synced_errors.json" "file"
+safe_delete "final_synced_status.json" "file"
+safe_delete "final_typescript_status.json" "file"
+safe_delete "final_working_errors.json" "file"
+safe_delete "final_working_status.json" "file"
+safe_delete "fixed_commit.json" "file"
+safe_delete "fixed_deployment.json" "file"
+safe_delete "frontend_commit.json" "file"
+safe_delete "frontend_deployment.json" "file"
+safe_delete "frontend_only_deployment.json" "file"
+safe_delete "hook_creation.json" "file"
+safe_delete "initial_deployment.json" "file"
+safe_delete "latest_commit.json" "file"
+safe_delete "latest_deploy.json" "file"
+safe_delete "latest_deployment.json" "file"
+safe_delete "latest_deployments.json" "file"
+safe_delete "latest_status.json" "file"
+safe_delete "link_response.json" "file"
+safe_delete "manual_deployment.json" "file"
+safe_delete "minimal_commit.json" "file"
+safe_delete "minimal_deployment.json" "file"
+safe_delete "minimal_status.json" "file"
+safe_delete "new_deployment.json" "file"
+safe_delete "new_project.json" "file"
+safe_delete "no_server_commit.json" "file"
+safe_delete "no_server_deployment.json" "file"
+safe_delete "synced_commit.json" "file"
+safe_delete "typescript_commit.json" "file"
+safe_delete "working_commit.json" "file"
+
+echo ""
+echo "📁 Deleting duplicate deployment directories..."
+
+# Deployment directories
+safe_delete "backend_api" "dir"
+safe_delete "clean_deployment" "dir"
+safe_delete "complete_brown_feed" "dir"
+safe_delete "corrected_vercel_deploy" "dir"
+safe_delete "deploy_ready" "dir"
+safe_delete "deployments" "dir"
+safe_delete "frontend_client" "dir"
+safe_delete "morning_restore" "dir"
+safe_delete "no_server_deploy" "dir"
+
+echo ""
+echo "🗄️ Deleting unused server files..."
+
+# Server files
+safe_delete "server/database-storage-fixed.ts" "file"
+safe_delete "server/database-storage.ts" "file"
+safe_delete "server/migrate.ts" "file"
+safe_delete "server/storage-corrupted.ts" "file"
+safe_delete "server/init-brown-feed.ts" "file"
+
+echo ""
+echo "📱 Deleting unused client pages..."
+
+# Client pages
+safe_delete "client/src/pages/Admin.tsx" "file"
+safe_delete "client/src/pages/AdminFixed.tsx" "file"
+safe_delete "client/src/pages/AdminSimple.tsx" "file"
+safe_delete "client/src/pages/AdminWorking.tsx" "file"
+
+echo ""
+echo "🔌 Deleting duplicate API files..."
+
+# Duplicate API files (.mjs versions)
+safe_delete "api/featured-brands.mjs" "file"
+safe_delete "api/product-categories.mjs" "file"
+safe_delete "api/special-services.mjs" "file"
+safe_delete "api/store-settings.mjs" "file"
+safe_delete "api/test.ts" "file"
+
+echo ""
+echo "🛠️ Deleting development artifacts..."
+
+# Development files
+safe_delete "test-schema.js" "file"
+safe_delete "attached_assets" "dir"
+safe_delete "generated-icon.png" "file"
+safe_delete "github_workflow.yml" "file"
+safe_delete "server-dev.js" "file"
+
+echo ""
+echo "✅ Repository cleanup completed!"
+echo ""
+echo "📊 Summary:"
+echo "- Removed deployment and documentation files"
+echo "- Deleted duplicate deployment directories"
+echo "- Cleaned up unused server files"
+echo "- Removed obsolete client pages"
+echo "- Deleted duplicate API files"
+echo "- Cleared development artifacts"
+echo ""
+echo "🔒 Preserved files:"
+echo "- All active API endpoints (.js versions)"
+echo "- Current server implementation"
+echo "- All UI components and working pages"
+echo "- Configuration files (package.json, vite.config.ts, etc.)"
+echo "- README.md and essential documentation"
+echo ""
+echo "Repository is now clean and optimized! 🎉"
