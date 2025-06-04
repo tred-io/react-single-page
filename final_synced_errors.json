@@ -1,0 +1,21 @@
+[
+{"type":"stdout","created":1748988484955,"payload":{"deploymentId":"dpl_D3GnnK9rGs3dT62euxCDoHKVgcrw","info":{"type":"build","name":"bld_esvin9cx3","entrypoint":"."},"text":"Running build in Washington, D.C., USA (East) – iad1","id":"1748988484955115652755300000","date":1748988484955,"serial":"1748988484955115652755300000"}}
+,
+{"type":"stdout","created":1748988484955,"payload":{"deploymentId":"dpl_D3GnnK9rGs3dT62euxCDoHKVgcrw","info":{"type":"build","name":"bld_esvin9cx3","entrypoint":"."},"text":"Build machine configuration: 4 cores, 8 GB","id":"1748988484955115652755300001","date":1748988484955,"serial":"1748988484955115652755300001"}}
+,
+{"type":"stdout","created":1748988484971,"payload":{"deploymentId":"dpl_D3GnnK9rGs3dT62euxCDoHKVgcrw","info":{"type":"build","name":"bld_esvin9cx3","entrypoint":"."},"text":"Cloning github.com/tred-io/brown-feed-store-website (Branch: main, Commit: 9f96b94)","id":"1748988484971115652755300002","date":1748988484971,"serial":"1748988484971115652755300002"}}
+,
+{"type":"stdout","created":1748988485233,"payload":{"deploymentId":"dpl_D3GnnK9rGs3dT62euxCDoHKVgcrw","info":{"type":"build","name":"bld_esvin9cx3","entrypoint":"."},"text":"Cloning completed: 262.000ms","id":"1748988485233115652755300000","date":1748988485233,"serial":"1748988485233115652755300000"}}
+,
+{"type":"stdout","created":1748988485502,"payload":{"deploymentId":"dpl_D3GnnK9rGs3dT62euxCDoHKVgcrw","info":{"type":"build","name":"bld_esvin9cx3","entrypoint":"."},"text":"Restored build cache from previous deployment (5jiNvRd5ExJaKS9M8VrsaZdk7ki3)","id":"1748988485502115652755300000","date":1748988485502,"serial":"1748988485502115652755300000"}}
+,
+{"type":"stdout","created":1748988485833,"payload":{"deploymentId":"dpl_D3GnnK9rGs3dT62euxCDoHKVgcrw","info":{"type":"build","name":"bld_esvin9cx3","entrypoint":"."},"text":"Running \"vercel build\"","id":"1748988485833276448413500000","date":1748988485833,"serial":"1748988485833276448413500000"}}
+,
+{"type":"stderr","created":1748988486272,"payload":{"deploymentId":"dpl_D3GnnK9rGs3dT62euxCDoHKVgcrw","info":{"type":"build","name":"bld_esvin9cx3","entrypoint":"."},"text":"Vercel CLI 42.2.0","id":"1748988486272276448413500000","date":1748988486272,"serial":"1748988486272276448413500000"}}
+,
+{"type":"stderr","created":1748988486402,"payload":{"deploymentId":"dpl_D3GnnK9rGs3dT62euxCDoHKVgcrw","info":{"type":"build","name":"bld_esvin9cx3","entrypoint":"."},"text":"Error: Function Runtimes must have a valid version, for example `now-php@1.0.0`.","id":"1748988486402276448413500000","date":1748988486402,"serial":"1748988486402276448413500000"}}
+,
+{"type":"stdout","created":1748988486541,"payload":{"deploymentId":"dpl_D3GnnK9rGs3dT62euxCDoHKVgcrw","info":{"type":"build","name":"bld_esvin9cx3","entrypoint":"."},"text":"","id":"1748988486541276448413500000","date":1748988486541,"serial":"1748988486541276448413500000"}}
+,
+{"type":"stdout","created":1748988489088,"payload":{"deploymentId":"dpl_D3GnnK9rGs3dT62euxCDoHKVgcrw","info":{"type":"build","name":"bld_esvin9cx3","entrypoint":"."},"text":"Exiting build container","id":"1748988489088115652755300000","date":1748988489088,"serial":"1748988489088115652755300000"}}
+]
