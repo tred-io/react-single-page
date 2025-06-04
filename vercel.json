@@ -2,11 +2,15 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "functions": {
-    "api/*.mjs": {
-      "runtime": "@vercel/node"
+    "api/index.ts": {
+      "runtime": "@vercel/node@3.0.0"
     }
   },
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.ts"
+    },
     {
       "source": "/admin",
       "destination": "/index.html"
