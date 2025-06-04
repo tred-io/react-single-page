@@ -1,24 +1,7 @@
 import OpenAI from "openai";
+import type { ThemeOption, ThemeGenerationResult } from "@shared/schema";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-export interface ThemeOption {
-  id: string;
-  name: string;
-  description: string;
-  primaryColor: string;
-  secondaryColor: string;
-  accentColor: string;
-  fontFamily: string;
-  style: 'modern' | 'rustic' | 'professional' | 'elegant' | 'bold' | 'minimal';
-  mood: string;
-  reasoning: string;
-}
-
-export interface ThemeGenerationResult {
-  businessAnalysis: string;
-  themes: ThemeOption[];
-}
 
 export async function generateThemes(businessDescription: string): Promise<ThemeGenerationResult> {
   try {

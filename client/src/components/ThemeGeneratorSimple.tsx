@@ -11,29 +11,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Palette, Sparkles } from "lucide-react";
 import ThemePreviewSimulator from "./ThemePreviewSimulator";
 import StockPhotoSelector from "./StockPhotoSelector";
-import type { StoreSettings } from "@shared/schema";
+import type { StoreSettings, ThemeOption, ThemeGenerationResult } from "@shared/schema";
 
 const businessDescriptionSchema = z.object({
   description: z.string().min(10, "Please provide at least 10 characters describing your business")
 });
-
-interface ThemeOption {
-  id: string;
-  name: string;
-  description: string;
-  primaryColor: string;
-  secondaryColor: string;
-  accentColor: string;
-  fontFamily: string;
-  style: string;
-  mood: string;
-  reasoning: string;
-}
-
-interface ThemeGenerationResult {
-  businessAnalysis: string;
-  themes: ThemeOption[];
-}
 
 export default function ThemeGenerator() {
   const [generatedThemes, setGeneratedThemes] = useState<ThemeGenerationResult | null>(null);

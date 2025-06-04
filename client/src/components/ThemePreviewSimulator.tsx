@@ -4,19 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Phone, MapPin, Clock, Mail, Tractor, Star, Package, Users, Truck, ArrowRight } from "lucide-react";
-
-interface ThemeOption {
-  id: string;
-  name: string;
-  description: string;
-  primaryColor: string;
-  secondaryColor: string;
-  accentColor: string;
-  fontFamily: string;
-  style: string;
-  mood: string;
-  reasoning: string;
-}
+import type { ThemeOption } from "@shared/schema";
 
 interface ThemePreviewSimulatorProps {
   theme: ThemeOption;
