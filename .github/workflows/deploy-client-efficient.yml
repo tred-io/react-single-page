@@ -11,10 +11,7 @@ on:
         description: 'Client domain (e.g., brownfeedstore.com)'
         required: true
         type: string
-      github_org:
-        description: 'GitHub organization/username'
-        required: true
-        type: string
+
       database_provider:
         description: 'Database provider'
         required: true
@@ -64,13 +61,13 @@ jobs:
           cd deployments/${{ inputs.client_name }}
           
           # Create repository with minimal files
-          gh repo create ${{ inputs.github_org }}/${{ inputs.client_name }}-website \
+          gh repo create tred-io/${{ inputs.client_name }}-website \
             --public \
             --description "Website configuration for ${{ inputs.client_name }}" \
             --clone=false
           
           # Push only client-specific files
-          git remote add origin https://github.com/${{ inputs.github_org }}/${{ inputs.client_name }}-website.git
+          git remote add origin https://github.com/tred-io/${{ inputs.client_name }}-website.git
           git push -u origin main
 
       - name: Deploy to Vercel
