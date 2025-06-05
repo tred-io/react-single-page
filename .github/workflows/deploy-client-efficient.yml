@@ -86,8 +86,8 @@ jobs:
             --description "Website configuration for ${{ inputs.client_name }}" \
             --clone=false
           
-          # Push only client-specific files
-          git remote add origin https://github.com/tred-io/${{ inputs.client_name }}-website.git
+          # Push only client-specific files with token authentication
+          git remote add origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/tred-io/${{ inputs.client_name }}-website.git
           git push -u origin main
 
       - name: Deploy to Vercel
