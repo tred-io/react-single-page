@@ -265,14 +265,18 @@ jobs:
           fi
           
           # Create client-specific configuration (5KB instead of 200MB)
-          cat > "$CLIENT_DIR/client-config.json" << EOF
+          cat > "$CLIENT_DIR/client-config.json" << 'CONFIGEOF'
 {
   "clientName": "${{ inputs.client_name }}",
   "domain": "${{ inputs.domain }}",
-  "deployedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "deployedAt": "TIMESTAMP_PLACEHOLDER",
   "templateVersion": "1.0.0"
 }
-EOF
+CONFIGEOF
+          
+          # Replace timestamp placeholder
+          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          sed -i "s/TIMESTAMP_PLACEHOLDER/$TIMESTAMP/" "$CLIENT_DIR/client-config.json"
           
           # Create efficient Vercel configuration that points to template root
           cat > "$CLIENT_DIR/vercel.json" << 'EOF'
