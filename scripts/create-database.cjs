@@ -14,7 +14,54 @@ class DatabaseManager {
     this.credentials = credentials;
   }
 
+  async checkNeonProjectExists(projectName) {
+    const options = {
+      hostname: 'console.neon.tech',
+      port: 443,
+      path: '/api/v2/projects',
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${this.credentials.apiKey}`,
+        'Content-Type': 'application/json'
+      }
+    };
+
+    return new Promise((resolve, reject) => {
+      const req = https.request(options, (res) => {
+        let body = '';
+        res.on('data', chunk => body += chunk);
+        res.on('end', () => {
+          try {
+            if (res.statusCode >= 200 && res.statusCode < 300) {
+              const response = JSON.parse(body);
+              const existingProject = response.projects?.find(p => p.name === projectName);
+              resolve(existingProject || null);
+            } else {
+              reject(new Error(`HTTP ${res.statusCode}: ${body}`));
+            }
+          } catch (error) {
+            reject(new Error(`Parse error: ${error.message}`));
+          }
+        });
+      });
+      req.on('error', reject);
+      req.end();
+    });
+  }
+
   async createNeonDatabase(projectName) {
+    // Check if project already exists
+    const existingProject = await this.checkNeonProjectExists(projectName);
+    if (existingProject) {
+      console.log(`Database project "${projectName}" already exists`);
+      console.log('Using existing project for deployment');
+      return {
+        projectId: existingProject.id,
+        connectionString: existingProject.connection_uris?.[0]?.connection_uri
+      };
+    }
+
+    console.log(`Creating new database project: ${projectName}`);
     const data = JSON.stringify({
       project: {
         name: projectName,
