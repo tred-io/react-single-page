@@ -80,13 +80,23 @@ jobs:
         run: |
           cd deployments/${{ inputs.client_name }}
           
-          # Create repository with minimal files
-          gh repo create tred-io/${{ inputs.client_name }}-website \
-            --public \
-            --description "Website configuration for ${{ inputs.client_name }}" \
-            --clone=false
+          # Check if repository already exists
+          if gh repo view tred-io/${{ inputs.client_name }}-website >/dev/null 2>&1; then
+            echo "Repository tred-io/${{ inputs.client_name }}-website already exists"
+            echo "Using existing repository for deployment"
+          else
+            echo "Creating new repository tred-io/${{ inputs.client_name }}-website"
+            gh repo create tred-io/${{ inputs.client_name }}-website \
+              --public \
+              --description "Website configuration for ${{ inputs.client_name }}" \
+              --clone=false
+          fi
           
           # Push only client-specific files with token authentication
+          if git remote get-url origin >/dev/null 2>&1; then
+            echo "Remote origin already exists, removing and re-adding"
+            git remote remove origin
+          fi
           git remote add origin https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/tred-io/${{ inputs.client_name }}-website.git
           git push -u origin main
 
