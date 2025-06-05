@@ -53,7 +53,7 @@ jobs:
           NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
         run: |
           cd deployments/${{ inputs.client_name }}
-          DATABASE_RESULT=$(node ../../scripts/create-database.js ${{ inputs.database_provider }} ${{ inputs.client_name }}-website)
+          DATABASE_RESULT=$(node ../../scripts/create-database.cjs ${{ inputs.database_provider }} ${{ inputs.client_name }}-website)
           echo "$DATABASE_RESULT"
           
           # Extract DATABASE_URL from the script output
