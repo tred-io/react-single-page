@@ -52,7 +52,7 @@ jobs:
           echo "$DATABASE_RESULT"
           
           # Extract DATABASE_URL from the script output
-          DATABASE_URL=$(echo "$DATABASE_RESULT" | grep "Connection String:" | cut -d':' -f2- | xargs)
+          DATABASE_URL=$(echo "$DATABASE_RESULT" | grep "Connection String:" | sed 's/Connection String: //' | xargs)
           
           # Update client config with database URL
           if [ -n "$DATABASE_URL" ]; then
