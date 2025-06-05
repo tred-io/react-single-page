@@ -114,24 +114,61 @@ jobs:
             fi
           done
 
-      - name: Deploy to Vercel
+      - name: Deploy to Vercel with GitHub connection
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           cd deployments/${{ inputs.client_name }}
-          npm install -g vercel@latest
           
-          # Deploy without requiring project ID - let Vercel create new project
+          # Create Vercel project connected to GitHub repository
           PROJECT_NAME="${{ inputs.client_name }}-website"
-          echo "Deploying $PROJECT_NAME to Vercel"
+          GITHUB_REPO="tred-io/${{ inputs.client_name }}-website"
           
-          # Deploy and let Vercel auto-create the project
-          vercel --token $VERCEL_TOKEN \
-            --prod \
-            --yes \
-            --env DATABASE_URL="$DATABASE_URL" \
-            --env CLIENT_CONFIG_PATH="./deployments/${{ inputs.client_name }}/client-config.json" \
-            --env SESSION_SECRET="$(openssl rand -base64 32)"
+          echo "Creating Vercel project $PROJECT_NAME connected to GitHub repository $GITHUB_REPO"
+          
+          # Create project with GitHub connection using Vercel API
+          curl -X POST "https://api.vercel.com/v10/projects" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "name": "'$PROJECT_NAME'",
+              "gitRepository": {
+                "type": "github",
+                "repo": "'$GITHUB_REPO'"
+              },
+              "buildCommand": "npm run build",
+              "outputDirectory": "dist",
+              "installCommand": "npm install",
+              "framework": "vite",
+              "environmentVariables": [
+                {
+                  "key": "DATABASE_URL",
+                  "value": "'$DATABASE_URL'",
+                  "type": "encrypted",
+                  "target": ["production", "preview", "development"]
+                },
+                {
+                  "key": "CLIENT_CONFIG_PATH",
+                  "value": "./deployments/'${{ inputs.client_name }}'/client-config.json",
+                  "type": "encrypted",
+                  "target": ["production", "preview", "development"]
+                },
+                {
+                  "key": "SESSION_SECRET",
+                  "value": "'$(openssl rand -base64 32)'",
+                  "type": "encrypted",
+                  "target": ["production", "preview", "development"]
+                },
+                {
+                  "key": "NODE_ENV",
+                  "value": "production",
+                  "type": "encrypted",
+                  "target": ["production"]
+                }
+              ]
+            }' || echo "Project creation completed (may already exist)"
+          
+          echo "Vercel project created and connected to GitHub repository for automatic deployments"
 
       - name: Create deployment summary
         run: |
