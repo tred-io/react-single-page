@@ -117,26 +117,18 @@ jobs:
       - name: Deploy to Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         run: |
           cd deployments/${{ inputs.client_name }}
           npm install -g vercel@latest
           
-          # Check if Vercel project already exists
+          # Deploy without requiring project ID - let Vercel create new project
           PROJECT_NAME="${{ inputs.client_name }}-website"
-          if vercel ls --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID | grep -q "$PROJECT_NAME"; then
-            echo "Vercel project $PROJECT_NAME already exists"
-            echo "Deploying to existing project"
-          else
-            echo "Creating new Vercel project: $PROJECT_NAME"
-          fi
+          echo "Deploying $PROJECT_NAME to Vercel"
           
-          # Deploy with reference to template
+          # Deploy and let Vercel auto-create the project
           vercel --token $VERCEL_TOKEN \
-            --scope $VERCEL_ORG_ID \
             --prod \
             --yes \
-            --name "$PROJECT_NAME" \
             --env DATABASE_URL="$DATABASE_URL" \
             --env CLIENT_CONFIG_PATH="./deployments/${{ inputs.client_name }}/client-config.json" \
             --env SESSION_SECRET="$(openssl rand -base64 32)"
