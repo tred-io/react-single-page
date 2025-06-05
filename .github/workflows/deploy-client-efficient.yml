@@ -39,31 +39,21 @@ jobs:
           chmod +x deploy-client-efficient.sh
           ./deploy-client-efficient.sh ${{ inputs.client_name }} ${{ inputs.domain }}
 
-      - name: Setup database
+      - name: Setup shared database configuration
         env:
-          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_ORG_ID: ${{ secrets.SUPABASE_ORG_ID }}
-          PLANETSCALE_SERVICE_TOKEN: ${{ secrets.PLANETSCALE_SERVICE_TOKEN }}
-          PLANETSCALE_SERVICE_TOKEN_ID: ${{ secrets.PLANETSCALE_SERVICE_TOKEN_ID }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           cd deployments/${{ inputs.client_name }}
-          DATABASE_RESULT=$(node ../../scripts/create-database.js ${{ inputs.database_provider }} ${{ inputs.client_name }}-website)
-          echo "$DATABASE_RESULT"
           
-          # Extract DATABASE_URL from the script output
-          DATABASE_URL=$(echo "$DATABASE_RESULT" | grep "Connection String:" | sed 's/Connection String: //' | xargs)
+          # Configure client to use shared database
+          echo "DATABASE_URL=$DATABASE_URL" > .env
+          echo "CLIENT_CONFIG_PATH=./client-config.json" >> .env
+          echo "TEMPLATE_PATH=../../.." >> .env
+          echo "SESSION_SECRET=$(openssl rand -base64 32)" >> .env
+          echo "NODE_ENV=production" >> .env
+          echo "CLIENT_NAME=${{ inputs.client_name }}" >> .env
           
-          # Update client config with database URL
-          if [ -n "$DATABASE_URL" ]; then
-            echo "DATABASE_URL=$DATABASE_URL" > .env
-            echo "CLIENT_CONFIG_PATH=./client-config.json" >> .env
-            echo "TEMPLATE_PATH=../../.." >> .env
-            echo "SESSION_SECRET=$(openssl rand -base64 32)" >> .env
-            echo "Database configured: $DATABASE_URL"
-          else
-            echo "Warning: DATABASE_URL not found in output"
-          fi
+          echo "Configured client to use shared database"
 
       - name: Create optimized GitHub repository
         env:
