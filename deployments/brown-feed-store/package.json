@@ -1,0 +1,17 @@
+{
+  "name": "brown-feed-store-website",
+  "version": "1.0.0",
+  "description": "Website for brown-feed-store",
+  "main": "api/index.ts",
+  "scripts": {
+    "build": "echo 'Using template build system'",
+    "start": "node api/index.ts",
+    "dev": "echo 'Development mode not available for client deployments'"
+  },
+  "dependencies": {
+    "@vercel/node": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

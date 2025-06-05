@@ -100,6 +100,9 @@ cat > "$CLIENT_DIR/package.json" << EOF
 }
 EOF
 
+# Create directory for API first
+mkdir -p "$CLIENT_DIR/api"
+
 # Create minimal API entry point that references the template
 cat > "$CLIENT_DIR/api/index.ts" << EOF
 // Client API Entry Point
@@ -114,14 +117,6 @@ process.env.CLIENT_NAME = '$CLIENT_NAME';
 // Import and export the main template handler
 export { default } from '../../../api/index';
 EOF
-
-# Create directory for API
-mkdir -p "$CLIENT_DIR/api"
-
-# Move the API file to correct location
-mv "$CLIENT_DIR/api/index.ts" "$CLIENT_DIR/api/index.ts.tmp"
-mkdir -p "$CLIENT_DIR/api"
-mv "$CLIENT_DIR/api/index.ts.tmp" "$CLIENT_DIR/api/index.ts"
 
 # Create README for client deployment
 cat > "$CLIENT_DIR/README.md" << EOF
