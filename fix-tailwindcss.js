@@ -9,7 +9,6 @@ async function updateGitHubPackageJson() {
   const path = 'package.json';
 
   try {
-    // Get current package.json
     const getOptions = {
       hostname: 'api.github.com',
       path: `/repos/${owner}/${repo}/contents/${path}`,
@@ -24,18 +23,13 @@ async function updateGitHubPackageJson() {
     const currentFile = await makeRequest(getOptions);
     const content = Buffer.from(currentFile.content, 'base64').toString();
     
-    // Add tailwindcss and postcss to dependencies, remove autoprefixer duplicate
     const packageObj = JSON.parse(content);
-    packageObj.dependencies = packageObj.dependencies || {};
-    packageObj.dependencies.tailwindcss = "^3.4.17";
-    packageObj.dependencies.postcss = "^8.4.47";
     
-    // Remove autoprefixer from dependencies (keep it in devDependencies)
-    delete packageObj.dependencies.autoprefixer;
+    // Add @tailwindcss/typography to dependencies since it's used in tailwind.config.ts
+    packageObj.dependencies['@tailwindcss/typography'] = '^0.5.15';
     
     const fixedContent = JSON.stringify(packageObj, null, 2);
 
-    // Update the file
     const updateOptions = {
       hostname: 'api.github.com',
       path: `/repos/${owner}/${repo}/contents/${path}`,
@@ -49,13 +43,13 @@ async function updateGitHubPackageJson() {
     };
 
     const updateData = {
-      message: 'Fix: Add tailwindcss and postcss dependencies for build',
+      message: 'Fix: Add @tailwindcss/typography to dependencies',
       content: Buffer.from(fixedContent).toString('base64'),
       sha: currentFile.sha
     };
 
     const result = await makeRequest(updateOptions, JSON.stringify(updateData));
-    console.log('Successfully added tailwindcss and postcss to package.json on GitHub');
+    console.log('Successfully added @tailwindcss/typography to dependencies');
     console.log('New commit SHA:', result.commit.sha);
     
   } catch (error) {
