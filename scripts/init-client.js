@@ -4,6 +4,7 @@ import { execSync } from 'child_process';
 import { createRequire } from 'module';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { initializeClientSchema, initializeClientData } from '../server/init-client-schema.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
