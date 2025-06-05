@@ -29,6 +29,11 @@ jobs:
       - name: Checkout template repository
         uses: actions/checkout@v4
 
+      - name: Configure Git identity
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
       - name: Create efficient client deployment
         run: |
           chmod +x deploy-client-efficient.sh
@@ -43,7 +48,11 @@ jobs:
           PLANETSCALE_SERVICE_TOKEN_ID: ${{ secrets.PLANETSCALE_SERVICE_TOKEN_ID }}
         run: |
           cd deployments/${{ inputs.client_name }}
-          node ../../scripts/create-database.js ${{ inputs.database_provider }} ${{ inputs.client_name }}-website
+          DATABASE_RESULT=$(node ../../scripts/create-database.js ${{ inputs.database_provider }} ${{ inputs.client_name }}-website)
+          echo "$DATABASE_RESULT"
+          
+          # Extract DATABASE_URL from the script output
+          DATABASE_URL=$(echo "$DATABASE_RESULT" | grep "Connection String:" | cut -d':' -f2- | xargs)
           
           # Update client config with database URL
           if [ -n "$DATABASE_URL" ]; then
@@ -51,6 +60,9 @@ jobs:
             echo "CLIENT_CONFIG_PATH=./client-config.json" >> .env
             echo "TEMPLATE_PATH=../../.." >> .env
             echo "SESSION_SECRET=$(openssl rand -base64 32)" >> .env
+            echo "Database configured: $DATABASE_URL"
+          else
+            echo "Warning: DATABASE_URL not found in output"
           fi
 
       - name: Create optimized GitHub repository
