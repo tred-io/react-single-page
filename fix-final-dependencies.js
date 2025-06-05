@@ -24,8 +24,39 @@ async function updateGitHubPackageJson() {
     const content = Buffer.from(currentFile.content, 'base64').toString();
     
     const packageObj = JSON.parse(content);
-    packageObj.dependencies = packageObj.dependencies || {};
-    packageObj.dependencies.autoprefixer = "^10.4.20";
+    
+    // Packages that must be in dependencies for Vercel builds
+    const buildTimeDeps = [
+      'vite',
+      'esbuild', 
+      'tsx',
+      'typescript',
+      'autoprefixer',
+      'postcss',
+      'tailwindcss',
+      '@tailwindcss/typography',
+      '@tailwindcss/vite',
+      'tailwindcss-animate'
+    ];
+    
+    // Move build-time dependencies from devDependencies to dependencies
+    buildTimeDeps.forEach(dep => {
+      if (packageObj.devDependencies && packageObj.devDependencies[dep]) {
+        packageObj.dependencies[dep] = packageObj.devDependencies[dep];
+        delete packageObj.devDependencies[dep];
+      }
+    });
+    
+    // Add missing dependencies that are required but not present
+    const requiredDeps = {
+      'tailwindcss-animate': '^1.0.7'
+    };
+    
+    Object.entries(requiredDeps).forEach(([dep, version]) => {
+      if (!packageObj.dependencies[dep]) {
+        packageObj.dependencies[dep] = version;
+      }
+    });
     
     const fixedContent = JSON.stringify(packageObj, null, 2);
 
@@ -42,13 +73,13 @@ async function updateGitHubPackageJson() {
     };
 
     const updateData = {
-      message: 'Fix: Add autoprefixer back to dependencies for PostCSS build',
+      message: 'Fix: Move all build-time dependencies to dependencies for Vercel',
       content: Buffer.from(fixedContent).toString('base64'),
       sha: currentFile.sha
     };
 
     const result = await makeRequest(updateOptions, JSON.stringify(updateData));
-    console.log('Successfully added autoprefixer to dependencies');
+    console.log('Successfully organized all build dependencies for Vercel');
     console.log('New commit SHA:', result.commit.sha);
     
   } catch (error) {
