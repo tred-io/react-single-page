@@ -39,21 +39,30 @@ jobs:
           chmod +x deploy-client-efficient.sh
           ./deploy-client-efficient.sh ${{ inputs.client_name }} ${{ inputs.domain }}
 
-      - name: Setup shared database configuration
+      - name: Setup individual client database
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
         run: |
           cd deployments/${{ inputs.client_name }}
+          DATABASE_RESULT=$(node ../../scripts/create-database.js ${{ inputs.database_provider }} ${{ inputs.client_name }}-website)
+          echo "$DATABASE_RESULT"
           
-          # Configure client to use shared database
-          echo "DATABASE_URL=$DATABASE_URL" > .env
-          echo "CLIENT_CONFIG_PATH=./client-config.json" >> .env
-          echo "TEMPLATE_PATH=../../.." >> .env
-          echo "SESSION_SECRET=$(openssl rand -base64 32)" >> .env
-          echo "NODE_ENV=production" >> .env
-          echo "CLIENT_NAME=${{ inputs.client_name }}" >> .env
+          # Extract DATABASE_URL from the script output
+          DATABASE_URL=$(echo "$DATABASE_RESULT" | grep "Connection String:" | sed 's/Connection String: //' | xargs)
           
-          echo "Configured client to use shared database"
+          # Update client config with database URL
+          if [ -n "$DATABASE_URL" ]; then
+            echo "DATABASE_URL=$DATABASE_URL" > .env
+            echo "CLIENT_CONFIG_PATH=./client-config.json" >> .env
+            echo "TEMPLATE_PATH=../../.." >> .env
+            echo "SESSION_SECRET=$(openssl rand -base64 32)" >> .env
+            echo "NODE_ENV=production" >> .env
+            echo "CLIENT_NAME=${{ inputs.client_name }}" >> .env
+            echo "Database configured: $DATABASE_URL"
+          else
+            echo "Error: Failed to extract DATABASE_URL from output"
+            exit 1
+          fi
 
       - name: Create optimized GitHub repository
         env:
