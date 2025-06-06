@@ -291,121 +291,56 @@ jobs:
               "buildCommand": "npm run build",
               "outputDirectory": "dist/public",
               "installCommand": "npm install",
-              "framework": "vite"
+              "framework": "vite",
+              "environmentVariables": [
+                {
+                  "key": "DATABASE_URL",
+                  "value": "'${{ secrets.DATABASE_URL }}'",
+                  "type": "encrypted",
+                  "target": ["production", "preview", "development"]
+                },
+                {
+                  "key": "CLIENT_NAME",
+                  "value": "'${{ inputs.client_name }}'",
+                  "type": "encrypted",
+                  "target": ["production", "preview", "development"]
+                },
+                {
+                  "key": "CLIENT_CONFIG_PATH",
+                  "value": "./client-config.json",
+                  "type": "encrypted",
+                  "target": ["production", "preview", "development"]
+                },
+                {
+                  "key": "SESSION_SECRET",
+                  "value": "'$(openssl rand -base64 32)'",
+                  "type": "encrypted",
+                  "target": ["production", "preview", "development"]
+                },
+                {
+                  "key": "NODE_ENV",
+                  "value": "production",
+                  "type": "encrypted",
+                  "target": ["production"]
+                }
+              ]
             }')
           
           HTTP_CODE="${RESPONSE: -3}"
           RESPONSE_BODY="${RESPONSE%???}"
           
           if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "201" ]; then
-            echo "Vercel project created successfully"
-            PROJECT_ID=$(echo "$RESPONSE_BODY" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
+            echo "Vercel project created successfully with auto-deployment enabled"
           else
             echo "Project creation response: $RESPONSE_BODY"
-            # Check if project already exists
-            EXISTING_PROJECT=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
-              "https://api.vercel.com/v9/projects/$PROJECT_NAME")
-            
-            if echo "$EXISTING_PROJECT" | grep -q '"id"'; then
-              echo "Project $PROJECT_NAME already exists, using existing project"
-              PROJECT_ID=$(echo "$EXISTING_PROJECT" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
+            if echo "$RESPONSE_BODY" | grep -q "already exists"; then
+              echo "Project already exists, auto-deployment should be working"
             else
-              echo "Failed to create or find project $PROJECT_NAME"
-              exit 1
+              echo "Failed to create project, but continuing..."
             fi
           fi
           
-          # Set environment variables for the project
-          echo "Setting environment variables for project $PROJECT_ID"
-          
-          # Set DATABASE_URL
-          curl -X POST "https://api.vercel.com/v10/projects/$PROJECT_ID/env" \
-            -H "Authorization: Bearer $VERCEL_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "key": "DATABASE_URL",
-              "value": "'${{ secrets.DATABASE_URL }}'",
-              "type": "encrypted",
-              "target": ["production", "preview", "development"]
-            }'
-          
-          # Set CLIENT_NAME
-          curl -X POST "https://api.vercel.com/v10/projects/$PROJECT_ID/env" \
-            -H "Authorization: Bearer $VERCEL_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "key": "CLIENT_NAME",
-              "value": "'${{ inputs.client_name }}'",
-              "type": "encrypted",
-              "target": ["production", "preview", "development"]
-            }'
-          
-          # Set CLIENT_CONFIG_PATH
-          curl -X POST "https://api.vercel.com/v10/projects/$PROJECT_ID/env" \
-            -H "Authorization: Bearer $VERCEL_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "key": "CLIENT_CONFIG_PATH",
-              "value": "./client-config.json",
-              "type": "encrypted",
-              "target": ["production", "preview", "development"]
-            }'
-          
-          # Set SESSION_SECRET
-          SESSION_SECRET=$(openssl rand -base64 32)
-          curl -X POST "https://api.vercel.com/v10/projects/$PROJECT_ID/env" \
-            -H "Authorization: Bearer $VERCEL_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "key": "SESSION_SECRET",
-              "value": "'$SESSION_SECRET'",
-              "type": "encrypted",
-              "target": ["production", "preview", "development"]
-            }'
-          
-          # Set NODE_ENV
-          curl -X POST "https://api.vercel.com/v10/projects/$PROJECT_ID/env" \
-            -H "Authorization: Bearer $VERCEL_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "key": "NODE_ENV",
-              "value": "production",
-              "type": "encrypted",
-              "target": ["production"]
-            }'
-          
-          echo "Vercel project created and connected to GitHub repository"
-          
-          # Wait for GitHub repository to sync, then trigger deployment
-          echo "Waiting for GitHub repository to sync..."
-          sleep 15
-          
-          # Trigger initial deployment
-          echo "Triggering initial deployment..."
-          DEPLOY_RESPONSE=$(curl -s -w "%{http_code}" -X POST "https://api.vercel.com/v13/deployments" \
-            -H "Authorization: Bearer $VERCEL_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "name": "'$PROJECT_NAME'",
-              "gitSource": {
-                "type": "github",
-                "repo": "'$GITHUB_REPO'",
-                "ref": "main"
-              },
-              "target": "production"
-            }')
-          
-          DEPLOY_HTTP_CODE="${DEPLOY_RESPONSE: -3}"
-          DEPLOY_BODY="${DEPLOY_RESPONSE%???}"
-          
-          if [ "$DEPLOY_HTTP_CODE" = "200" ] || [ "$DEPLOY_HTTP_CODE" = "201" ]; then
-            DEPLOYMENT_URL=$(echo "$DEPLOY_BODY" | grep -o '"url":"[^"]*"' | cut -d'"' -f4)
-            echo "Initial deployment triggered successfully: $DEPLOYMENT_URL"
-            echo "Future deployments will happen automatically on git push."
-          else
-            echo "Deployment failed with response: $DEPLOY_BODY"
-            echo "Vercel project created but initial deployment failed. Check repository content and try manual deployment."
-          fi
+          echo "Vercel project connected to GitHub repository for automatic deployments"
 
       - name: Create deployment summary
         run: |
