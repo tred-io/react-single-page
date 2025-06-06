@@ -74,6 +74,13 @@ cat > "$CLIENT_DIR/vercel.json" << 'EOF'
     {
       "src": "api/index.ts",
       "use": "@vercel/node"
+    },
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist/public"
+      }
     }
   ],
   "routes": [
