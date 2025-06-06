@@ -1,0 +1,84 @@
+Run cd deployments/brown-feed-store-8
+  cd deployments/brown-feed-store-8
+  
+  # Create Vercel project connected to GitHub repository
+  PROJECT_NAME="brown-feed-store-8-website"
+  GITHUB_REPO="tred-io/brown-feed-store-8-website"
+  
+  echo "Creating Vercel project $PROJECT_NAME connected to GitHub repository $GITHUB_REPO"
+  
+  # Create project with GitHub connection using Vercel API
+  curl -X POST "https://api.vercel.com/v10/projects" \
+    -H "Authorization: ***" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "name": "'$PROJECT_NAME'",
+      "gitRepository": {
+        "type": "github",
+        "repo": "'$GITHUB_REPO'"
+      },
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist/public", 
+      "installCommand": "npm install",
+      "framework": "vite",
+      "routes": [
+        {
+          "src": "/api/(.*)",
+          "dest": "/api/index.ts"
+        },
+        {
+          "src": "/(.*\\\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot))",
+          "headers": {
+            "Cache-Control": "public, max-age=31536000, immutable"
+          }
+        },
+        {
+          "src": "/(.*)",
+          "dest": "/index.html"
+        }
+      ],
+      "environmentVariables": [
+        {
+          "key": "DATABASE_URL",
+          "value": "'***'",
+          "type": "encrypted",
+          "target": ["production", "preview", "development"]
+        },
+        {
+          "key": "CLIENT_CONFIG_PATH",
+          "value": "./client-config.json",
+          "type": "encrypted",
+          "target": ["production", "preview", "development"]
+        },
+        {
+          "key": "CLIENT_NAME",
+          "value": "'brown-feed-store-8'",
+          "type": "encrypted",
+          "target": ["production", "preview", "development"]
+        },
+        {
+          "key": "SESSION_SECRET",
+          "value": "'$(openssl rand -base64 32)'",
+          "type": "encrypted",
+          "target": ["production", "preview", "development"]
+        },
+        {
+          "key": "NODE_ENV",
+          "value": "production",
+          "type": "encrypted",
+          "target": ["production"]
+        }
+      ]
+    }' || echo "Project creation completed (may already exist)"
+  
+  echo "Vercel project created and connected to GitHub repository for automatic deployments"
+  shell: /usr/bin/bash -e {0}
+  env:
+    VERCEL_TOKEN: ***
+Creating Vercel project brown-feed-store-8-website connected to GitHub repository tred-io/brown-feed-store-8-website
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100  1765  100   107  100  1658   2981  46201 --:--:-- --:--:-- --:--:-- 50428
+{"error":{"code":"bad_request","message":"Invalid request: should NOT have additional property `routes`."}}Vercel project created and connected to GitHub repository for automatic deployments
