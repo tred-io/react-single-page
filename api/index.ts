@@ -117,58 +117,75 @@ function getDefaultFeaturedBrands() {
 async function handleStoreSettings(req: Request, res: Response) {
   try {
     if (req.method === 'GET') {
-      if (!process.env.DATABASE_URL) {
+      // Always return default settings if no database URL or CLIENT_NAME
+      if (!process.env.DATABASE_URL || !process.env.CLIENT_NAME) {
+        console.log('Using default settings - no database URL or CLIENT_NAME');
         return res.json(getDefaultStoreSettings());
       }
 
       const clientName = getClientName();
-      const result = await pool.query(
-        `SELECT * FROM ${clientName}.store_settings LIMIT 1`
-      );
+      console.log('Querying store settings for client:', clientName);
 
-      if (result.rows.length === 0) {
+      try {
+        const result = await pool.query(
+          `SELECT * FROM ${clientName}.store_settings LIMIT 1`
+        );
+
+        if (result.rows.length === 0) {
+          console.log('No store settings found, returning defaults');
+          return res.json(getDefaultStoreSettings());
+        }
+
+        const settings = result.rows[0];
+        console.log('Found store settings:', settings.store_name);
+        
+        return res.json({
+          id: settings.id,
+          storeName: settings.store_name,
+          tagline: settings.tagline,
+          address: settings.address,
+          phone: settings.phone,
+          email: settings.email,
+          mondayHours: settings.monday_hours,
+          tuesdayHours: settings.tuesday_hours,
+          wednesdayHours: settings.wednesday_hours,
+          thursdayHours: settings.thursday_hours,
+          fridayHours: settings.friday_hours,
+          saturdayHours: settings.saturday_hours,
+          sundayHours: settings.sunday_hours,
+          aboutTitle: settings.about_title,
+          aboutDescription: settings.about_description,
+          aboutStory: settings.about_story,
+          foundedYear: settings.founded_year,
+          logoUrl: settings.logo_url,
+          faviconUrl: settings.favicon_url,
+          heroImageUrl: settings.hero_image_url,
+          aboutImageUrl: settings.about_image_url,
+          primaryColor: settings.primary_color,
+          secondaryColor: settings.secondary_color,
+          accentColor: settings.accent_color,
+          fontFamily: settings.font_family,
+          facebookUrl: settings.facebook_url,
+          instagramUrl: settings.instagram_url,
+          xUrl: settings.x_url,
+          googleUrl: settings.google_url,
+          yelpUrl: settings.yelp_url,
+          seoTitle: settings.seo_title,
+          seoDescription: settings.seo_description,
+          seoKeywords: settings.seo_keywords
+        });
+      } catch (dbError) {
+        console.error('Database query failed:', dbError);
+        // Fallback to defaults if database query fails
         return res.json(getDefaultStoreSettings());
       }
-
-      const settings = result.rows[0];
-      return res.json({
-        id: settings.id,
-        storeName: settings.store_name,
-        tagline: settings.tagline,
-        address: settings.address,
-        phone: settings.phone,
-        email: settings.email,
-        mondayHours: settings.monday_hours,
-        tuesdayHours: settings.tuesday_hours,
-        wednesdayHours: settings.wednesday_hours,
-        thursdayHours: settings.thursday_hours,
-        fridayHours: settings.friday_hours,
-        saturdayHours: settings.saturday_hours,
-        sundayHours: settings.sunday_hours,
-        aboutTitle: settings.about_title,
-        aboutDescription: settings.about_description,
-        aboutStory: settings.about_story,
-        foundedYear: settings.founded_year,
-        logoUrl: settings.logo_url,
-        faviconUrl: settings.favicon_url,
-        heroImageUrl: settings.hero_image_url,
-        aboutImageUrl: settings.about_image_url,
-        primaryColor: settings.primary_color,
-        secondaryColor: settings.secondary_color,
-        accentColor: settings.accent_color,
-        fontFamily: settings.font_family,
-        facebookUrl: settings.facebook_url,
-        instagramUrl: settings.instagram_url,
-        xUrl: settings.x_url,
-        googleUrl: settings.google_url,
-        yelpUrl: settings.yelp_url,
-        seoTitle: settings.seo_title,
-        seoDescription: settings.seo_description,
-        seoKeywords: settings.seo_keywords
-      });
     }
 
     if (req.method === 'PUT') {
+      if (!process.env.DATABASE_URL || !process.env.CLIENT_NAME) {
+        return res.status(400).json({ message: 'Database not configured' });
+      }
+
       const settings = req.body;
       const clientName = getClientName();
 
@@ -202,7 +219,11 @@ async function handleStoreSettings(req: Request, res: Response) {
     return res.status(405).json({ message: 'Method not allowed' });
   } catch (error) {
     console.error('Store settings error:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ 
+      message: 'Internal server error',
+      error: error instanceof Error ? error.message : String(error),
+      details: 'Check server logs for more information'
+    });
   }
 }
 
