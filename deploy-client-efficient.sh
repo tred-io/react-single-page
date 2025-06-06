@@ -67,17 +67,14 @@ cat > "$CLIENT_DIR/vercel.json" << EOF
 {
   "version": 2,
   "name": "$CLIENT_NAME-website",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "framework": "vite",
   "builds": [
     {
       "src": "api/index.ts",
       "use": "@vercel/node"
-    },
-    {
-      "src": "client/**",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
     }
   ],
   "routes": [
