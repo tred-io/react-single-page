@@ -1,0 +1,18 @@
+{
+  "clientName": "brown-feed-store-13",
+  "domain": "brownfeedstore13.com",
+  "storeName": "Brown-feed-store-13 Feed Store",
+  "templateVersion": "d1e0154",
+  "deployedAt": "2025-06-06T06:39:53Z",
+  "customizations": {
+    "colors": {
+      "primary": "#8B4513",
+      "secondary": "#D2691E", 
+      "accent": "#228B22"
+    },
+    "branding": {
+      "logoUrl": "",
+      "faviconUrl": ""
+    }
+  }
+}
