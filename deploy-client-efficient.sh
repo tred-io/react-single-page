@@ -20,21 +20,25 @@ echo "Domain: $DOMAIN"
 # Create deployments directory if it doesn't exist
 mkdir -p deployments
 
-# Build the frontend first
-echo "Building frontend for deployment..."
-npm run build
+# Skip local build - let CI/Vercel handle building
+echo "Preparing source files for deployment..."
 
 # Create client-specific deployment directory
 CLIENT_DIR="deployments/$CLIENT_NAME"
 mkdir -p "$CLIENT_DIR"
 
-# Copy built frontend files to client directory
-echo "Copying built frontend to client deployment..."
-cp -r dist "$CLIENT_DIR/"
+# Copy complete source code to client directory
+echo "Copying complete source code to client deployment..."
 cp -r api "$CLIENT_DIR/"
 cp -r server "$CLIENT_DIR/"
 cp -r shared "$CLIENT_DIR/"
 cp -r client "$CLIENT_DIR/"
+
+# Copy built frontend if it exists (from CI build step)
+if [ -d "dist" ]; then
+  echo "Copying built frontend files..."
+  cp -r dist "$CLIENT_DIR/"
+fi
 
 # Create client configuration file
 cat > "$CLIENT_DIR/client-config.json" << EOF
