@@ -51,30 +51,44 @@ jobs:
           chmod +x deploy-client-efficient.sh
           ./deploy-client-efficient.sh ${{ inputs.client_name }} ${{ inputs.domain }}
 
-      - name: Setup individual client database
+      - name: Setup client schema in shared database
         env:
-          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           cd deployments/${{ inputs.client_name }}
-          DATABASE_RESULT=$(node ../../scripts/create-database.cjs ${{ inputs.database_provider }} ${{ inputs.client_name }}-website)
-          echo "$DATABASE_RESULT"
           
-          # Extract DATABASE_URL from the script output
-          DATABASE_URL=$(echo "$DATABASE_RESULT" | grep "Connection String:" | sed 's/Connection String: //' | xargs)
+          # Use shared database with client-specific schema
+          echo "Setting up client schema in shared database..."
           
-          # Update client config with database URL
-          if [ -n "$DATABASE_URL" ]; then
-            echo "DATABASE_URL=$DATABASE_URL" > .env
-            echo "CLIENT_CONFIG_PATH=./client-config.json" >> .env
-            echo "TEMPLATE_PATH=../../.." >> .env
-            echo "SESSION_SECRET=$(openssl rand -base64 32)" >> .env
-            echo "NODE_ENV=production" >> .env
-            echo "CLIENT_NAME=${{ inputs.client_name }}" >> .env
-            echo "Database configured: $DATABASE_URL"
-          else
-            echo "Error: Failed to extract DATABASE_URL from output"
-            exit 1
-          fi
+          # Initialize client schema and data using TypeScript execution
+          npx tsx -e "
+            import { initializeClientSchema, initializeClientData } from '../../server/init-client-schema.js';
+            
+            async function setup() {
+              try {
+                console.log('Initializing schema for client: ${{ inputs.client_name }}');
+                await initializeClientSchema('${{ inputs.client_name }}');
+                
+                console.log('Initializing data for client: ${{ inputs.client_name }}');
+                await initializeClientData('${{ inputs.client_name }}', '${{ inputs.domain }}');
+                
+                console.log('Client schema setup completed successfully');
+              } catch (error) {
+                console.error('Schema setup failed:', error.message);
+                process.exit(1);
+              }
+            }
+            
+            setup();
+          "
+          
+          # Configure environment for shared database
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+          echo "CLIENT_CONFIG_PATH=./client-config.json" >> .env
+          echo "SESSION_SECRET=$(openssl rand -base64 32)" >> .env
+          echo "NODE_ENV=production" >> .env
+          echo "CLIENT_NAME=${{ inputs.client_name }}" >> .env
+          echo "Shared database configured with client schema"
 
       - name: Create optimized GitHub repository
         env:
@@ -146,7 +160,7 @@ jobs:
               "environmentVariables": [
                 {
                   "key": "DATABASE_URL",
-                  "value": "'$DATABASE_URL'",
+                  "value": "'${{ secrets.DATABASE_URL }}'",
                   "type": "encrypted",
                   "target": ["production", "preview", "development"]
                 },
