@@ -282,9 +282,25 @@ jobs:
                 "repo": "'$GITHUB_REPO'"
               },
               "buildCommand": "npm run build",
-              "outputDirectory": "dist/public",
+              "outputDirectory": "dist/public", 
               "installCommand": "npm install",
               "framework": "vite",
+              "routes": [
+                {
+                  "src": "/api/(.*)",
+                  "dest": "/api/index.ts"
+                },
+                {
+                  "src": "/(.*\\\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot))",
+                  "headers": {
+                    "Cache-Control": "public, max-age=31536000, immutable"
+                  }
+                },
+                {
+                  "src": "/(.*)",
+                  "dest": "/index.html"
+                }
+              ],
               "environmentVariables": [
                 {
                   "key": "DATABASE_URL",
