@@ -83,8 +83,14 @@ cat > "$CLIENT_DIR/vercel.json" << EOF
       "dest": "/api/index.ts"
     },
     {
+      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot))",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
       "src": "/(.*)",
-      "dest": "/api/index.ts"
+      "dest": "/index.html"
     }
   ]
 }
