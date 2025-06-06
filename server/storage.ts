@@ -282,4 +282,272 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database-backed storage that routes to client-specific schemas
+class DatabaseStorage implements IStorage {
+  private clientName: string;
+  private tables: any;
+
+  constructor() {
+    this.clientName = process.env.CLIENT_NAME || 'default';
+    this.tables = this.getClientTables();
+  }
+
+  private getClientTables() {
+    if (process.env.DATABASE_URL && process.env.CLIENT_NAME) {
+      const { getClientTables } = require("@shared/schema");
+      return getClientTables(this.clientName);
+    }
+    return null;
+  }
+
+  async getUser(id: number): Promise<User | undefined> {
+    if (!this.tables) return undefined;
+    const { db } = require("./db");
+    const result = await db.select().from(this.tables.users).where(eq(this.tables.users.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    if (!this.tables) return undefined;
+    const { db } = require("./db");
+    const { eq } = require("drizzle-orm");
+    const result = await db.select().from(this.tables.users).where(eq(this.tables.users.username, username)).limit(1);
+    return result[0];
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    if (!this.tables) throw new Error("Database not configured");
+    const { db } = require("./db");
+    const result = await db.insert(this.tables.users).values(insertUser).returning();
+    return result[0];
+  }
+
+  async getStoreSettings(): Promise<StoreSettings | undefined> {
+    if (!this.tables) return this.getDefaultStoreSettings();
+    const { db } = require("./db");
+    const result = await db.select().from(this.tables.storeSettings).limit(1);
+    return result[0] || this.getDefaultStoreSettings();
+  }
+
+  async updateStoreSettings(settings: InsertStoreSettings): Promise<StoreSettings> {
+    if (!this.tables) throw new Error("Database not configured");
+    const { db } = require("./db");
+    const result = await db.update(this.tables.storeSettings).set(settings).returning();
+    return result[0];
+  }
+
+  async getProductCategories(): Promise<ProductCategory[]> {
+    if (!this.tables) return this.getDefaultProductCategories();
+    const { db } = require("./db");
+    const result = await db.select().from(this.tables.productCategories).orderBy(this.tables.productCategories.sortOrder);
+    return result.length > 0 ? result : this.getDefaultProductCategories();
+  }
+
+  async updateProductCategory(id: number, category: InsertProductCategory): Promise<ProductCategory> {
+    if (!this.tables) throw new Error("Database not configured");
+    const { db } = require("./db");
+    const { eq } = require("drizzle-orm");
+    const result = await db.update(this.tables.productCategories).set(category).where(eq(this.tables.productCategories.id, id)).returning();
+    return result[0];
+  }
+
+  async createProductCategory(category: InsertProductCategory): Promise<ProductCategory> {
+    if (!this.tables) throw new Error("Database not configured");
+    const { db } = require("./db");
+    const result = await db.insert(this.tables.productCategories).values(category).returning();
+    return result[0];
+  }
+
+  async deleteProductCategory(id: number): Promise<boolean> {
+    if (!this.tables) return false;
+    const { db } = require("./db");
+    const { eq } = require("drizzle-orm");
+    await db.delete(this.tables.productCategories).where(eq(this.tables.productCategories.id, id));
+    return true;
+  }
+
+  async getSpecialServices(): Promise<SpecialService[]> {
+    if (!this.tables) return this.getDefaultSpecialServices();
+    const { db } = require("./db");
+    const result = await db.select().from(this.tables.specialServices).orderBy(this.tables.specialServices.sortOrder);
+    return result.length > 0 ? result : this.getDefaultSpecialServices();
+  }
+
+  async updateSpecialService(id: number, service: InsertSpecialService): Promise<SpecialService> {
+    if (!this.tables) throw new Error("Database not configured");
+    const { db } = require("./db");
+    const { eq } = require("drizzle-orm");
+    const result = await db.update(this.tables.specialServices).set(service).where(eq(this.tables.specialServices.id, id)).returning();
+    return result[0];
+  }
+
+  async createSpecialService(service: InsertSpecialService): Promise<SpecialService> {
+    if (!this.tables) throw new Error("Database not configured");
+    const { db } = require("./db");
+    const result = await db.insert(this.tables.specialServices).values(service).returning();
+    return result[0];
+  }
+
+  async deleteSpecialService(id: number): Promise<boolean> {
+    if (!this.tables) return false;
+    const { db } = require("./db");
+    const { eq } = require("drizzle-orm");
+    await db.delete(this.tables.specialServices).where(eq(this.tables.specialServices.id, id));
+    return true;
+  }
+
+  async getFeaturedBrands(): Promise<FeaturedBrand[]> {
+    if (!this.tables) return this.getDefaultFeaturedBrands();
+    const { db } = require("./db");
+    const result = await db.select().from(this.tables.featuredBrands).orderBy(this.tables.featuredBrands.sortOrder);
+    return result.length > 0 ? result : this.getDefaultFeaturedBrands();
+  }
+
+  async updateFeaturedBrand(id: number, brand: InsertFeaturedBrand): Promise<FeaturedBrand> {
+    if (!this.tables) throw new Error("Database not configured");
+    const { db } = require("./db");
+    const { eq } = require("drizzle-orm");
+    const result = await db.update(this.tables.featuredBrands).set(brand).where(eq(this.tables.featuredBrands.id, id)).returning();
+    return result[0];
+  }
+
+  async createFeaturedBrand(brand: InsertFeaturedBrand): Promise<FeaturedBrand> {
+    if (!this.tables) throw new Error("Database not configured");
+    const { db } = require("./db");
+    const result = await db.insert(this.tables.featuredBrands).values(brand).returning();
+    return result[0];
+  }
+
+  async deleteFeaturedBrand(id: number): Promise<boolean> {
+    if (!this.tables) return false;
+    const { db } = require("./db");
+    const { eq } = require("drizzle-orm");
+    await db.delete(this.tables.featuredBrands).where(eq(this.tables.featuredBrands.id, id));
+    return true;
+  }
+
+  // Fallback methods for development/local testing
+  private getDefaultStoreSettings(): StoreSettings {
+    return {
+      id: 1,
+      storeName: "Brown Feed Store",
+      tagline: "Your Agricultural Supply Partner Since 1967",
+      address: "123 Main Street, Lampasas, TX 76550",
+      phone: "(512) 556-3467",
+      email: "info@brownfeedstore.com",
+      mondayHours: "8:00 AM - 6:00 PM",
+      tuesdayHours: "8:00 AM - 6:00 PM",
+      wednesdayHours: "8:00 AM - 6:00 PM",
+      thursdayHours: "8:00 AM - 6:00 PM",
+      fridayHours: "8:00 AM - 6:00 PM",
+      saturdayHours: "8:00 AM - 5:00 PM",
+      sundayHours: "Closed",
+      aboutTitle: "About Brown Feed Store",
+      aboutDescription: "Family-owned and operated since 1967, Brown Feed Store has been the trusted partner for farmers and ranchers throughout Central Texas. We provide high-quality feed, farm supplies, and expert advice to help your operation thrive.",
+      aboutStory: "Our story begins with a simple mission: to serve the hardworking farmers and ranchers of Central Texas with the highest quality products and most reliable service. Founded in 1967 by the Brown family, we've grown from a small local feed store to a comprehensive agricultural supply center while maintaining our commitment to personal service and community values.",
+      foundedYear: "1967",
+      logoUrl: "/images/brown-feed-logo.png",
+      faviconUrl: "/images/favicon.ico",
+      heroImageUrl: "/images/hero-farm.jpg",
+      aboutImageUrl: "/images/store-front.jpg",
+      primaryColor: "25 76% 31%",
+      secondaryColor: "25 75% 47%",
+      accentColor: "120 61% 34%",
+      fontFamily: "Inter",
+      facebookUrl: "https://facebook.com/brownfeedstore",
+      instagramUrl: "https://instagram.com/brownfeedstore",
+      xUrl: "https://twitter.com/brownfeedstore",
+      googleUrl: "https://maps.google.com/brownfeedstore",
+      yelpUrl: "https://yelp.com/brownfeedstore",
+      seoTitle: "Brown Feed Store - Quality Feed & Farm Supplies in Central Texas",
+      seoDescription: "Family-owned feed store serving Central Texas since 1967. Quality livestock feed, farm supplies, and expert advice for farmers and ranchers.",
+      seoKeywords: "feed store, farm supplies, livestock feed, agricultural supplies, Central Texas, Lampasas"
+    };
+  }
+
+  private getDefaultProductCategories(): ProductCategory[] {
+    return [
+      {
+        id: 1,
+        name: "Livestock Feed",
+        description: "High-quality feed for cattle, horses, goats, and other livestock",
+        imageUrl: "/images/livestock-feed.jpg",
+        featured: true,
+        sortOrder: 1
+      },
+      {
+        id: 2,
+        name: "Farm Equipment",
+        description: "Tools and equipment for farming operations",
+        imageUrl: "/images/farm-equipment.jpg",
+        featured: true,
+        sortOrder: 2
+      },
+      {
+        id: 3,
+        name: "Pet & Poultry",
+        description: "Feed and supplies for pets and poultry",
+        imageUrl: "/images/pet-poultry.jpg",
+        featured: true,
+        sortOrder: 3
+      }
+    ];
+  }
+
+  private getDefaultSpecialServices(): SpecialService[] {
+    return [
+      {
+        id: 1,
+        name: "Custom Feed Mixing",
+        description: "Personalized feed blends for your specific livestock needs",
+        icon: "Wheat",
+        featured: true,
+        sortOrder: 1
+      },
+      {
+        id: 2,
+        name: "Delivery Service",
+        description: "Convenient delivery to your farm or ranch",
+        icon: "Truck",
+        featured: true,
+        sortOrder: 2
+      },
+      {
+        id: 3,
+        name: "Nutritional Consulting",
+        description: "Expert advice on livestock nutrition and feeding programs",
+        icon: "Heart",
+        featured: true,
+        sortOrder: 3
+      }
+    ];
+  }
+
+  private getDefaultFeaturedBrands(): FeaturedBrand[] {
+    return [
+      {
+        id: 1,
+        name: "Purina",
+        description: "Trusted nutrition for livestock and pets",
+        logoUrl: "/images/purina-logo.jpg",
+        websiteUrl: "https://purina.com",
+        featured: true,
+        sortOrder: 1
+      },
+      {
+        id: 2,
+        name: "Southern States",
+        description: "Quality farm and feed products",
+        logoUrl: "/images/southern-states-logo.jpg",
+        websiteUrl: "https://southernstates.com",
+        featured: true,
+        sortOrder: 2
+      }
+    ];
+  }
+}
+
+// Use database storage for production, memory storage for development
+export const storage = process.env.DATABASE_URL && process.env.CLIENT_NAME 
+  ? new DatabaseStorage() 
+  : new MemStorage();
