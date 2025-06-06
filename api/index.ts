@@ -199,7 +199,7 @@ async function getApp() {
   });
   
   // Register additional API routes
-  await registerRoutes(app);
+  await registerRoutes(app as any);
 
   // Serve static files from dist directory
   const distPath = path.resolve(process.cwd(), "dist");
@@ -208,6 +208,11 @@ async function getApp() {
     
     // Catch-all handler for SPA
     app.get('*', (req, res) => {
+      // Skip API routes
+      if (req.path.startsWith('/api/')) {
+        return res.status(404).json({ error: 'API endpoint not found' });
+      }
+      
       const indexPath = path.join(distPath, 'index.html');
       if (fs.existsSync(indexPath)) {
         res.sendFile(indexPath);
