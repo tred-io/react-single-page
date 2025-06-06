@@ -1,5 +1,4 @@
 import {
-  type User,
   type StoreSettings,
   type ProductCategory,
   type SpecialService,
@@ -9,6 +8,12 @@ import {
   type InsertSpecialService,
   type InsertFeaturedBrand,
 } from "@shared/schema";
+
+interface User {
+  id: number;
+  username: string;
+  password: string;
+}
 
 export type InsertUser = Omit<User, 'id'>;
 
@@ -303,6 +308,7 @@ class DatabaseStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
     if (!this.tables) return undefined;
     const { db } = require("./db");
+    const { eq } = require("drizzle-orm");
     const result = await db.select().from(this.tables.users).where(eq(this.tables.users.id, id)).limit(1);
     return result[0];
   }

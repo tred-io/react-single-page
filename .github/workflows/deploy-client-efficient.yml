@@ -60,27 +60,155 @@ jobs:
           # Use shared database with client-specific schema
           echo "Setting up client schema in shared database..."
           
-          # Initialize client schema and data using TypeScript execution
-          npx tsx -e "
-            import { initializeClientSchema, initializeClientData } from '../../server/init-client-schema.js';
+          # Install pg dependency for schema initialization
+          npm install pg
+          
+          # Create schema initialization script
+          cat > schema-init.js << 'EOF'
+          const { Pool } = require('pg');
+          
+          async function initializeSchema() {
+            const clientName = '${{ inputs.client_name }}';
+            const domain = '${{ inputs.domain }}';
+            const schemaName = clientName.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
             
-            async function setup() {
-              try {
-                console.log('Initializing schema for client: ${{ inputs.client_name }}');
-                await initializeClientSchema('${{ inputs.client_name }}');
+            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+            
+            try {
+              console.log('Creating schema:', schemaName);
+              await pool.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
+              
+              console.log('Creating store_settings table...');
+              await pool.query(`
+                CREATE TABLE IF NOT EXISTS "${schemaName}".store_settings (
+                  id SERIAL PRIMARY KEY,
+                  store_name VARCHAR(255) NOT NULL,
+                  tagline TEXT NOT NULL,
+                  address TEXT NOT NULL,
+                  phone VARCHAR(50) NOT NULL,
+                  email VARCHAR(255),
+                  monday_hours VARCHAR(100) NOT NULL,
+                  tuesday_hours VARCHAR(100) NOT NULL,
+                  wednesday_hours VARCHAR(100) NOT NULL,
+                  thursday_hours VARCHAR(100) NOT NULL,
+                  friday_hours VARCHAR(100) NOT NULL,
+                  saturday_hours VARCHAR(100) NOT NULL,
+                  sunday_hours VARCHAR(100) NOT NULL,
+                  about_title VARCHAR(255) NOT NULL,
+                  about_description TEXT NOT NULL,
+                  about_story TEXT NOT NULL,
+                  founded_year VARCHAR(10) NOT NULL,
+                  logo_url TEXT,
+                  favicon_url TEXT,
+                  hero_image_url TEXT,
+                  about_image_url TEXT,
+                  primary_color VARCHAR(20) NOT NULL,
+                  secondary_color VARCHAR(20) NOT NULL,
+                  accent_color VARCHAR(20) NOT NULL,
+                  font_family VARCHAR(100) NOT NULL,
+                  facebook_url TEXT,
+                  instagram_url TEXT,
+                  x_url TEXT,
+                  google_url TEXT,
+                  yelp_url TEXT,
+                  seo_title TEXT NOT NULL,
+                  seo_description TEXT NOT NULL,
+                  seo_keywords TEXT NOT NULL,
+                  created_at TIMESTAMP DEFAULT NOW(),
+                  updated_at TIMESTAMP DEFAULT NOW()
+                )
+              `);
+              
+              console.log('Creating product_categories table...');
+              await pool.query(`
+                CREATE TABLE IF NOT EXISTS "${schemaName}".product_categories (
+                  id SERIAL PRIMARY KEY,
+                  name VARCHAR(255) NOT NULL,
+                  description TEXT NOT NULL,
+                  image_url TEXT NOT NULL,
+                  featured BOOLEAN NOT NULL DEFAULT false,
+                  sort_order INTEGER NOT NULL DEFAULT 0,
+                  created_at TIMESTAMP DEFAULT NOW(),
+                  updated_at TIMESTAMP DEFAULT NOW()
+                )
+              `);
+              
+              console.log('Creating special_services table...');
+              await pool.query(`
+                CREATE TABLE IF NOT EXISTS "${schemaName}".special_services (
+                  id SERIAL PRIMARY KEY,
+                  name VARCHAR(255) NOT NULL,
+                  description TEXT NOT NULL,
+                  icon VARCHAR(100) NOT NULL,
+                  featured BOOLEAN NOT NULL DEFAULT false,
+                  sort_order INTEGER NOT NULL DEFAULT 0,
+                  created_at TIMESTAMP DEFAULT NOW(),
+                  updated_at TIMESTAMP DEFAULT NOW()
+                )
+              `);
+              
+              console.log('Creating featured_brands table...');
+              await pool.query(`
+                CREATE TABLE IF NOT EXISTS "${schemaName}".featured_brands (
+                  id SERIAL PRIMARY KEY,
+                  name VARCHAR(255) NOT NULL,
+                  description TEXT NOT NULL,
+                  logo_url TEXT NOT NULL,
+                  website_url TEXT NOT NULL,
+                  featured BOOLEAN NOT NULL DEFAULT false,
+                  sort_order INTEGER NOT NULL DEFAULT 0,
+                  created_at TIMESTAMP DEFAULT NOW(),
+                  updated_at TIMESTAMP DEFAULT NOW()
+                )
+              `);
+              
+              // Check if data already exists
+              const existingData = await pool.query(`SELECT COUNT(*) FROM "${schemaName}".store_settings`);
+              
+              if (existingData.rows[0].count === '0') {
+                console.log('Inserting default store settings...');
+                const storeName = clientName.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                 
-                console.log('Initializing data for client: ${{ inputs.client_name }}');
-                await initializeClientData('${{ inputs.client_name }}', '${{ inputs.domain }}');
-                
-                console.log('Client schema setup completed successfully');
-              } catch (error) {
-                console.error('Schema setup failed:', error.message);
-                process.exit(1);
+                await pool.query(`
+                  INSERT INTO "${schemaName}".store_settings (
+                    store_name, tagline, address, phone, email,
+                    monday_hours, tuesday_hours, wednesday_hours, thursday_hours, friday_hours,
+                    saturday_hours, sunday_hours, about_title, about_description, about_story,
+                    founded_year, primary_color, secondary_color, accent_color, font_family,
+                    seo_title, seo_description, seo_keywords
+                  ) VALUES (
+                    $1, 'Your trusted local business', '123 Main Street, Your City, State 12345',
+                    '(555) 123-4567', $2, '9:00 AM - 6:00 PM', '9:00 AM - 6:00 PM',
+                    '9:00 AM - 6:00 PM', '9:00 AM - 6:00 PM', '9:00 AM - 6:00 PM',
+                    '9:00 AM - 4:00 PM', 'Closed', $3, 'A trusted local business serving our community',
+                    'Our story begins with a commitment to quality and service...', $4,
+                    '#2563eb', '#64748b', '#f59e0b', 'Inter', $5, 'Your trusted local business providing quality products and services.',
+                    'local business, quality service, trusted provider'
+                  )
+                `, [
+                  storeName,
+                  `info@${domain}`,
+                  `About ${storeName}`,
+                  new Date().getFullYear().toString(),
+                  `${storeName} - Quality Service`
+                ]);
               }
+              
+              console.log('Schema initialization completed successfully');
+              
+            } catch (error) {
+              console.error('Schema initialization failed:', error.message);
+              process.exit(1);
+            } finally {
+              await pool.end();
             }
-            
-            setup();
-          "
+          }
+          
+          initializeSchema();
+          EOF
+          
+          # Run schema initialization
+          node schema-init.js
           
           # Configure environment for shared database
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
