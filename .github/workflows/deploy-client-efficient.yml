@@ -282,7 +282,7 @@ jobs:
                 "repo": "'$GITHUB_REPO'"
               },
               "buildCommand": "npm run build",
-              "outputDirectory": "dist",
+              "outputDirectory": "dist/public",
               "installCommand": "npm install",
               "framework": "vite",
               "environmentVariables": [
@@ -294,7 +294,13 @@ jobs:
                 },
                 {
                   "key": "CLIENT_CONFIG_PATH",
-                  "value": "./deployments/'${{ inputs.client_name }}'/client-config.json",
+                  "value": "./client-config.json",
+                  "type": "encrypted",
+                  "target": ["production", "preview", "development"]
+                },
+                {
+                  "key": "CLIENT_NAME",
+                  "value": "'${{ inputs.client_name }}'",
                   "type": "encrypted",
                   "target": ["production", "preview", "development"]
                 },
