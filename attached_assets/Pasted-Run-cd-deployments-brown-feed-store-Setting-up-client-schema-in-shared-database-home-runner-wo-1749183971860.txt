@@ -1,0 +1,25 @@
+Run cd deployments/brown-feed-store
+Setting up client schema in shared database...
+/home/runner/work/react-single-page/react-single-page/node_modules/tsx/dist/register-D2KMMyKp.cjs:2
+//# sourceMappingURL=data:application/json;base64,`,N=c(()=>process.sourceMapsEnabled??!0,"shouldApplySourceMap"),S=c(({code:t,map:e})=>t+Z+Buffer.from(JSON.stringify(e),"utf8").toString("base64"),"inlineSourceMap"),q=[".cts",".mts",".ts",".tsx",".jsx"],ee=[".js",".cjs",".mjs"],C=[".ts",".tsx",".jsx"],w=c((t,e,r,n)=>{const s=Object.getOwnPropertyDescriptor(t,e);s?.set?t[e]=r:(!s||s.configurable)&&Object.defineProperty(t,e,{value:r,enumerable:s?.enumerable||n?.enumerable,writable:n?.writable??(s?s.writable:!0),configurable:n?.configurable??(s?s.configurable:!0)})},"safeSet"),te=c((t,e,r)=>{const n=e[".js"],s=c((a,i)=>{if(t.enabled===!1)return n(a,i);const[l,f]=i.split("?");if((new URLSearchParams(f).get("namespace")??void 0)!==r)return n(a,i);a.id.startsWith("data:text/javascript,")&&(a.path=m.dirname(l)),U.parent?.send&&U.parent.send({type:"dependency",path:l});const d=q.some(h=>l.endsWith(h)),P=ee.some(h=>l.endsWith(h));if(!d&&!P)return n(a,l);let u=G.readFileSync(l,"utf8");if(l.endsWith(".cjs")){const h=v.t
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+Error: Cannot find module '../../server/init-client-schema.js'
+Require stack:
+- /home/runner/work/react-single-page/react-single-page/deployments/brown-feed-store/[eval]
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+    at nextResolveSimple (/home/runner/work/react-single-page/react-single-page/node_modules/tsx/dist/register-D2KMMyKp.cjs:3:942)
+    at /home/runner/work/react-single-page/react-single-page/node_modules/tsx/dist/register-D2KMMyKp.cjs:2:2550
+    at /home/runner/work/react-single-page/react-single-page/node_modules/tsx/dist/register-D2KMMyKp.cjs:2:1624
+    at resolveTsPaths (/home/runner/work/react-single-page/react-single-page/node_modules/tsx/dist/register-D2KMMyKp.cjs:3:760)
+    at /home/runner/work/react-single-page/react-single-page/node_modules/tsx/dist/register-D2KMMyKp.cjs:3:1038
+    at m._resolveFilename (file:///home/runner/work/react-single-page/react-single-page/node_modules/tsx/dist/register-hc1YoAqe.mjs:1:789)
+    at Module._load (node:internal/modules/cjs/loader:981:27)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/runner/work/react-single-page/react-single-page/deployments/brown-feed-store/[eval]'
+  ]
+}
+Node.js v18.20.8
+Error: Process completed with exit code 1.
