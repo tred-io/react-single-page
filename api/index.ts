@@ -6,7 +6,9 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 // Helper function to get client name from environment
 function getClientName(): string {
-  return process.env.CLIENT_NAME || 'brown_feed_store';
+  const clientName = process.env.CLIENT_NAME || 'brown_feed_store';
+  // Replace hyphens with underscores for valid PostgreSQL schema names
+  return clientName.replace(/-/g, '_');
 }
 
 // Default store settings for new clients
@@ -229,20 +231,25 @@ async function handleStoreSettings(req: Request, res: Response) {
 
 async function handleProductCategories(req: Request, res: Response) {
   try {
-    if (!process.env.DATABASE_URL) {
+    if (!process.env.DATABASE_URL || !process.env.CLIENT_NAME) {
       return res.json(getDefaultProductCategories());
     }
 
     const clientName = getClientName();
-    const result = await pool.query(
-      `SELECT * FROM ${clientName}.product_categories ORDER BY id`
-    );
+    try {
+      const result = await pool.query(
+        `SELECT * FROM ${clientName}.product_categories ORDER BY id`
+      );
 
-    return res.json(result.rows.map(row => ({
-      id: row.id,
-      name: row.name,
-      description: row.description
-    })));
+      return res.json(result.rows.map(row => ({
+        id: row.id,
+        name: row.name,
+        description: row.description
+      })));
+    } catch (dbError) {
+      console.error('Product categories database error:', dbError);
+      return res.json(getDefaultProductCategories());
+    }
   } catch (error) {
     console.error('Product categories error:', error);
     return res.json(getDefaultProductCategories());
@@ -251,20 +258,25 @@ async function handleProductCategories(req: Request, res: Response) {
 
 async function handleSpecialServices(req: Request, res: Response) {
   try {
-    if (!process.env.DATABASE_URL) {
+    if (!process.env.DATABASE_URL || !process.env.CLIENT_NAME) {
       return res.json(getDefaultSpecialServices());
     }
 
     const clientName = getClientName();
-    const result = await pool.query(
-      `SELECT * FROM ${clientName}.special_services ORDER BY id`
-    );
+    try {
+      const result = await pool.query(
+        `SELECT * FROM ${clientName}.special_services ORDER BY id`
+      );
 
-    return res.json(result.rows.map(row => ({
-      id: row.id,
-      name: row.name,
-      description: row.description
-    })));
+      return res.json(result.rows.map(row => ({
+        id: row.id,
+        name: row.name,
+        description: row.description
+      })));
+    } catch (dbError) {
+      console.error('Special services database error:', dbError);
+      return res.json(getDefaultSpecialServices());
+    }
   } catch (error) {
     console.error('Special services error:', error);
     return res.json(getDefaultSpecialServices());
@@ -273,20 +285,25 @@ async function handleSpecialServices(req: Request, res: Response) {
 
 async function handleFeaturedBrands(req: Request, res: Response) {
   try {
-    if (!process.env.DATABASE_URL) {
+    if (!process.env.DATABASE_URL || !process.env.CLIENT_NAME) {
       return res.json(getDefaultFeaturedBrands());
     }
 
     const clientName = getClientName();
-    const result = await pool.query(
-      `SELECT * FROM ${clientName}.featured_brands ORDER BY id`
-    );
+    try {
+      const result = await pool.query(
+        `SELECT * FROM ${clientName}.featured_brands ORDER BY id`
+      );
 
-    return res.json(result.rows.map(row => ({
-      id: row.id,
-      name: row.name,
-      description: row.description
-    })));
+      return res.json(result.rows.map(row => ({
+        id: row.id,
+        name: row.name,
+        description: row.description
+      })));
+    } catch (dbError) {
+      console.error('Featured brands database error:', dbError);
+      return res.json(getDefaultFeaturedBrands());
+    }
   } catch (error) {
     console.error('Featured brands error:', error);
     return res.json(getDefaultFeaturedBrands());
