@@ -272,7 +272,7 @@ jobs:
           echo "Creating Vercel project $PROJECT_NAME connected to GitHub repository $GITHUB_REPO"
           
           # Create project with GitHub connection using Vercel API
-          curl -X POST "https://api.vercel.com/v10/projects" \
+          RESPONSE=$(curl -s -w "%{http_code}" -X POST "https://api.vercel.com/v10/projects" \
             -H "Authorization: Bearer $VERCEL_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
@@ -282,42 +282,90 @@ jobs:
                 "repo": "'$GITHUB_REPO'"
               },
               "buildCommand": "npm run build",
-              "outputDirectory": "dist/public", 
+              "outputDirectory": "dist/public",
               "installCommand": "npm install",
-              "framework": "vite",
-              "environmentVariables": [
-                {
-                  "key": "DATABASE_URL",
-                  "value": "'${{ secrets.DATABASE_URL }}'",
-                  "type": "encrypted",
-                  "target": ["production", "preview", "development"]
-                },
-                {
-                  "key": "CLIENT_CONFIG_PATH",
-                  "value": "./client-config.json",
-                  "type": "encrypted",
-                  "target": ["production", "preview", "development"]
-                },
-                {
-                  "key": "CLIENT_NAME",
-                  "value": "'${{ inputs.client_name }}'",
-                  "type": "encrypted",
-                  "target": ["production", "preview", "development"]
-                },
-                {
-                  "key": "SESSION_SECRET",
-                  "value": "'$(openssl rand -base64 32)'",
-                  "type": "encrypted",
-                  "target": ["production", "preview", "development"]
-                },
-                {
-                  "key": "NODE_ENV",
-                  "value": "production",
-                  "type": "encrypted",
-                  "target": ["production"]
-                }
-              ]
-            }' || echo "Project creation completed (may already exist)"
+              "framework": "vite"
+            }')
+          
+          HTTP_CODE="${RESPONSE: -3}"
+          RESPONSE_BODY="${RESPONSE%???}"
+          
+          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "201" ]; then
+            echo "Vercel project created successfully"
+            PROJECT_ID=$(echo "$RESPONSE_BODY" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
+          else
+            echo "Project creation response: $RESPONSE_BODY"
+            # Check if project already exists
+            EXISTING_PROJECT=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+              "https://api.vercel.com/v9/projects/$PROJECT_NAME")
+            
+            if echo "$EXISTING_PROJECT" | grep -q '"id"'; then
+              echo "Project $PROJECT_NAME already exists, using existing project"
+              PROJECT_ID=$(echo "$EXISTING_PROJECT" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
+            else
+              echo "Failed to create or find project $PROJECT_NAME"
+              exit 1
+            fi
+          fi
+          
+          # Set environment variables for the project
+          echo "Setting environment variables for project $PROJECT_ID"
+          
+          # Set DATABASE_URL
+          curl -X POST "https://api.vercel.com/v10/projects/$PROJECT_ID/env" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "key": "DATABASE_URL",
+              "value": "'${{ secrets.DATABASE_URL }}'",
+              "type": "encrypted",
+              "target": ["production", "preview", "development"]
+            }'
+          
+          # Set CLIENT_NAME
+          curl -X POST "https://api.vercel.com/v10/projects/$PROJECT_ID/env" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "key": "CLIENT_NAME",
+              "value": "'${{ inputs.client_name }}'",
+              "type": "encrypted",
+              "target": ["production", "preview", "development"]
+            }'
+          
+          # Set CLIENT_CONFIG_PATH
+          curl -X POST "https://api.vercel.com/v10/projects/$PROJECT_ID/env" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "key": "CLIENT_CONFIG_PATH",
+              "value": "./client-config.json",
+              "type": "encrypted",
+              "target": ["production", "preview", "development"]
+            }'
+          
+          # Set SESSION_SECRET
+          SESSION_SECRET=$(openssl rand -base64 32)
+          curl -X POST "https://api.vercel.com/v10/projects/$PROJECT_ID/env" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "key": "SESSION_SECRET",
+              "value": "'$SESSION_SECRET'",
+              "type": "encrypted",
+              "target": ["production", "preview", "development"]
+            }'
+          
+          # Set NODE_ENV
+          curl -X POST "https://api.vercel.com/v10/projects/$PROJECT_ID/env" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "key": "NODE_ENV",
+              "value": "production",
+              "type": "encrypted",
+              "target": ["production"]
+            }'
           
           echo "Vercel project created and connected to GitHub repository for automatic deployments"
 
