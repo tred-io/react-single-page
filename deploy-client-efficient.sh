@@ -20,9 +20,21 @@ echo "Domain: $DOMAIN"
 # Create deployments directory if it doesn't exist
 mkdir -p deployments
 
+# Build the frontend first
+echo "Building frontend for deployment..."
+npm run build
+
 # Create client-specific deployment directory
 CLIENT_DIR="deployments/$CLIENT_NAME"
 mkdir -p "$CLIENT_DIR"
+
+# Copy built frontend files to client directory
+echo "Copying built frontend to client deployment..."
+cp -r dist "$CLIENT_DIR/"
+cp -r api "$CLIENT_DIR/"
+cp -r server "$CLIENT_DIR/"
+cp -r shared "$CLIENT_DIR/"
+cp -r client "$CLIENT_DIR/"
 
 # Create client configuration file
 cat > "$CLIENT_DIR/client-config.json" << EOF
@@ -51,14 +63,14 @@ cat > "$CLIENT_DIR/vercel.json" << EOF
 {
   "version": 2,
   "name": "$CLIENT_NAME-website",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "framework": "vite",
   "builds": [
     {
       "src": "api/index.ts",
       "use": "@vercel/node"
-    },
-    {
-      "src": "client/**/*",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -68,7 +80,7 @@ cat > "$CLIENT_DIR/vercel.json" << EOF
     },
     {
       "src": "/(.*)",
-      "dest": "/client/\$1"
+      "dest": "/dist/\$1"
     }
   ],
   "env": {
@@ -79,44 +91,21 @@ cat > "$CLIENT_DIR/vercel.json" << EOF
 }
 EOF
 
-# Create package.json for client
-cat > "$CLIENT_DIR/package.json" << EOF
-{
-  "name": "$CLIENT_NAME-website",
-  "version": "1.0.0",
-  "description": "Website for $CLIENT_NAME",
-  "main": "api/index.ts",
-  "scripts": {
-    "build": "echo 'Using template build system'",
-    "start": "node api/index.ts",
-    "dev": "echo 'Development mode not available for client deployments'"
-  },
-  "dependencies": {
-    "@vercel/node": "^3.0.0"
-  },
-  "engines": {
-    "node": ">=18"
-  }
-}
-EOF
+# Copy main package.json with full dependencies
+cp package.json "$CLIENT_DIR/"
 
-# Create directory for API first
-mkdir -p "$CLIENT_DIR/api"
+# Update the copied package.json to set client-specific name
+sed -i 's/"name": "rest-express"/"name": "'$CLIENT_NAME'-website"/' "$CLIENT_DIR/package.json"
 
-# Create minimal API entry point that references the template
-cat > "$CLIENT_DIR/api/index.ts" << EOF
-// Client API Entry Point
-// This file references the main template and loads client-specific configuration
+# Copy additional necessary files
+cp tsconfig.json "$CLIENT_DIR/" 2>/dev/null || echo "tsconfig.json not found, skipping"
+cp tailwind.config.ts "$CLIENT_DIR/" 2>/dev/null || echo "tailwind.config.ts not found, skipping"
+cp postcss.config.js "$CLIENT_DIR/" 2>/dev/null || echo "postcss.config.js not found, skipping"
+cp vite.config.ts "$CLIENT_DIR/" 2>/dev/null || echo "vite.config.ts not found, skipping"
 
-import { resolve } from 'path';
-
-// Set client configuration path for the template
-process.env.CLIENT_CONFIG_PATH = resolve(__dirname, '../client-config.json');
-process.env.CLIENT_NAME = '$CLIENT_NAME';
-
-// Import and export the main template handler
-export { default } from '../../../api/index';
-EOF
+# The api, server, shared, and dist folders are already copied above
+# Update the API index.ts to include client configuration
+sed -i '1i// Client: '$CLIENT_NAME'\n// Domain: '$DOMAIN'\n' "$CLIENT_DIR/api/index.ts"
 
 # Create README for client deployment
 cat > "$CLIENT_DIR/README.md" << EOF
