@@ -201,8 +201,8 @@ async function getApp() {
   // Register additional API routes
   await registerRoutes(app as any);
 
-  // Serve static files from dist directory
-  const distPath = path.resolve(process.cwd(), "dist");
+  // Serve static files from dist/public directory
+  const distPath = path.resolve(process.cwd(), "dist/public");
   if (fs.existsSync(distPath)) {
     app.use(express.static(distPath));
     
