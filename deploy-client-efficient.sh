@@ -62,11 +62,10 @@ cat > "$CLIENT_DIR/client-config.json" << EOF
 }
 EOF
 
-# Create Vercel configuration
-cat > "$CLIENT_DIR/vercel.json" << EOF
+# Create Vercel configuration with proper JSON escaping
+cat > "$CLIENT_DIR/vercel.json" << 'EOF'
 {
   "version": 2,
-  "name": "$CLIENT_NAME-website",
   "buildCommand": "npm run build",
   "outputDirectory": "dist/public",
   "installCommand": "npm install",
