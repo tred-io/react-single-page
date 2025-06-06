@@ -252,12 +252,19 @@ jobs:
           for i in {1..3}; do
             if git push -u origin main; then
               echo "Successfully pushed to repository"
+              PUSH_SUCCESS=true
               break
             else
               echo "Push attempt $i failed, retrying in $((i * 5)) seconds..."
               sleep $((i * 5))
+              PUSH_SUCCESS=false
             fi
           done
+          
+          if [ "$PUSH_SUCCESS" != "true" ]; then
+            echo "Failed to push to repository after 3 attempts"
+            exit 1
+          fi
 
       - name: Deploy to Vercel with GitHub connection
         env:
@@ -367,7 +374,38 @@ jobs:
               "target": ["production"]
             }'
           
-          echo "Vercel project created and connected to GitHub repository for automatic deployments"
+          echo "Vercel project created and connected to GitHub repository"
+          
+          # Wait for GitHub repository to sync, then trigger deployment
+          echo "Waiting for GitHub repository to sync..."
+          sleep 15
+          
+          # Trigger initial deployment
+          echo "Triggering initial deployment..."
+          DEPLOY_RESPONSE=$(curl -s -w "%{http_code}" -X POST "https://api.vercel.com/v13/deployments" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "name": "'$PROJECT_NAME'",
+              "gitSource": {
+                "type": "github",
+                "repo": "'$GITHUB_REPO'",
+                "ref": "main"
+              },
+              "target": "production"
+            }')
+          
+          DEPLOY_HTTP_CODE="${DEPLOY_RESPONSE: -3}"
+          DEPLOY_BODY="${DEPLOY_RESPONSE%???}"
+          
+          if [ "$DEPLOY_HTTP_CODE" = "200" ] || [ "$DEPLOY_HTTP_CODE" = "201" ]; then
+            DEPLOYMENT_URL=$(echo "$DEPLOY_BODY" | grep -o '"url":"[^"]*"' | cut -d'"' -f4)
+            echo "Initial deployment triggered successfully: $DEPLOYMENT_URL"
+            echo "Future deployments will happen automatically on git push."
+          else
+            echo "Deployment failed with response: $DEPLOY_BODY"
+            echo "Vercel project created but initial deployment failed. Check repository content and try manual deployment."
+          fi
 
       - name: Create deployment summary
         run: |
