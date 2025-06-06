@@ -63,8 +63,8 @@ jobs:
           # Install pg dependency for schema initialization
           npm install pg
           
-          # Create schema initialization script
-          cat > schema-init.js << 'EOF'
+          # Create schema initialization script as CommonJS
+          cat > schema-init.cjs << 'EOF'
           const { Pool } = require('pg');
           
           async function initializeSchema() {
@@ -208,7 +208,7 @@ jobs:
           EOF
           
           # Run schema initialization
-          node schema-init.js
+          node schema-init.cjs
           
           # Configure environment for shared database
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
