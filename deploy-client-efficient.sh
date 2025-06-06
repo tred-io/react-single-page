@@ -68,7 +68,7 @@ cat > "$CLIENT_DIR/vercel.json" << EOF
   "version": 2,
   "name": "$CLIENT_NAME-website",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "outputDirectory": "dist/public",
   "installCommand": "npm install",
   "framework": "vite",
   "builds": [
